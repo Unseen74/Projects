@@ -1,0 +1,2072 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EnergyIQ — Piattaforma Utility Manager</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── RESET & BASE ── */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0c0e14;--bg2:#12151e;--bg3:#181c28;--bg4:#1e2235;--bg5:#252a3d;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.1);--border3:rgba(255,255,255,0.16);
+  --text:#e2e4f0;--text2:#8b8fa8;--text3:#4e5268;
+  --accent:#4f8ef7;--accent2:#3a7ef5;--accent-dim:rgba(79,142,247,0.12);
+  --green:#2dd4a0;--green-dim:rgba(45,212,160,0.1);
+  --amber:#f5a623;--amber-dim:rgba(245,166,35,0.1);
+  --red:#f87171;--red-dim:rgba(248,113,113,0.1);
+  --purple:#a78bfa;--purple-dim:rgba(167,139,250,0.1);
+  --teal:#22d3ee;--teal-dim:rgba(34,211,238,0.1);
+  --r:8px;--r-lg:12px;--r-xl:16px;
+  --sidebar:240px;--topbar:52px;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;min-height:100vh;overflow-x:hidden}
+button{font-family:inherit;cursor:pointer}
+input,textarea,select{font-family:inherit}
+
+/* ── AUTH SCREEN ── */
+#auth-screen{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;align-items:center;justify-content:center}
+.auth-box{width:400px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r-xl);padding:40px;box-shadow:0 24px 80px rgba(0,0,0,0.6)}
+.auth-logo{font-size:22px;font-weight:600;letter-spacing:-0.3px;margin-bottom:6px}
+.auth-logo span{color:var(--accent)}
+.auth-sub{font-size:12px;color:var(--text3);margin-bottom:32px}
+.auth-label{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);font-weight:500;margin-bottom:6px;display:block}
+.auth-input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:10px 14px;color:var(--text);font-size:13px;outline:none;transition:border-color .15s}
+.auth-input:focus{border-color:var(--accent)}
+.auth-btn{width:100%;background:var(--accent);border:none;border-radius:var(--r);padding:11px;color:#fff;font-size:13px;font-weight:500;margin-top:8px;transition:background .15s}
+.auth-btn:hover{background:var(--accent2)}
+.auth-roles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:24px}
+.role-pill{padding:8px 10px;border:1px solid var(--border2);border-radius:var(--r);cursor:pointer;text-align:center;transition:all .15s}
+.role-pill.active{border-color:var(--accent);background:var(--accent-dim)}
+.role-pill .r-icon{font-size:18px;margin-bottom:4px}
+.role-pill .r-name{font-size:11px;font-weight:500}
+.role-pill .r-desc{font-size:10px;color:var(--text3)}
+
+/* ── SETTINGS MODAL ── */
+#settings-modal{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:900;display:none;align-items:center;justify-content:center}
+#settings-modal.open{display:flex}
+.settings-box{width:520px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r-xl);padding:28px;max-height:90vh;overflow-y:auto}
+.settings-section{margin-bottom:24px}
+.settings-section-title{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);font-weight:500;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.settings-row{margin-bottom:12px}
+.settings-label{font-size:11px;color:var(--text2);margin-bottom:4px;display:flex;align-items:center;justify-content:space-between}
+.settings-input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:8px 12px;color:var(--text);font-size:12px;font-family:'JetBrains Mono',monospace;outline:none;transition:border-color .15s}
+.settings-input:focus{border-color:var(--accent)}
+.api-status{width:7px;height:7px;border-radius:50%;display:inline-block;margin-left:6px}
+.api-status.ok{background:var(--green)}
+.api-status.missing{background:var(--red)}
+
+/* ── APP SHELL ── */
+#app{display:none;height:100vh;overflow:hidden}
+#app.visible{display:flex}
+
+/* ── SIDEBAR ── */
+.sidebar{width:var(--sidebar);background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100vh;flex-shrink:0;overflow-y:auto}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.sb-logo{padding:18px 16px 14px;border-bottom:1px solid var(--border);flex-shrink:0}
+.sb-logo .brand{font-size:17px;font-weight:600;letter-spacing:-.3px}
+.sb-logo .brand span{color:var(--accent)}
+.sb-logo .tagline{font-size:10px;color:var(--text3);margin-top:2px;text-transform:uppercase;letter-spacing:.6px}
+.sb-client{margin:10px 10px 4px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:8px 10px;cursor:pointer;transition:background .15s}
+.sb-client:hover{background:var(--bg4)}
+.sb-client .cl-label{font-size:9px;text-transform:uppercase;letter-spacing:.7px;color:var(--text3);margin-bottom:4px}
+.sb-client .cl-name{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-client .cl-piva{font-size:10px;color:var(--text3)}
+.sb-client .cl-arrow{color:var(--text3);margin-left:auto;font-size:10px}
+.sb-section{padding:12px 10px 3px;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--text3);font-weight:500}
+.sb-item{display:flex;align-items:center;gap:9px;padding:7px 10px;margin:1px 6px;border-radius:var(--r);cursor:pointer;color:var(--text2);font-size:12.5px;transition:all .15s;position:relative}
+.sb-item:hover{background:var(--bg3);color:var(--text)}
+.sb-item.active{background:var(--accent-dim);color:var(--accent);font-weight:500}
+.sb-item .sb-icon{width:16px;height:16px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.sb-item .sb-badge{margin-left:auto;font-size:9px;padding:1px 6px;border-radius:20px;background:var(--accent-dim);color:var(--accent);font-weight:500}
+.sb-item .sb-count{margin-left:auto;font-size:10px;padding:1px 7px;border-radius:20px;background:var(--red-dim);color:var(--red)}
+.sb-footer{margin-top:auto;padding:10px;border-top:1px solid var(--border);flex-shrink:0;display:flex;gap:6px}
+.sb-footer-btn{flex:1;padding:7px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);color:var(--text2);font-size:11px;text-align:center;cursor:pointer;transition:all .15s}
+.sb-footer-btn:hover{background:var(--bg4);color:var(--text)}
+
+/* ── TOPBAR ── */
+.topbar{height:var(--topbar);background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:14px;flex-shrink:0;position:sticky;top:0;z-index:50}
+.topbar-title{font-size:14px;font-weight:500}
+.topbar-breadcrumb{font-size:11px;color:var(--text3)}
+.topbar-actions{margin-left:auto;display:flex;gap:8px;align-items:center}
+.topbar-user{display:flex;align-items:center;gap:8px;padding:5px 10px;border-radius:var(--r);background:var(--bg3);border:1px solid var(--border);cursor:pointer}
+.user-avatar{width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#fff;flex-shrink:0}
+.user-info .u-name{font-size:11px;font-weight:500}
+.user-info .u-role{font-size:10px;color:var(--text3)}
+
+/* ── MAIN ── */
+.main-wrap{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden}
+.content{flex:1;padding:20px;overflow-y:auto}
+.content::-webkit-scrollbar{width:4px}
+.content::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+/* ── PAGES ── */
+.page{display:none}
+.page.active{display:block}
+
+/* ── COMPONENTS ── */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px}
+.card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+.card-title{font-size:13px;font-weight:500}
+.card-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.row{display:flex;gap:12px;align-items:flex-start}
+.col{flex:1;min-width:0}
+.col-fixed{flex-shrink:0}
+.mb12{margin-bottom:12px}
+.mb16{margin-bottom:16px}
+.mb20{margin-bottom:20px}
+
+/* KPI */
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px}
+.kpi-label{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--text3);margin-bottom:6px;font-weight:500}
+.kpi-value{font-size:24px;font-weight:600;letter-spacing:-.5px;font-family:'JetBrains Mono',monospace}
+.kpi-sub{font-size:10px;color:var(--text3);margin-top:4px;display:flex;align-items:center;gap:5px}
+.kpi-delta{font-size:10px;padding:2px 6px;border-radius:4px;font-weight:500}
+.delta-up{background:var(--green-dim);color:var(--green)}
+.delta-down{background:var(--red-dim);color:var(--red)}
+.delta-neutral{background:var(--amber-dim);color:var(--amber)}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:500}
+.b-green{background:var(--green-dim);color:var(--green)}
+.b-red{background:var(--red-dim);color:var(--red)}
+.b-amber{background:var(--amber-dim);color:var(--amber)}
+.b-blue{background:var(--accent-dim);color:var(--accent)}
+.b-purple{background:var(--purple-dim);color:var(--purple)}
+.b-teal{background:var(--teal-dim);color:var(--teal)}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:var(--r);font-size:12px;font-weight:500;border:none;transition:all .15s;cursor:pointer}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent2)}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border2)}
+.btn-ghost:hover{background:var(--bg3);color:var(--text)}
+.btn-danger{background:var(--red-dim);color:var(--red);border:1px solid rgba(248,113,113,0.2)}
+.btn-sm{padding:4px 10px;font-size:11px}
+
+/* TABLES */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--text3);text-align:left;padding:7px 12px;border-bottom:1px solid var(--border);font-weight:500}
+.tbl td{padding:9px 12px;font-size:12px;border-bottom:1px solid var(--border)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tbody tr:hover td{background:var(--bg3)}
+
+/* PROGRESS */
+.progress{background:var(--bg4);border-radius:3px;height:5px;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px;transition:width .4s ease}
+
+/* TABS */
+.tabs{display:flex;gap:2px;background:var(--bg3);border-radius:var(--r);padding:3px;margin-bottom:16px;width:fit-content}
+.tab{padding:5px 14px;border-radius:6px;cursor:pointer;font-size:12px;color:var(--text2);transition:all .15s}
+.tab.active{background:var(--bg2);color:var(--text);font-weight:500}
+
+/* CHART WRAP */
+.chart-wrap{position:relative;width:100%}
+
+/* LEAFLET OVERRIDES */
+.leaflet-container{background:#0a1220;font-family:'Inter',sans-serif}
+.leaflet-control-attribution{font-size:8px!important;opacity:.4}
+.leaflet-control-zoom a{background:var(--bg3)!important;color:var(--text2)!important;border-color:var(--border)!important}
+.leaflet-control-zoom a:hover{background:var(--bg4)!important;color:var(--text)!important}
+.map-popup .leaflet-popup-content-wrapper{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-lg);box-shadow:0 8px 32px rgba(0,0,0,.5)}
+.map-popup .leaflet-popup-content{color:var(--text);font-size:12px;line-height:1.6;margin:10px 14px}
+.map-popup .leaflet-popup-tip{background:var(--bg3)}
+.map-popup .leaflet-popup-close-button{color:var(--text2)!important}
+
+/* LAYERED MAP */
+.map-stack{position:relative;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--border)}
+.map-stack canvas.base{position:absolute;inset:0;width:100%;height:100%;z-index:1}
+.map-stack .leaflet-wrap{position:absolute;inset:0;width:100%;height:100%;z-index:2;background:transparent}
+.map-stack canvas.data{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none}
+
+/* AI PANEL */
+.ai-panel{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);display:flex;flex-direction:column;height:420px}
+.ai-header{padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;flex-shrink:0}
+.ai-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green)}
+.ai-msgs{flex:1;padding:14px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+.ai-msgs::-webkit-scrollbar{width:3px}
+.ai-msgs::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.msg{display:flex;gap:8px;align-items:flex-start}
+.msg-av{width:26px;height:26px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600}
+.msg-ai .msg-av{background:linear-gradient(135deg,var(--accent),var(--purple));color:#fff}
+.msg-user .msg-av{background:var(--bg4);color:var(--text2)}
+.msg-bubble{background:var(--bg4);border-radius:8px;padding:9px 12px;font-size:12px;line-height:1.6;max-width:88%}
+.msg-user .msg-bubble{background:var(--accent-dim);border:1px solid rgba(79,142,247,.2)}
+.typing{display:flex;gap:4px;align-items:center;padding:2px 0}
+.t-dot{width:5px;height:5px;border-radius:50%;background:var(--text3);animation:tdot 1.4s infinite}
+.t-dot:nth-child(2){animation-delay:.2s}
+.t-dot:nth-child(3){animation-delay:.4s}
+@keyframes tdot{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+.ai-input-wrap{padding:10px 12px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0}
+.ai-input{flex:1;background:var(--bg4);border:1px solid var(--border2);border-radius:var(--r);padding:7px 11px;color:var(--text);font-family:inherit;font-size:12px;outline:none;resize:none}
+.ai-input:focus{border-color:var(--accent)}
+.ai-send{background:var(--accent);border:none;border-radius:var(--r);width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;color:#fff;align-self:flex-end;transition:background .15s}
+.ai-send:hover{background:var(--accent2)}
+
+/* CLIENT CARDS */
+.client-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;cursor:pointer;transition:all .15s}
+.client-card:hover{border-color:var(--border2);background:var(--bg3)}
+.client-card.selected{border-color:var(--accent);background:var(--accent-dim)}
+.cl-avatar{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#fff;flex-shrink:0;margin-bottom:10px}
+.cl-name{font-size:13px;font-weight:500;margin-bottom:3px}
+.cl-ateco{font-size:11px;color:var(--text3);margin-bottom:8px}
+.cl-kpis{display:flex;gap:8px;flex-wrap:wrap}
+.cl-kpi{font-size:10px;padding:2px 7px;background:var(--bg3);border-radius:4px;color:var(--text2)}
+
+/* UPLOAD */
+.upload-zone{border:2px dashed var(--border2);border-radius:var(--r-lg);padding:24px;text-align:center;cursor:pointer;transition:all .15s}
+.upload-zone:hover{border-color:var(--accent);background:var(--accent-dim)}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:14px 0}
+
+/* SPINNER */
+.spinner{width:14px;height:14px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* SECTION TITLE */
+.sec-title{font-size:12px;font-weight:500;color:var(--text2);margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.sec-title::before{content:'';width:3px;height:12px;background:var(--accent);border-radius:2px;display:block}
+
+/* SOLAR SIM GRID */
+.solar-sim{display:grid;grid-template-columns:repeat(6,1fr);gap:2px;padding:8px;background:var(--bg4);border-radius:var(--r)}
+.s-cell{height:28px;border-radius:3px;cursor:pointer}
+.s-high{background:rgba(245,166,35,.72)}
+.s-med{background:rgba(245,166,35,.36)}
+.s-low{background:rgba(245,166,35,.12)}
+
+/* SCENARIO CARD */
+.scenario-card{padding:12px;border-radius:var(--r);cursor:pointer;border:2px solid var(--border);transition:all .15s}
+.scenario-card:hover{border-color:var(--border2)}
+.scenario-card.active{border-color:var(--accent);background:var(--accent-dim)}
+
+/* SCROLLBAR GLOBAL */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* ── TECH PANEL ── */
+.tp-panel{background:linear-gradient(145deg,#0d1729,#0a1020);border:1px solid rgba(79,142,247,.22);border-radius:10px;padding:14px;box-shadow:0 0 20px rgba(79,142,247,.06),inset 0 0 40px rgba(0,0,0,.3);position:relative;overflow:hidden}
+.tp-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(79,142,247,.5),transparent);pointer-events:none}
+.tp-header{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.tp-icon{font-size:14px;flex-shrink:0}
+.tp-title{font-size:11px;font-weight:600;color:#7ab3f5;letter-spacing:.4px;text-transform:uppercase}
+.tp-live{margin-left:auto;font-size:9px;padding:2px 8px;background:rgba(45,212,160,.12);border:1px solid rgba(45,212,160,.3);border-radius:10px;color:#2dd4a0;letter-spacing:.5px;animation:livePulse 2s ease-in-out infinite}
+@keyframes livePulse{0%,100%{opacity:1}50%{opacity:.6}}
+.mk-kpi{padding:10px 12px;border-radius:8px;border:1px solid}
+.mk-kpi-blue{background:rgba(79,142,247,.08);border-color:rgba(79,142,247,.2)}
+.mk-kpi-amber{background:rgba(245,166,35,.08);border-color:rgba(245,166,35,.2)}
+.mk-kpi-green{background:rgba(45,212,160,.08);border-color:rgba(45,212,160,.2)}
+.mk-kpi-purple{background:rgba(167,139,250,.08);border-color:rgba(167,139,250,.2)}
+.mk-kpi-label{font-size:10px;color:#8b8fa8;margin-bottom:5px}
+.mk-kpi-val{font-size:21px;font-weight:700;color:#e2e4f0;font-family:'JetBrains Mono',monospace;letter-spacing:-.5px;line-height:1}
+.mk-kpi-unit{font-size:11px;color:#8b8fa8;font-weight:400}
+.mk-kpi-delta{font-size:11px;font-weight:600;margin-top:5px}
+.mk-up{color:#2dd4a0}.mk-down{color:#f87171}
+.net-alert{padding:7px 9px;border-radius:6px;margin-bottom:5px}
+.net-alert-red{background:rgba(248,113,113,.07);border-left:3px solid rgba(248,113,113,.6)}
+.net-alert-amber{background:rgba(245,166,35,.07);border-left:3px solid rgba(245,166,35,.6)}
+.net-alert-blue{background:rgba(79,142,247,.07);border-left:3px solid rgba(79,142,247,.6)}
+.sys-alert{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:7px;margin-bottom:6px}
+.sys-alert-red{background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.18)}
+.sys-alert-amber{background:rgba(245,166,35,.07);border:1px solid rgba(245,166,35,.18)}
+.sys-alert-blue{background:rgba(79,142,247,.07);border:1px solid rgba(79,142,247,.18)}
+.tp-tab{padding:3px 10px;border-radius:5px;font-size:11px;font-weight:500;border:1px solid rgba(79,142,247,.25);background:transparent;color:#8b8fa8;cursor:pointer;transition:all .15s}
+.tp-tab.active,.tp-tab:hover{background:rgba(79,142,247,.2);color:#7ab3f5;border-color:rgba(79,142,247,.5)}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     AUTH SCREEN
+═══════════════════════════════════════════ -->
+<div id="auth-screen">
+  <div class="auth-box">
+    <div class="auth-logo">Energy<span>IQ</span></div>
+    <div class="auth-sub">Piattaforma Utility Manager · v2.0</div>
+
+    <div style="margin-bottom:16px">
+      <span class="auth-label">Accedi come</span>
+      <div class="auth-roles" id="role-selector">
+        <div class="role-pill active" data-role="admin" onclick="selectRole(this)">
+          <div class="r-icon">🏢</div>
+          <div class="r-name">Admin</div>
+          <div class="r-desc">Agenzia</div>
+        </div>
+        <div class="role-pill" data-role="manager" onclick="selectRole(this)">
+          <div class="r-icon">⚡</div>
+          <div class="r-name">Manager</div>
+          <div class="r-desc">Utility</div>
+        </div>
+        <div class="role-pill" data-role="viewer" onclick="selectRole(this)">
+          <div class="r-icon">👁</div>
+          <div class="r-name">Viewer</div>
+          <div class="r-desc">Sola lettura</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:14px">
+      <span class="auth-label">Email</span>
+      <input class="auth-input" type="email" id="auth-email" value="ivan@energyiq.it" placeholder="email@azienda.it">
+    </div>
+    <div style="margin-bottom:20px">
+      <span class="auth-label">Password</span>
+      <input class="auth-input" type="password" id="auth-pass" value="••••••••" placeholder="Password">
+    </div>
+    <button class="auth-btn" onclick="doLogin()">Accedi alla piattaforma</button>
+
+    <div style="margin-top:20px;padding:12px;background:var(--bg3);border-radius:var(--r);font-size:11px;color:var(--text3)">
+      <strong style="color:var(--text2)">Demo:</strong> usa qualsiasi credenziale · seleziona il ruolo per testare i permessi
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SETTINGS MODAL
+═══════════════════════════════════════════ -->
+<div id="settings-modal">
+  <div class="settings-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <div style="font-size:15px;font-weight:500">Impostazioni</div>
+      <button class="btn btn-ghost btn-sm" onclick="closeSettings()">✕ Chiudi</button>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">🔑 API Keys</div>
+      <div class="settings-row">
+        <div class="settings-label">
+          <span>Anthropic (Claude AI) <span class="api-status" id="st-anthropic"></span></span>
+          <span style="font-size:10px;color:var(--text3)">Chat AI · Analisi documenti</span>
+        </div>
+        <input class="settings-input" id="key-anthropic" type="password" placeholder="sk-ant-api03-..." oninput="saveKeys()">
+      </div>
+      <div class="settings-row">
+        <div class="settings-label">
+          <span>OpenWeather <span class="api-status" id="st-weather"></span></span>
+          <span style="font-size:10px;color:var(--text3)">Meteo & irraggiamento reale</span>
+        </div>
+        <input class="settings-input" id="key-weather" type="password" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" oninput="saveKeys()">
+      </div>
+      <div class="settings-row">
+        <div class="settings-label">
+          <span>Google Maps <span class="api-status" id="st-gmaps"></span></span>
+          <span style="font-size:10px;color:var(--text3)">Mappe avanzate</span>
+        </div>
+        <input class="settings-input" id="key-gmaps" type="password" placeholder="AIzaSy..." oninput="saveKeys()">
+      </div>
+      <div class="settings-row">
+        <div class="settings-label">
+          <span>PVGIS / EU JRC <span class="api-status" id="st-pvgis"></span></span>
+          <span style="font-size:10px;color:var(--text3)">Dati irraggiamento solare</span>
+        </div>
+        <input class="settings-input" id="key-pvgis" type="password" placeholder="Gratuita — nessuna chiave richiesta" disabled style="opacity:.5">
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">🏢 Agenzia</div>
+      <div class="settings-row">
+        <div class="settings-label"><span>Nome Agenzia</span></div>
+        <input class="settings-input" id="cfg-agency" type="text" placeholder="Nome Agenzia" oninput="saveConfig()">
+      </div>
+      <div class="settings-row">
+        <div class="settings-label"><span>P.IVA Agenzia</span></div>
+        <input class="settings-input" id="cfg-piva" type="text" placeholder="IT00000000000" oninput="saveConfig()">
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">🎨 Preferenze</div>
+      <div class="settings-row">
+        <div class="settings-label"><span>Valuta</span></div>
+        <select class="settings-input" id="cfg-currency" onchange="saveConfig()">
+          <option value="EUR" selected>EUR — Euro (€)</option>
+          <option value="USD">USD — Dollaro ($)</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn btn-ghost" onclick="closeSettings()">Annulla</button>
+      <button class="btn btn-primary" onclick="closeSettings()">Salva impostazioni</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     APP SHELL
+═══════════════════════════════════════════ -->
+<div id="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-logo">
+      <div class="brand">Energy<span>IQ</span></div>
+      <div class="tagline">Utility Manager Platform</div>
+    </div>
+
+    <!-- Cliente attivo -->
+    <div class="sb-client" onclick="showPage('clienti')">
+      <div class="cl-label">Cliente attivo</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <div>
+          <div class="cl-name" id="sb-cl-name">Manifattura Fabbri Srl</div>
+          <div class="cl-piva" id="sb-cl-piva">P.IVA 02891540384</div>
+        </div>
+        <div class="cl-arrow" style="margin-left:auto">▼</div>
+      </div>
+    </div>
+
+    <div class="sb-section">Mercati</div>
+    <div class="sb-item active" onclick="showPage('mercati')">
+      <div class="sb-icon"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+      Dashboard Mercati
+    </div>
+    <div class="sb-item" onclick="showPage('mappe')">
+      <div class="sb-icon"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg></div>
+      Mappe & Territorio
+    </div>
+    <div class="sb-item" onclick="showPage('green')">
+      <div class="sb-icon"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+      Green Monitor
+    </div>
+
+    <div class="sb-section">Portfolio Clienti</div>
+    <div class="sb-item" onclick="showPage('clienti')">
+      <div class="sb-icon"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
+      Tutti i Clienti
+      <span class="sb-count">8</span>
+    </div>
+    <div class="sb-item" onclick="showPage('profilo')">
+      <div class="sb-icon"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+      Profilo Cliente
+    </div>
+
+    <div class="sb-section">Analisi</div>
+    <div class="sb-item" onclick="showPage('consumi')">
+      <div class="sb-icon"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+      Consumi & Fatture
+      <span class="sb-badge">AI</span>
+    </div>
+    <div class="sb-item" onclick="showPage('previsioni')">
+      <div class="sb-icon"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      Previsioni & Budget
+      <span class="sb-badge">AI</span>
+    </div>
+    <div class="sb-item" onclick="showPage('co2')">
+      <div class="sb-icon"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div>
+      Sostenibilità CO₂
+    </div>
+
+    <div class="sb-section">Progetti</div>
+    <div class="sb-item" onclick="showPage('solare')">
+      <div class="sb-icon"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg></div>
+      FV & Rinnovabili
+    </div>
+    <div class="sb-item" onclick="showPage('report')">
+      <div class="sb-icon"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
+      Reportistica
+    </div>
+
+    <div class="sb-footer">
+      <div class="sb-footer-btn" onclick="openSettings()">⚙ Impostazioni</div>
+      <div class="sb-footer-btn" onclick="doLogout()">⏻ Esci</div>
+    </div>
+  </aside>
+
+  <!-- MAIN WRAP -->
+  <div class="main-wrap">
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div>
+        <div class="topbar-title" id="page-title">Dashboard Mercati</div>
+        <div class="topbar-breadcrumb" id="page-sub">Prezzi energia e gas in tempo reale</div>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-ghost btn-sm">
+          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Esporta
+        </button>
+        <button class="btn btn-primary btn-sm" onclick="showPage('consumi')">
+          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Nuova Analisi
+        </button>
+        <div class="topbar-user" onclick="openSettings()">
+          <div class="user-avatar" id="topbar-avatar">IV</div>
+          <div class="user-info">
+            <div class="u-name" id="topbar-name">Ivan Rossi</div>
+            <div class="u-role" id="topbar-role">Admin · EnergyIQ Agency</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- ═══ PAGE: MERCATI ═══ -->
+      <div class="page active" id="page-mercati">
+
+        <!-- ROW 1: Market Overview + Weather + Network Alerts -->
+        <div style="display:grid;grid-template-columns:1fr 284px 256px;gap:11px;margin-bottom:11px">
+
+          <!-- Market Overview -->
+          <div class="tp-panel">
+            <div class="tp-header">
+              <span class="tp-icon">⚡</span>
+              <span class="tp-title">Market Overview</span>
+              <span class="tp-live">LIVE</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <div class="mk-kpi mk-kpi-blue">
+                <div class="mk-kpi-label">⚡ Electricity PUN</div>
+                <div class="mk-kpi-val">125.75<span class="mk-kpi-unit"> €/MWh</span></div>
+                <div class="mk-kpi-delta mk-up">▲ +3.2%</div>
+              </div>
+              <div class="mk-kpi mk-kpi-amber">
+                <div class="mk-kpi-label">🔥 Gas TTF</div>
+                <div class="mk-kpi-val" style="color:#f5a623">45.80<span class="mk-kpi-unit"> €/MWh</span></div>
+                <div class="mk-kpi-delta mk-down">▼ -1.8%</div>
+              </div>
+              <div class="mk-kpi mk-kpi-green">
+                <div class="mk-kpi-label">🌿 CO₂ Emissions</div>
+                <div class="mk-kpi-val" style="color:#2dd4a0">78.5<span class="mk-kpi-unit"> €/tCO₂</span></div>
+                <div class="mk-kpi-delta mk-up">▲ +1.5%</div>
+              </div>
+              <div class="mk-kpi mk-kpi-purple">
+                <div class="mk-kpi-label">📜 Certificati Verdi</div>
+                <div class="mk-kpi-val" style="color:#a78bfa">72.3<span class="mk-kpi-unit"> €/MWh</span></div>
+                <div class="mk-kpi-delta mk-down">▼ -0.9%</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Weather & Solar -->
+          <div class="tp-panel">
+            <div class="tp-header">
+              <span class="tp-icon">🌤</span>
+              <span class="tp-title">Weather & Solar Data</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+              <div>
+                <div style="font-size:12px;font-weight:600;color:#7ab3f5;margin-bottom:1px">Milano, Italy</div>
+                <div style="font-size:30px;font-weight:700;line-height:1;letter-spacing:-1px;color:#e2e4f0">22°</div>
+                <div style="font-size:11px;color:#8b8fa8;margin-top:2px">Soleggiato</div>
+              </div>
+              <div style="margin-left:auto"><canvas id="weather-sun" width="68" height="68" style="display:block"></canvas></div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;align-items:center;gap:8px;font-size:11px;padding:5px 8px;background:rgba(245,166,35,.07);border-radius:6px">
+                <span style="color:#f5a623;font-size:13px">☀</span>
+                <span style="color:#8b8fa8">Irradianza solare:</span>
+                <strong style="margin-left:auto;color:#f5a623">680 W/m²</strong>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:11px;padding:5px 8px;background:rgba(79,142,247,.07);border-radius:6px">
+                <span style="color:#7ab3f5;font-size:13px">💨</span>
+                <span style="color:#8b8fa8">Vento:</span>
+                <strong style="margin-left:auto">14 km/h NW</strong>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:11px;padding:5px 8px;background:rgba(79,142,247,.07);border-radius:6px">
+                <span style="color:#7ab3f5;font-size:13px">💧</span>
+                <span style="color:#8b8fa8">Umidità:</span>
+                <strong style="margin-left:auto">45%</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Network Alerts -->
+          <div class="tp-panel">
+            <div class="tp-header">
+              <span class="tp-icon">🔔</span>
+              <span class="tp-title">Network Alerts</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+              <div style="background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.25);border-radius:8px;padding:10px;text-align:center">
+                <div style="font-size:10px;color:#8b8fa8;margin-bottom:4px">⚠ Outages</div>
+                <div style="font-size:26px;font-weight:700;color:#f87171;line-height:1;font-family:'JetBrains Mono',monospace">5</div>
+              </div>
+              <div style="background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.25);border-radius:8px;padding:10px;text-align:center">
+                <div style="font-size:10px;color:#8b8fa8;margin-bottom:4px">⚡ Incidents</div>
+                <div style="font-size:26px;font-weight:700;color:#f5a623;line-height:1;font-family:'JetBrains Mono',monospace">12</div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:5px">
+              <div class="net-alert net-alert-red">
+                <div style="font-size:11px;font-weight:600;color:#f87171">⚠ Power Outage: Zona Industriale</div>
+                <div style="font-size:10px;color:rgba(248,113,113,.7);margin-top:1px">14:32 — 120 utenti coinvolti</div>
+              </div>
+              <div class="net-alert net-alert-red">
+                <div style="font-size:11px;font-weight:600;color:#f87171">⚠ Fault Detected: Distretto 7</div>
+                <div style="font-size:10px;color:rgba(248,113,113,.7);margin-top:1px">14:15 — Guasto trasformatore</div>
+              </div>
+              <div class="net-alert net-alert-amber">
+                <div style="font-size:11px;font-weight:600;color:#f5a623">⚡ Alta Domanda: Area Milano</div>
+                <div style="font-size:10px;color:rgba(245,166,35,.7);margin-top:1px">13:50 — PUN F1 >160 €/MWh</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ROW 2: Energy Price Trends + Solar & Wind Map -->
+        <div style="display:grid;grid-template-columns:1fr 284px;gap:11px;margin-bottom:11px">
+
+          <!-- Energy Price Trends -->
+          <div class="tp-panel">
+            <div class="tp-header" style="margin-bottom:10px">
+              <span class="tp-icon">📈</span>
+              <span class="tp-title">Energy Price Trends</span>
+              <div style="display:flex;gap:4px;margin-left:auto">
+                <button class="tp-tab active" onclick="setTrendTab('1d',this)">1D</button>
+                <button class="tp-tab" onclick="setTrendTab('1w',this)">1W</button>
+                <button class="tp-tab" onclick="setTrendTab('1m',this)">1M</button>
+                <button class="tp-tab" onclick="setTrendTab('1y',this)">1Y</button>
+              </div>
+            </div>
+            <div style="display:flex;gap:16px;margin-bottom:8px">
+              <span style="display:flex;align-items:center;gap:5px;font-size:10px;color:#8b8fa8"><span style="width:18px;height:2px;background:#4f8ef7;border-radius:1px;display:inline-block;box-shadow:0 0 5px #4f8ef7"></span>Power PUN</span>
+              <span style="display:flex;align-items:center;gap:5px;font-size:10px;color:#8b8fa8"><span style="width:18px;height:2px;background:#f5a623;border-radius:1px;display:inline-block;box-shadow:0 0 5px #f5a623"></span>Gas TTF</span>
+              <span style="display:flex;align-items:center;gap:5px;font-size:10px;color:#8b8fa8"><span style="width:18px;height:2px;background:#f87171;border-radius:1px;display:inline-block;box-shadow:0 0 5px #f87171"></span>CO₂</span>
+              <span style="display:flex;align-items:center;gap:5px;font-size:10px;color:#8b8fa8"><span style="width:18px;height:2px;background:#2dd4a0;border-radius:1px;display:inline-block;box-shadow:0 0 5px #2dd4a0"></span>Certificati</span>
+            </div>
+            <div style="position:relative;height:218px"><canvas id="mkt-trends-chart"></canvas></div>
+          </div>
+
+          <!-- Solar & Wind Map -->
+          <div class="tp-panel">
+            <div class="tp-header">
+              <span class="tp-icon">🗺</span>
+              <span class="tp-title">Solar &amp; Wind Map</span>
+            </div>
+            <div style="position:relative;height:218px;border-radius:8px;overflow:hidden;background:#020b18">
+              <canvas id="mkt-italy-map" style="width:100%;height:100%;display:block"></canvas>
+            </div>
+            <div style="display:flex;gap:12px;margin-top:8px">
+              <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:#8b8fa8"><span style="width:9px;height:9px;border-radius:50%;background:#f5a623;box-shadow:0 0 6px #f5a623;display:inline-block"></span>Alto irraggiamento</span>
+              <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:#8b8fa8"><span style="width:9px;height:9px;border-radius:50%;background:#2dd4a0;display:inline-block"></span>Eolico attivo</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ROW 3: System Alerts + Key Metrics + Client Overview -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px">
+
+          <!-- System Alerts -->
+          <div class="tp-panel">
+            <div class="tp-header">
+              <span class="tp-icon">🚨</span>
+              <span class="tp-title">System Alerts</span>
+              <span style="margin-left:auto;font-size:9px;padding:2px 8px;background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);border-radius:10px;color:#f87171">4 attivi</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div class="sys-alert sys-alert-red">
+                <span style="font-size:16px;flex-shrink:0">⚡</span>
+                <div><div style="font-size:11px;font-weight:600;color:#f87171">Prezzi Energia Elevati!</div><div style="font-size:10px;color:#8b8fa8;margin-top:1px">PUN F1 sopra soglia 150 €/MWh</div></div>
+              </div>
+              <div class="sys-alert sys-alert-amber">
+                <span style="font-size:16px;flex-shrink:0">🔥</span>
+                <div><div style="font-size:11px;font-weight:600;color:#f5a623">Consumo Gas Anomalo</div><div style="font-size:10px;color:#8b8fa8;margin-top:1px">Manifattura Fabbri — +22% vs media</div></div>
+              </div>
+              <div class="sys-alert sys-alert-amber">
+                <span style="font-size:16px;flex-shrink:0">📉</span>
+                <div><div style="font-size:11px;font-weight:600;color:#f5a623">TTF Market Drop</div><div style="font-size:10px;color:#8b8fa8;margin-top:1px">Calo repentino — rivalutare hedging</div></div>
+              </div>
+              <div class="sys-alert sys-alert-blue">
+                <span style="font-size:16px;flex-shrink:0">📋</span>
+                <div><div style="font-size:11px;font-weight:600;color:#4f8ef7">Contratto in Scadenza</div><div style="font-size:10px;color:#8b8fa8;margin-top:1px">Edison Energia — 31/03/2025</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Key Metrics -->
+          <div class="tp-panel">
+            <div class="tp-header">
+              <span class="tp-icon">📊</span>
+              <span class="tp-title">Key Metrics</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <div style="background:rgba(79,142,247,.08);border:1px solid rgba(79,142,247,.2);border-radius:8px;padding:10px">
+                <div style="font-size:10px;color:#8b8fa8;margin-bottom:4px">☀ FER Production</div>
+                <div style="font-size:22px;font-weight:700;color:#4f8ef7;font-family:'JetBrains Mono',monospace;line-height:1">62.5</div>
+                <div style="font-size:10px;color:#4f8ef7;margin-bottom:5px">MW</div>
+                <div class="progress"><div class="progress-fill" style="width:62%;background:#4f8ef7"></div></div>
+              </div>
+              <div style="background:rgba(45,212,160,.08);border:1px solid rgba(45,212,160,.2);border-radius:8px;padding:10px">
+                <div style="font-size:10px;color:#8b8fa8;margin-bottom:4px">⚡ Grid Demand</div>
+                <div style="font-size:22px;font-weight:700;color:#2dd4a0;font-family:'JetBrains Mono',monospace;line-height:1">134.2</div>
+                <div style="font-size:10px;color:#2dd4a0;margin-bottom:5px">MW</div>
+                <div class="progress"><div class="progress-fill" style="width:88%;background:#2dd4a0"></div></div>
+              </div>
+              <div style="background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.2);border-radius:8px;padding:10px">
+                <div style="font-size:10px;color:#8b8fa8;margin-bottom:4px">📈 Forecasted Load</div>
+                <div style="font-size:22px;font-weight:700;color:#f5a623;font-family:'JetBrains Mono',monospace;line-height:1">142.8</div>
+                <div style="font-size:10px;color:#f5a623;margin-bottom:5px">MW</div>
+                <div class="progress"><div class="progress-fill" style="width:94%;background:#f5a623"></div></div>
+              </div>
+              <div style="background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.2);border-radius:8px;padding:10px">
+                <div style="font-size:10px;color:#8b8fa8;margin-bottom:4px">🌿 CO₂ Emissioni</div>
+                <div style="font-size:22px;font-weight:700;color:#a78bfa;font-family:'JetBrains Mono',monospace;line-height:1">220</div>
+                <div style="font-size:10px;color:#a78bfa;margin-bottom:5px">tCO₂</div>
+                <div class="progress"><div class="progress-fill" style="width:44%;background:#a78bfa"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Client Overview -->
+          <div class="tp-panel">
+            <div class="tp-header">
+              <span class="tp-icon">👥</span>
+              <span class="tp-title">Client Overview</span>
+            </div>
+            <div style="margin-bottom:14px">
+              <div style="font-size:10px;color:#8b8fa8;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px">Totale Clienti</div>
+              <div style="font-size:32px;font-weight:700;letter-spacing:-1.5px;color:#e2e4f0;line-height:1">8 <span style="font-size:13px;color:#4f8ef7;font-weight:500">▲ 168 Business · 128 Res.</span></div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+              <div style="padding:8px 10px;background:rgba(79,142,247,.08);border:1px solid rgba(79,142,247,.2);border-radius:7px">
+                <div style="font-size:10px;color:#8b8fa8">🏭 Business</div>
+                <div style="font-size:18px;font-weight:700;color:#4f8ef7">6</div>
+              </div>
+              <div style="padding:8px 10px;background:rgba(45,212,160,.08);border:1px solid rgba(45,212,160,.2);border-radius:7px">
+                <div style="font-size:10px;color:#8b8fa8">🏠 Residenz.</div>
+                <div style="font-size:18px;font-weight:700;color:#2dd4a0">2</div>
+              </div>
+            </div>
+            <div style="padding:10px;background:rgba(0,0,0,.2);border:1px solid rgba(79,142,247,.12);border-radius:8px">
+              <div style="font-size:10px;color:#8b8fa8;margin-bottom:5px">Consumo Medio Portfolio</div>
+              <div style="display:flex;align-items:baseline;gap:5px;margin-bottom:8px">
+                <span style="font-size:24px;font-weight:700;color:#2dd4a0;font-family:'JetBrains Mono',monospace">18,750</span>
+                <span style="font-size:11px;color:#8b8fa8">kWh</span>
+              </div>
+              <div style="font-size:10px;font-weight:600;color:#f87171;margin-bottom:4px">🔴 Efficiency Alerts: 3</div>
+              <div style="font-size:10px;color:#8b8fa8">• Alto consumo — Ceramiche Moretti</div>
+              <div style="font-size:10px;color:#8b8fa8">• Risparmio potenziale — Barilla Log.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+            <!-- ═══ PAGE: MAPPE ═══ -->
+      <div class="page" id="page-mappe">
+        <!-- MAP 1: WORLD SUN -->
+        <div class="card mb16">
+          <div class="card-header">
+            <div><div class="card-title">☀️ Posizione del Sole — Terminatore Giorno/Notte</div><div class="card-sub">Calcolo astronomico in tempo reale · UTC <span id="sun-utc" style="color:var(--amber);font-weight:500"></span></div></div>
+            <div style="display:flex;gap:8px"><span class="badge b-amber" id="sun-elev-badge"></span><span class="badge b-green">Live</span></div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="map-stack" style="height:340px">
+                <canvas class="base" id="base-world"></canvas>
+                <div class="leaflet-wrap" id="lmap-world"></div>
+                <canvas class="data" id="data-world"></canvas>
+              </div>
+              <div style="display:flex;gap:12px;margin-top:8px;font-size:10px;color:var(--text3);flex-wrap:wrap">
+                <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:7px;border-radius:2px;background:rgba(0,8,40,.72);display:inline-block"></span>Notte</span>
+                <span style="display:flex;align-items:center;gap:4px"><span style="width:16px;height:2px;border-radius:1px;background:var(--amber);display:inline-block"></span>Terminatore</span>
+                <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:var(--amber);display:inline-block"></span>Posizione sole</span>
+                <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:var(--red);display:inline-block"></span>Italia</span>
+              </div>
+            </div>
+            <div class="col-fixed" style="width:210px;display:flex;flex-direction:column;gap:10px">
+              <div style="background:var(--bg3);border-radius:var(--r);padding:12px">
+                <div style="font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:var(--text3);margin-bottom:10px;font-weight:500">Astronomia · Roma</div>
+                <div style="display:flex;flex-direction:column;gap:8px;font-size:11px">
+                  <div style="display:flex;justify-content:space-between"><span style="color:var(--text3)">Alba</span><strong id="sd-rise">—</strong></div>
+                  <div style="display:flex;justify-content:space-between"><span style="color:var(--text3)">Tramonto</span><strong id="sd-set">—</strong></div>
+                  <div class="divider" style="margin:4px 0"></div>
+                  <div style="display:flex;justify-content:space-between"><span style="color:var(--text3)">Altezza</span><strong id="sd-elev" style="color:var(--amber)">—</strong></div>
+                  <div style="display:flex;justify-content:space-between"><span style="color:var(--text3)">Azimut</span><strong id="sd-az">—</strong></div>
+                  <div style="display:flex;justify-content:space-between"><span style="color:var(--text3)">Declinazione</span><strong id="sd-decl">—</strong></div>
+                  <div class="divider" style="margin:4px 0"></div>
+                  <div style="display:flex;justify-content:space-between"><span style="color:var(--text3)">Ore luce rimaste</span><strong id="sd-rem" style="color:var(--green)">—</strong></div>
+                </div>
+              </div>
+              <div style="background:var(--bg3);border-radius:var(--r);padding:12px;font-size:11px;color:var(--text2);line-height:1.6">
+                La zona scura è la <strong>notte</strong>. Il bordo tratteggiato ambra è il <strong style="color:var(--amber)">terminatore solare</strong>. Il disco giallo indica il punto sub-solare (zenit).
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MAP 2: EUROPE IRRADIANCE -->
+        <div class="card mb16">
+          <div class="card-header">
+            <div><div class="card-title">🌤 Irraggiamento Solare Europa — Ora Corrente</div><div class="card-sub">Stima W/m² · calcolo astronomico + copertura nuvolosa · aggiornato ogni 60s</div></div>
+            <span class="badge b-green">Live</span>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="map-stack" style="height:380px">
+                <canvas class="base" id="base-europe"></canvas>
+                <div class="leaflet-wrap" id="lmap-europe"></div>
+                <canvas class="data" id="data-europe"></canvas>
+              </div>
+              <div style="display:flex;gap:10px;margin-top:8px;font-size:10px;color:var(--text3);flex-wrap:wrap">
+                <span style="display:flex;align-items:center;gap:4px"><span style="width:11px;height:11px;border-radius:50%;background:rgba(245,166,35,.85);display:inline-block"></span>>600 W/m²</span>
+                <span style="display:flex;align-items:center;gap:4px"><span style="width:11px;height:11px;border-radius:50%;background:rgba(245,166,35,.4);display:inline-block"></span>200–600</span>
+                <span style="display:flex;align-items:center;gap:4px"><span style="width:11px;height:11px;border-radius:50%;background:rgba(100,140,210,.6);display:inline-block"></span>Nuvoloso</span>
+                <span style="display:flex;align-items:center;gap:4px"><span style="width:11px;height:11px;border-radius:50%;background:rgba(60,70,100,.6);display:inline-block"></span>Notte</span>
+              </div>
+            </div>
+            <div class="col-fixed" style="width:210px">
+              <div style="background:var(--bg3);border-radius:var(--r);padding:12px">
+                <div style="font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:var(--text3);margin-bottom:10px;font-weight:500">Irraggiamento per Area</div>
+                <div style="display:flex;flex-direction:column;gap:9px;font-size:11px">
+                  <div><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="color:var(--text2)">Italia Nord</span><strong id="ir-itn" style="font-family:'JetBrains Mono',monospace;font-size:10px">—</strong></div><div class="progress"><div id="irb-itn" class="progress-fill" style="width:0%;background:var(--amber)"></div></div></div>
+                  <div><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="color:var(--text2)">Italia Centro</span><strong id="ir-itc" style="font-family:'JetBrains Mono',monospace;font-size:10px">—</strong></div><div class="progress"><div id="irb-itc" class="progress-fill" style="width:0%;background:var(--amber)"></div></div></div>
+                  <div><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="color:var(--text2)">Italia Sud</span><strong id="ir-its" style="font-family:'JetBrains Mono',monospace;font-size:10px">—</strong></div><div class="progress"><div id="irb-its" class="progress-fill" style="width:0%;background:var(--amber)"></div></div></div>
+                  <div class="divider" style="margin:3px 0"></div>
+                  <div><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="color:var(--text2)">Spagna</span><strong id="ir-es" style="font-family:'JetBrains Mono',monospace;font-size:10px">—</strong></div><div class="progress"><div id="irb-es" class="progress-fill" style="width:0%;background:var(--amber)"></div></div></div>
+                  <div><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="color:var(--text2)">Francia</span><strong id="ir-fr" style="font-family:'JetBrains Mono',monospace;font-size:10px">—</strong></div><div class="progress"><div id="irb-fr" class="progress-fill" style="width:0%;background:var(--amber)"></div></div></div>
+                  <div><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="color:var(--text2)">Germania</span><strong id="ir-de" style="font-family:'JetBrains Mono',monospace;font-size:10px">—</strong></div><div class="progress"><div id="irb-de" class="progress-fill" style="width:0%;background:var(--accent)"></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MAP 3: ITALY OUTAGES -->
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">⚡ Interruzioni Rete Italia — Elettricità & Gas</div><div class="card-sub">Dati simulati · struttura pronta per API Enel · A2A · Terna · Snam</div></div>
+            <div style="display:flex;gap:8px"><span class="badge b-red" id="outage-count">0 eventi</span><span class="badge b-amber">Simulato</span></div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="map-stack" style="height:440px">
+                <canvas class="base" id="base-italy"></canvas>
+                <div class="leaflet-wrap" id="lmap-italy"></div>
+                <canvas class="data" id="data-italy"></canvas>
+              </div>
+              <div style="display:flex;gap:10px;margin-top:8px;font-size:10px;color:var(--text3);flex-wrap:wrap">
+                <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:var(--red);display:inline-block"></span>Interruzione elettrica</span>
+                <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:var(--amber);display:inline-block"></span>Interruzione gas</span>
+                <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:var(--purple);display:inline-block"></span>Manutenzione</span>
+                <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:50%;background:var(--green);display:inline-block"></span>Regolare</span>
+              </div>
+            </div>
+            <div class="col-fixed" style="width:210px;display:flex;flex-direction:column;gap:10px">
+              <div style="background:var(--bg3);border-radius:var(--r);padding:12px">
+                <div style="font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:var(--text3);margin-bottom:10px;font-weight:500">Interruzioni Attive</div>
+                <div id="outage-list" style="display:flex;flex-direction:column;gap:0;font-size:11px;max-height:220px;overflow-y:auto"></div>
+              </div>
+              <div style="background:var(--bg3);border-radius:var(--r);padding:12px">
+                <div style="font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:var(--text3);margin-bottom:10px;font-weight:500">Riepilogo</div>
+                <div style="display:flex;flex-direction:column;gap:7px;font-size:11px">
+                  <div style="display:flex;justify-content:space-between"><span style="color:var(--text3)">Regioni monitorate</span><strong>20</strong></div>
+                  <div style="display:flex;justify-content:space-between"><span style="color:var(--text3)">Operative</span><strong id="ok-regions" style="color:var(--green)">—</strong></div>
+                  <div style="display:flex;justify-content:space-between"><span style="color:var(--text3)">Utenti coinvolti</span><strong id="total-affected" style="color:var(--red)">—</strong></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ PAGE: GREEN ═══ -->
+      <div class="page" id="page-green">
+        <div class="g4 mb16">
+          <div class="kpi" style="border-left:3px solid var(--green)"><div class="kpi-label">% FER su domanda IT</div><div class="kpi-value" style="color:var(--green)">45.2<span style="font-size:13px;color:var(--text3)">%</span></div><div class="kpi-sub"><span class="kpi-delta delta-up">+7pp</span> vs ott 2023</div></div>
+          <div class="kpi" style="border-left:3px solid var(--teal)"><div class="kpi-label">Emissioni Settore Energia EU</div><div class="kpi-value" style="color:var(--teal)">-18<span style="font-size:13px;color:var(--text3)">% YoY</span></div><div class="kpi-sub">Obiettivo -55% al 2030</div></div>
+          <div class="kpi" style="border-left:3px solid var(--purple)"><div class="kpi-label">Prezzo ETS CO₂</div><div class="kpi-value" style="color:var(--purple)">64.8<span style="font-size:13px;color:var(--text3)"> €/t</span></div><div class="kpi-sub"><span class="kpi-delta delta-down">-8.1%</span> da inizio anno</div></div>
+          <div class="kpi" style="border-left:3px solid var(--amber)"><div class="kpi-label">Nuova cap. FV installata IT</div><div class="kpi-value" style="color:var(--amber)">6.8<span style="font-size:13px;color:var(--text3)"> GW</span></div><div class="kpi-sub">2024 YTD · <span class="kpi-delta delta-up">record storico</span></div></div>
+        </div>
+        <div class="row mb16">
+          <div class="col">
+            <div class="card">
+              <div class="card-header"><div><div class="card-title">Mix Energetico Italia — Ott 2024</div><div class="card-sub">Produzione netta per fonte · TWh</div></div></div>
+              <div class="chart-wrap" style="height:190px"><canvas id="green-mix-chart"></canvas></div>
+            </div>
+          </div>
+          <div class="col-fixed" style="width:260px">
+            <div class="card" style="height:100%">
+              <div class="card-header"><div><div class="card-title">Obiettivi PNIEC 2030</div></div></div>
+              <div style="display:flex;flex-direction:column;gap:12px">
+                <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:var(--text2)">% rinnovabili su elettricità</span><span><strong style="color:var(--green)">45%</strong> / 72%</span></div><div class="progress"><div class="progress-fill" style="width:63%;background:var(--green)"></div></div></div>
+                <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:var(--text2)">Riduzione emissioni GHG</span><span><strong style="color:var(--amber)">-32%</strong> / -55%</span></div><div class="progress"><div class="progress-fill" style="width:58%;background:var(--amber)"></div></div></div>
+                <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:var(--text2)">Efficienza energetica</span><span><strong style="color:var(--accent)">-18%</strong> / -30%</span></div><div class="progress"><div class="progress-fill" style="width:60%;background:var(--accent)"></div></div></div>
+                <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:var(--text2)">Capacità FV installata</span><span><strong style="color:var(--amber)">31 GW</strong> / 80 GW</span></div><div class="progress"><div class="progress-fill" style="width:39%;background:var(--amber)"></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col"><div class="card"><div class="card-header"><div><div class="card-title">Prezzo CO₂ ETS — 12 Mesi</div></div></div><div class="chart-wrap" style="height:170px"><canvas id="ets-chart"></canvas></div></div></div>
+          <div class="col-fixed" style="width:320px">
+            <div class="card" style="height:100%">
+              <div class="card-header"><div><div class="card-title">News Green & Policy</div></div></div>
+              <div style="display:flex;flex-direction:column;gap:0">
+                <div style="padding:9px 0;border-bottom:1px solid var(--border)"><div style="display:flex;gap:5px;align-items:center;margin-bottom:3px"><span class="badge b-green" style="font-size:9px">EU GREEN DEAL</span><span style="font-size:9px;color:var(--text3)">25/11</span></div><div style="font-size:11px;font-weight:500;margin-bottom:1px">Net Zero Industry Act — 40% tech green EU entro 2030</div><div style="font-size:10px;color:var(--text3)">Batterie, pompe di calore, solare, idrolizzatori EU</div></div>
+                <div style="padding:9px 0;border-bottom:1px solid var(--border)"><div style="display:flex;gap:5px;align-items:center;margin-bottom:3px"><span class="badge b-blue" style="font-size:9px">CSRD</span><span style="font-size:9px;color:var(--text3)">22/11</span></div><div style="font-size:11px;font-weight:500;margin-bottom:1px">Obbligo rendicontazione sostenibilità PMI+ da 2026</div><div style="font-size:10px;color:var(--text3)">>250 dipendenti o >40M€ ricavi: bilancio sostenibilità obbligatorio</div></div>
+                <div style="padding:9px 0;border-bottom:1px solid var(--border)"><div style="display:flex;gap:5px;align-items:center;margin-bottom:3px"><span class="badge b-amber" style="font-size:9px">ITALIA</span><span style="font-size:9px;color:var(--text3)">20/11</span></div><div style="font-size:11px;font-weight:500;margin-bottom:1px">Transizione 5.0: prorogato al 31/12/2025</div><div style="font-size:10px;color:var(--text3)">Credito d'imposta FV+BESS fino al 45%</div></div>
+                <div style="padding:9px 0"><div style="display:flex;gap:5px;align-items:center;margin-bottom:3px"><span class="badge b-purple" style="font-size:9px">H2</span><span style="font-size:9px;color:var(--text3)">18/11</span></div><div style="font-size:11px;font-weight:500;margin-bottom:1px">Idrogeno verde: costo sceso a 4.2 €/kg</div><div style="font-size:10px;color:var(--text3)">Target <3 € entro 2030 — elettrolizzatori -60% costo in 3 anni</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ PAGE: CLIENTI ═══ -->
+      <div class="page" id="page-clienti">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <div>
+            <div style="font-size:14px;font-weight:500">Portfolio Clienti</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px">8 clienti attivi · <span id="role-badge-clienti"></span></div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <input style="background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:6px 12px;color:var(--text);font-size:12px;outline:none;width:200px" placeholder="🔍 Cerca cliente...">
+            <button class="btn btn-primary btn-sm" id="btn-add-client">+ Nuovo Cliente</button>
+          </div>
+        </div>
+        <div class="g3" id="client-grid"></div>
+      </div>
+
+      <!-- ═══ PAGE: PROFILO ═══ -->
+      <div class="page" id="page-profilo">
+        <div class="row mb16">
+          <div class="col">
+            <div class="card mb12">
+              <div class="card-header">
+                <div style="display:flex;align-items:center;gap:12px">
+                  <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#4f8ef7,#a78bfa);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:#fff">MF</div>
+                  <div>
+                    <div style="font-size:15px;font-weight:500">Manifattura Fabbri Srl</div>
+                    <div style="font-size:11px;color:var(--text3)">P.IVA 02891540384 · ATECO 25.62 · Bologna</div>
+                  </div>
+                </div>
+                <div style="display:flex;gap:6px">
+                  <span class="badge b-green">Cliente attivo</span>
+                  <button class="btn btn-ghost btn-sm">✏ Modifica</button>
+                </div>
+              </div>
+              <div class="g4">
+                <div class="kpi"><div class="kpi-label">Consumo Elettrico</div><div class="kpi-value" style="color:var(--accent)">487<span style="font-size:12px;color:var(--text3)"> MWh</span></div><div class="kpi-sub"><span class="kpi-delta delta-down">-8.2%</span> vs anno scorso</div></div>
+                <div class="kpi"><div class="kpi-label">Consumo Gas</div><div class="kpi-value" style="color:var(--amber)">1.24<span style="font-size:12px;color:var(--text3)"> MSm³</span></div><div class="kpi-sub"><span class="kpi-delta delta-neutral">+1.4%</span> vs anno scorso</div></div>
+                <div class="kpi"><div class="kpi-label">Spesa Totale YTD</div><div class="kpi-value">142k<span style="font-size:12px;color:var(--text3)"> €</span></div><div class="kpi-sub"><span class="kpi-delta delta-down">-12.1%</span> vs budget</div></div>
+                <div class="kpi"><div class="kpi-label">Emissioni CO₂</div><div class="kpi-value" style="color:var(--green)">218<span style="font-size:12px;color:var(--text3)"> tCO₂</span></div><div class="kpi-sub"><span class="kpi-delta delta-up">-14%</span> obiettivo ✓</div></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div><div class="card-title">Siti di Fornitura</div></div><button class="btn btn-ghost btn-sm">+ Aggiungi POD/PDR</button></div>
+              <table class="tbl">
+                <thead><tr><th>Sede</th><th>POD/PDR</th><th>Consumo</th><th>Fornitore</th><th>Scadenza</th><th>Stato</th></tr></thead>
+                <tbody>
+                  <tr><td>Stabilimento A — Bologna</td><td style="font-family:'JetBrains Mono',monospace;font-size:10px">IT001E00123456</td><td>312 MWh</td><td>Edison Energia</td><td>31/03/2025</td><td><span class="badge b-amber">In scadenza</span></td></tr>
+                  <tr><td>Magazzino B — Bologna</td><td style="font-family:'JetBrains Mono',monospace;font-size:10px">IT001E00234567</td><td>98 MWh</td><td>Enel Business</td><td>31/12/2025</td><td><span class="badge b-green">Attivo</span></td></tr>
+                  <tr><td>Uffici — Milano</td><td style="font-family:'JetBrains Mono',monospace;font-size:10px">IT001E00345678</td><td>77 MWh</td><td>A2A Energia</td><td>30/06/2025</td><td><span class="badge b-green">Attivo</span></td></tr>
+                  <tr><td>Stabilimento A — Gas</td><td style="font-family:'JetBrains Mono',monospace;font-size:10px">IT022250112233</td><td>1.24 MSm³</td><td>ENI Plenitude</td><td>31/12/2024</td><td><span class="badge b-red">Scaduto</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-fixed" style="width:280px">
+            <div class="ai-panel">
+              <div class="ai-header"><div class="ai-dot"></div><div><div style="font-size:12px;font-weight:500">Assistente AI</div><div style="font-size:10px;color:var(--text3)">Analisi cliente</div></div></div>
+              <div class="ai-msgs" id="msgs-profilo">
+                <div class="msg msg-ai"><div class="msg-av">AI</div><div class="msg-bubble">Ho analizzato il profilo di Manifattura Fabbri (ATECO 25.62). Il contratto gas ENI è scaduto — stai pagando prezzi spot senza protezione. Vuoi che stimi l'impatto economico?</div></div>
+              </div>
+              <div class="ai-input-wrap"><textarea class="ai-input" id="inp-profilo" rows="1" placeholder="Chiedi un'analisi..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg('profilo')}"></textarea><button class="ai-send" onclick="sendMsg('profilo')">➤</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ PAGE: CONSUMI ═══ -->
+      <div class="page" id="page-consumi">
+        <div class="row">
+          <div class="col">
+            <div class="card mb12">
+              <div class="card-header"><div><div class="card-title">Carica Fatture</div><div class="card-sub">PDF · XML FatturaPA · CSV — analisi automatica AI</div></div><span class="badge b-blue">Analisi AI</span></div>
+              <div class="upload-zone" onclick="simUpload()">
+                <div style="font-size:24px;margin-bottom:6px">📄</div>
+                <div style="font-size:12px;font-weight:500;margin-bottom:3px">Trascina le fatture qui o clicca per caricare</div>
+                <div style="font-size:11px;color:var(--text3)">Estrazione automatica dati · rilevamento anomalie prezzi</div>
+              </div>
+              <div id="upload-prog" style="display:none;margin-top:12px">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><div class="spinner"></div><span style="font-size:11px" id="upload-status">Analisi in corso...</span></div>
+                <div class="progress"><div class="progress-fill" id="upload-bar" style="width:0%;background:var(--accent)"></div></div>
+              </div>
+            </div>
+            <div class="card mb12">
+              <div class="card-header"><div><div class="card-title">Fatture Analizzate</div><div class="card-sub">Dati estratti automaticamente</div></div><button class="btn btn-ghost btn-sm">Vedi tutte</button></div>
+              <table class="tbl">
+                <thead><tr><th>Fornitore</th><th>Periodo</th><th>Vettore</th><th>Quantità</th><th>Importo</th><th>€/MWh</th><th>Anomalie</th></tr></thead>
+                <tbody>
+                  <tr><td>Edison Energia</td><td>Ott 2024</td><td>⚡</td><td>28.4k kWh</td><td><strong>4.218 €</strong></td><td style="font-family:'JetBrains Mono',monospace;font-size:11px">148.5</td><td><span class="badge b-amber">Prezzo +9%</span></td></tr>
+                  <tr><td>Enel Business</td><td>Ott 2024</td><td>⚡</td><td>8.1k kWh</td><td><strong>1.102 €</strong></td><td style="font-family:'JetBrains Mono',monospace;font-size:11px">136.0</td><td><span class="badge b-green">OK</span></td></tr>
+                  <tr><td>ENI Plenitude</td><td>Ott 2024</td><td>🔥</td><td>98.4k Sm³</td><td><strong>7.840 €</strong></td><td style="font-family:'JetBrains Mono',monospace;font-size:11px">79.7</td><td><span class="badge b-red">Contratto scaduto</span></td></tr>
+                  <tr><td>A2A Energia</td><td>Ott 2024</td><td>⚡</td><td>6.4k kWh</td><td><strong>902 €</strong></td><td style="font-family:'JetBrains Mono',monospace;font-size:11px">140.9</td><td><span class="badge b-green">OK</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="card">
+              <div class="card-header"><div><div class="card-title">Confronto Offerte di Mercato</div><div class="card-sub">Aggiornato oggi</div></div></div>
+              <div class="g3">
+                <div style="padding:12px;background:var(--bg3);border-radius:var(--r);border:2px solid var(--accent)">
+                  <div style="font-size:10px;color:var(--accent);margin-bottom:5px">⭐ MIGLIORE OFFERTA</div>
+                  <div style="font-size:13px;font-weight:600">Axpo Italia</div>
+                  <div style="font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--green);margin:5px 0">121 <span style="font-size:11px;color:var(--text3)">€/MWh</span></div>
+                  <div style="font-size:10px;color:var(--text3)">PUN + 14 · 24 mesi</div>
+                  <div style="font-size:11px;color:var(--green);margin-top:5px">Risparmio: +18.4k €/anno</div>
+                </div>
+                <div style="padding:12px;background:var(--bg3);border-radius:var(--r)">
+                  <div style="font-size:10px;color:var(--text3);margin-bottom:5px">ALTERNATIVA</div>
+                  <div style="font-size:13px;font-weight:600">ENI Plenitude</div>
+                  <div style="font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace;margin:5px 0">128 <span style="font-size:11px;color:var(--text3)">€/MWh</span></div>
+                  <div style="font-size:10px;color:var(--text3)">PUN + 21 · 12 mesi</div>
+                  <div style="font-size:11px;color:var(--text3);margin-top:5px">Risparmio: +11.2k €/anno</div>
+                </div>
+                <div style="padding:12px;background:var(--bg3);border-radius:var(--r)">
+                  <div style="font-size:10px;color:var(--text3);margin-bottom:5px">CONTRATTO ATTUALE</div>
+                  <div style="font-size:13px;font-weight:600">Edison Energia</div>
+                  <div style="font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--red);margin:5px 0">148 <span style="font-size:11px;color:var(--text3)">€/MWh</span></div>
+                  <div style="font-size:10px;color:var(--text3)">Fisso · Scade 03/2025</div>
+                  <div style="font-size:11px;color:var(--red);margin-top:5px">Riferimento di costo attuale</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-fixed" style="width:280px">
+            <div class="ai-panel">
+              <div class="ai-header"><div class="ai-dot"></div><div><div style="font-size:12px;font-weight:500">Analisi Fatture AI</div><div style="font-size:10px;color:var(--text3)">Consumi & anomalie</div></div></div>
+              <div class="ai-msgs" id="msgs-consumi">
+                <div class="msg msg-ai"><div class="msg-av">AI</div><div class="msg-bubble">Ho analizzato le fatture. Il contratto gas ENI è scaduto — stai pagando a prezzi spot. Passando ad Axpo risparmi ~18.4k €/anno. Vuoi che generi il confronto dettagliato?</div></div>
+              </div>
+              <div class="ai-input-wrap"><textarea class="ai-input" id="inp-consumi" rows="1" placeholder="Es: Analizza anomalie di prezzo..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg('consumi')}"></textarea><button class="ai-send" onclick="sendMsg('consumi')">➤</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ PAGE: PREVISIONI ═══ -->
+      <div class="page" id="page-previsioni">
+        <div class="row">
+          <div class="col">
+            <div class="card mb12">
+              <div class="card-header"><div><div class="card-title">Scenari Geopolitici</div><div class="card-sub">Seleziona lo scenario per la previsione AI</div></div><span class="badge b-purple">AI Powered</span></div>
+              <div class="g3 mb16">
+                <div class="scenario-card" id="sc-stable" onclick="selectScenario('stable')"><div style="font-size:18px;margin-bottom:4px">🟢</div><div style="font-weight:500;margin-bottom:2px;font-size:12px">Stabile</div><div style="font-size:10px;color:var(--text3)">Mercati stabili, transizione regolare</div></div>
+                <div class="scenario-card active" id="sc-improve" onclick="selectScenario('improve')"><div style="font-size:18px;margin-bottom:4px">🔵</div><div style="font-weight:500;margin-bottom:2px;font-size:12px">Migliorativo</div><div style="font-size:10px;color:var(--text3)">FER in crescita, prezzi in discesa</div></div>
+                <div class="scenario-card" id="sc-worsen" onclick="selectScenario('worsen')"><div style="font-size:18px;margin-bottom:4px">🔴</div><div style="font-weight:500;margin-bottom:2px;font-size:12px">Peggiorativo</div><div style="font-size:10px;color:var(--text3)">Tensioni geopolitiche, gas in rialzo</div></div>
+              </div>
+              <div class="chart-wrap" style="height:220px"><canvas id="forecast-chart"></canvas></div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div><div class="card-title">Budget Previsionale</div><div class="card-sub">Stima spesa energetica per scenario selezionato</div></div></div>
+              <div class="g4">
+                <div style="text-align:center;padding:12px;background:var(--bg3);border-radius:var(--r)"><div style="font-size:10px;color:var(--text3);margin-bottom:4px">6 mesi</div><div style="font-size:19px;font-weight:700;font-family:'JetBrains Mono',monospace" id="bud6">68k €</div></div>
+                <div style="text-align:center;padding:12px;background:var(--bg3);border-radius:var(--r)"><div style="font-size:10px;color:var(--text3);margin-bottom:4px">12 mesi</div><div style="font-size:19px;font-weight:700;font-family:'JetBrains Mono',monospace" id="bud12">131k €</div></div>
+                <div style="text-align:center;padding:12px;background:var(--bg3);border-radius:var(--r)"><div style="font-size:10px;color:var(--text3);margin-bottom:4px">18 mesi</div><div style="font-size:19px;font-weight:700;font-family:'JetBrains Mono',monospace" id="bud18">188k €</div></div>
+                <div style="text-align:center;padding:12px;background:var(--bg3);border-radius:var(--r)"><div style="font-size:10px;color:var(--text3);margin-bottom:4px">24 mesi</div><div style="font-size:19px;font-weight:700;font-family:'JetBrains Mono',monospace" id="bud24">244k €</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-fixed" style="width:280px">
+            <div class="ai-panel">
+              <div class="ai-header"><div class="ai-dot"></div><div><div style="font-size:12px;font-weight:500">Analisi Scenari AI</div><div style="font-size:10px;color:var(--text3)">Previsioni prezzi energia</div></div></div>
+              <div class="ai-msgs" id="msgs-previsioni">
+                <div class="msg msg-ai"><div class="msg-av">AI</div><div class="msg-bubble">Scenario migliorativo attivo. Prevedo un calo del PUN del 12-18% nel 2025, trainato dall'espansione FER. Consiglio di bloccare un contratto a 24 mesi ora per sfruttare il differenziale.</div></div>
+              </div>
+              <div class="ai-input-wrap"><textarea class="ai-input" id="inp-previsioni" rows="1" placeholder="Es: Analizza scenario peggiore..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg('previsioni')}"></textarea><button class="ai-send" onclick="sendMsg('previsioni')">➤</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ PAGE: CO2 ═══ -->
+      <div class="page" id="page-co2">
+        <div class="g3 mb16">
+          <div class="kpi" style="border-left:3px solid var(--red)"><div class="kpi-label">Emissioni Scope 1</div><div class="kpi-value" style="color:var(--red)">48.2<span style="font-size:12px;color:var(--text3)"> tCO₂</span></div><div class="kpi-sub">Gas naturale combustione</div></div>
+          <div class="kpi" style="border-left:3px solid var(--amber)"><div class="kpi-label">Emissioni Scope 2</div><div class="kpi-value" style="color:var(--amber)">169.8<span style="font-size:12px;color:var(--text3)"> tCO₂</span></div><div class="kpi-sub">Elettricità da rete</div></div>
+          <div class="kpi" style="border-left:3px solid var(--green)"><div class="kpi-label">Intensità Carbonio</div><div class="kpi-value" style="color:var(--green)">0.44<span style="font-size:12px;color:var(--text3)"> kgCO₂/€</span></div><div class="kpi-sub"><span class="kpi-delta delta-up">-18%</span> vs media ATECO 25</div></div>
+        </div>
+        <div class="row mb16">
+          <div class="col"><div class="card"><div class="card-header"><div><div class="card-title">Emissioni CO₂ per Mese</div><div class="card-sub">Scope 1 + Scope 2 · tCO₂eq</div></div></div><div class="chart-wrap" style="height:190px"><canvas id="co2-chart"></canvas></div></div></div>
+          <div class="col-fixed" style="width:280px">
+            <div class="ai-panel" style="height:auto;min-height:280px">
+              <div class="ai-header"><div class="ai-dot"></div><div><div style="font-size:12px;font-weight:500">Analisi ESG & CO₂</div><div style="font-size:10px;color:var(--text3)">Sostenibilità & CSRD</div></div></div>
+              <div class="ai-msgs" id="msgs-co2" style="max-height:180px">
+                <div class="msg msg-ai"><div class="msg-av">AI</div><div class="msg-bubble">ATECO 25: intensità carbonica -18% sotto media settore. Per la CSRD 2025, il punto critico è l'assenza di carbon offset per Scope 2. Vuoi un piano d'azione?</div></div>
+              </div>
+              <div class="ai-input-wrap"><textarea class="ai-input" id="inp-co2" rows="1" placeholder="Es: Genera report GRI..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg('co2')}"></textarea><button class="ai-send" onclick="sendMsg('co2')">➤</button></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">KPI Sostenibilità ESG</div><div class="card-sub">Metriche per rendicontazione GRI / CSRD</div></div><button class="btn btn-primary btn-sm">📄 Genera Report PDF</button></div>
+          <table class="tbl">
+            <thead><tr><th>Indicatore</th><th>Valore 2024</th><th>Target 2025</th><th>Progresso</th><th>Stato</th></tr></thead>
+            <tbody>
+              <tr><td>Intensità energetica (MWh/M€)</td><td>12.4</td><td>11.0</td><td><div class="progress" style="width:120px"><div class="progress-fill" style="width:72%;background:var(--green)"></div></div></td><td><span class="badge b-green">In target</span></td></tr>
+              <tr><td>% Energia rinnovabile</td><td>24%</td><td>40%</td><td><div class="progress" style="width:120px"><div class="progress-fill" style="width:60%;background:var(--amber)"></div></div></td><td><span class="badge b-amber">In corso</span></td></tr>
+              <tr><td>Riduzione emissioni Scope 2</td><td>-14% YoY</td><td>-20%</td><td><div class="progress" style="width:120px"><div class="progress-fill" style="width:70%;background:var(--amber)"></div></div></td><td><span class="badge b-amber">In corso</span></td></tr>
+              <tr><td>Carbon offset acquistati</td><td>0 tCO₂</td><td>50 tCO₂</td><td><div class="progress" style="width:120px"><div class="progress-fill" style="width:0%;background:var(--red)"></div></div></td><td><span class="badge b-red">Non avviato</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══ PAGE: SOLARE ═══ -->
+      <div class="page" id="page-solare">
+        <div class="row mb16">
+          <div class="col">
+            <div class="card mb12">
+              <div class="card-header"><div><div class="card-title">Edifici & Analisi Irraggiamento</div><div class="card-sub">Stabilimento A — Bologna (44.4°N)</div></div><span class="badge b-amber">PVGIS · EU</span></div>
+              <div class="row" style="gap:14px">
+                <div style="flex:1"><div style="font-size:10px;color:var(--text3);margin-bottom:6px">Mappa irraggiamento simulata (griglia copertura)</div><div class="solar-sim" id="solar-sim"></div><div style="display:flex;gap:10px;margin-top:6px;font-size:10px;color:var(--text3)"><span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:rgba(245,166,35,.72);display:inline-block"></span>Alta irradianza</span><span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:rgba(245,166,35,.36);display:inline-block"></span>Media</span><span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:rgba(245,166,35,.12);display:inline-block"></span>Bassa</span></div></div>
+                <div style="flex:1"><div class="chart-wrap" style="height:150px"><canvas id="solar-prod-chart"></canvas></div></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div><div class="card-title">Fattibilità Tecnico-Economica</div></div></div>
+              <div class="g3">
+                <div style="padding:13px;background:var(--bg3);border-radius:var(--r);border-left:3px solid var(--amber)">
+                  <div style="font-size:10px;color:var(--text3);margin-bottom:3px">☀️ FOTOVOLTAICO</div>
+                  <div style="font-size:14px;font-weight:600;margin-bottom:4px">200 kWp</div>
+                  <div style="font-size:11px;color:var(--text2)">Sup: 1.200 m²</div>
+                  <div class="divider"></div>
+                  <div style="font-size:11px">Produzione<br><strong style="color:var(--amber)">226 MWh/anno</strong></div>
+                  <div style="font-size:11px;margin-top:4px">Investimento: <strong>160k €</strong></div>
+                  <div style="font-size:11px;margin-top:2px">Payback: <strong style="color:var(--green)">6.8 anni</strong></div>
+                  <div style="margin-top:8px"><span class="badge b-green">Fattibile</span></div>
+                </div>
+                <div style="padding:13px;background:var(--bg3);border-radius:var(--r);border-left:3px solid var(--purple)">
+                  <div style="font-size:10px;color:var(--text3);margin-bottom:3px">🔋 ACCUMULO BESS</div>
+                  <div style="font-size:14px;font-weight:600;margin-bottom:4px">100 kWh</div>
+                  <div style="font-size:11px;color:var(--text2)">Accoppiato al FV</div>
+                  <div class="divider"></div>
+                  <div style="font-size:11px">Autoconsumo +<br><strong style="color:var(--purple)">+38%</strong></div>
+                  <div style="font-size:11px;margin-top:4px">Investimento: <strong>60k €</strong></div>
+                  <div style="font-size:11px;margin-top:2px">Payback: <strong style="color:var(--amber)">9.2 anni</strong></div>
+                  <div style="margin-top:8px"><span class="badge b-amber">Valutare</span></div>
+                </div>
+                <div style="padding:13px;background:var(--bg3);border-radius:var(--r);border-left:3px solid var(--teal)">
+                  <div style="font-size:10px;color:var(--text3);margin-bottom:3px">⚡ COLONNINE EV</div>
+                  <div style="font-size:14px;font-weight:600;margin-bottom:4px">4 × 22 kW</div>
+                  <div style="font-size:11px;color:var(--text2)">Parcheggio aziendale</div>
+                  <div class="divider"></div>
+                  <div style="font-size:11px">Welfare aziendale<br><strong style="color:var(--teal)">+ benefit fiscali</strong></div>
+                  <div style="font-size:11px;margin-top:4px">Investimento: <strong>28k €</strong></div>
+                  <div style="font-size:11px;margin-top:2px">Payback: <strong style="color:var(--green)">4.1 anni</strong></div>
+                  <div style="margin-top:8px"><span class="badge b-green">Consigliato</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-fixed" style="width:280px">
+            <div class="ai-panel">
+              <div class="ai-header"><div class="ai-dot"></div><div><div style="font-size:12px;font-weight:500">Analisi Rinnovabili AI</div><div style="font-size:10px;color:var(--text3)">Fattibilità & incentivi</div></div></div>
+              <div class="ai-msgs" id="msgs-solare">
+                <div class="msg msg-ai"><div class="msg-av">AI</div><div class="msg-bubble">Copertura industriale 1.400m² a Bologna. Con Transizione 5.0 al 40%, il payback del FV scende a 4.1 anni. FV + colonnine EV è la combinazione con ROI più alto. Simulo la finanziaria dettagliata?</div></div>
+              </div>
+              <div class="ai-input-wrap"><textarea class="ai-input" id="inp-solare" rows="1" placeholder="Es: Simula FV 150kWp + BESS..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg('solare')}"></textarea><button class="ai-send" onclick="sendMsg('solare')">➤</button></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div><div class="card-title">Incentivi Disponibili</div><div class="card-sub">Aggiornato Nov 2024</div></div></div>
+          <table class="tbl">
+            <thead><tr><th>Incentivo</th><th>Tipo</th><th>Aliquota</th><th>Applicabile a</th></tr></thead>
+            <tbody>
+              <tr><td>Transizione 5.0</td><td><span class="badge b-blue">Credito d'imposta</span></td><td><strong style="color:var(--green)">35–45%</strong></td><td>FV + BESS + efficienza</td></tr>
+              <tr><td>Detrazione fiscale FV</td><td><span class="badge b-purple">IRES</span></td><td><strong>Ammortamento 100%</strong></td><td>Impianti produttivi</td></tr>
+              <tr><td>GSE Scambio sul posto</td><td><span class="badge b-amber">Incentivo energia</span></td><td><strong>Valorizzazione surplus</strong></td><td>FV &lt;500 kWp</td></tr>
+              <tr><td>EV Aziendale</td><td><span class="badge b-blue">Benefit fiscale</span></td><td><strong>Fringe benefit ridotto</strong></td><td>Colonnine aziendali</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══ PAGE: REPORT ═══ -->
+      <div class="page" id="page-report">
+        <div class="row mb16">
+          <div class="col">
+            <div class="card">
+              <div class="card-header"><div><div class="card-title">Genera Reportistica</div><div class="card-sub">Report automatici per il cliente · PDF / Word / Excel</div></div></div>
+              <div class="g3">
+                <div style="padding:14px;background:var(--bg3);border-radius:var(--r);border:1px solid var(--border)">
+                  <div style="font-size:20px;margin-bottom:8px">📊</div>
+                  <div style="font-size:12px;font-weight:500;margin-bottom:4px">Report Consumi Mensile</div>
+                  <div style="font-size:11px;color:var(--text3);margin-bottom:10px">Analisi consumi, fatture, confronto offerte, anomalie rilevate</div>
+                  <button class="btn btn-primary btn-sm" style="width:100%">Genera PDF</button>
+                </div>
+                <div style="padding:14px;background:var(--bg3);border-radius:var(--r);border:1px solid var(--border)">
+                  <div style="font-size:20px;margin-bottom:8px">🌿</div>
+                  <div style="font-size:12px;font-weight:500;margin-bottom:4px">Report ESG & CO₂</div>
+                  <div style="font-size:11px;color:var(--text3);margin-bottom:10px">Emissioni Scope 1+2, KPI sostenibilità, conformità CSRD 2025</div>
+                  <button class="btn btn-primary btn-sm" style="width:100%">Genera PDF</button>
+                </div>
+                <div style="padding:14px;background:var(--bg3);border-radius:var(--r);border:1px solid var(--border)">
+                  <div style="font-size:20px;margin-bottom:8px">☀️</div>
+                  <div style="font-size:12px;font-weight:500;margin-bottom:4px">Preventivo FV/EV</div>
+                  <div style="font-size:11px;color:var(--text3);margin-bottom:10px">Analisi fattibilità, ROI, incentivi, piano finanziario</div>
+                  <button class="btn btn-primary btn-sm" style="width:100%">Genera PDF</button>
+                </div>
+                <div style="padding:14px;background:var(--bg3);border-radius:var(--r);border:1px solid var(--border)">
+                  <div style="font-size:20px;margin-bottom:8px">📈</div>
+                  <div style="font-size:12px;font-weight:500;margin-bottom:4px">Report Previsionale</div>
+                  <div style="font-size:11px;color:var(--text3);margin-bottom:10px">Budget 6-24 mesi, scenari geopolitici, raccomandazioni</div>
+                  <button class="btn btn-primary btn-sm" style="width:100%">Genera PDF</button>
+                </div>
+                <div style="padding:14px;background:var(--bg3);border-radius:var(--r);border:1px solid var(--border)">
+                  <div style="font-size:20px;margin-bottom:8px">📋</div>
+                  <div style="font-size:12px;font-weight:500;margin-bottom:4px">Dashboard Portfolio</div>
+                  <div style="font-size:11px;color:var(--text3);margin-bottom:10px">Overview tutti i clienti, scadenze contratti, alert attivi</div>
+                  <button class="btn btn-primary btn-sm" style="width:100%">Genera Excel</button>
+                </div>
+                <div style="padding:14px;background:var(--bg3);border-radius:var(--r);border:1px solid var(--border)">
+                  <div style="font-size:20px;margin-bottom:8px">🤖</div>
+                  <div style="font-size:12px;font-weight:500;margin-bottom:4px">Report AI Personalizzato</div>
+                  <div style="font-size:11px;color:var(--text3);margin-bottom:10px">Lascia che l'AI scelga le sezioni più rilevanti per il cliente</div>
+                  <button class="btn btn-ghost btn-sm" style="width:100%">Configura e Genera</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-fixed" style="width:280px">
+            <div class="card" style="height:100%">
+              <div class="card-header"><div><div class="card-title">Archivio Documenti</div><div class="card-sub">Manifattura Fabbri Srl</div></div></div>
+              <div style="display:flex;flex-direction:column;gap:0">
+                <div style="display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)">
+                  <span style="font-size:16px">📄</span>
+                  <div style="flex:1;min-width:0">
+                    <div style="font-size:11px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Report_Consumi_Ott2024.pdf</div>
+                    <div style="font-size:10px;color:var(--text3)">26/11/2024 · 1.2 MB</div>
+                  </div>
+                  <button class="btn btn-ghost btn-sm">↓</button>
+                </div>
+                <div style="display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)">
+                  <span style="font-size:16px">🌿</span>
+                  <div style="flex:1;min-width:0">
+                    <div style="font-size:11px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Report_ESG_Q3_2024.pdf</div>
+                    <div style="font-size:10px;color:var(--text3)">15/10/2024 · 890 KB</div>
+                  </div>
+                  <button class="btn btn-ghost btn-sm">↓</button>
+                </div>
+                <div style="display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)">
+                  <span style="font-size:16px">☀️</span>
+                  <div style="flex:1;min-width:0">
+                    <div style="font-size:11px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Preventivo_FV_200kWp.pdf</div>
+                    <div style="font-size:10px;color:var(--text3)">02/10/2024 · 2.1 MB</div>
+                  </div>
+                  <button class="btn btn-ghost btn-sm">↓</button>
+                </div>
+                <div style="display:flex;gap:10px;align-items:center;padding:9px 0">
+                  <span style="font-size:16px">📋</span>
+                  <div style="flex:1;min-width:0">
+                    <div style="font-size:11px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Contratto_Edison_2023.pdf</div>
+                    <div style="font-size:10px;color:var(--text3)">01/01/2023 · 540 KB</div>
+                  </div>
+                  <button class="btn btn-ghost btn-sm">↓</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main-wrap -->
+</div><!-- /app -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+let currentRole = 'admin';
+let currentPage = 'mercati';
+let currentClientId = 0;
+let mapInterval = null;
+let leafMaps = { world: null, europe: null, italy: null };
+let nightLayer = null, sunMarker = null, irMarkers = [], outageMarkers = [];
+let forecastChartInst = null;
+
+const PAGES = {
+  mercati:    { title: 'Dashboard Mercati',     sub: 'Prezzi energia e gas in tempo reale' },
+  mappe:      { title: 'Mappe & Territorio',     sub: 'Sole · irraggiamento Europa · interruzioni Italia' },
+  green:      { title: 'Green Monitor',          sub: 'Rinnovabili, transizione energetica e politiche climatiche' },
+  clienti:    { title: 'Portfolio Clienti',      sub: 'Tutti i clienti gestiti dall\'agenzia' },
+  profilo:    { title: 'Profilo Cliente',        sub: 'Situazione energetica e contrattuale' },
+  consumi:    { title: 'Consumi & Fatture',      sub: 'Analisi fatture con AI — Manifattura Fabbri' },
+  previsioni: { title: 'Previsioni & Budget',    sub: 'Scenari geopolitici 6–24 mesi' },
+  co2:        { title: 'Sostenibilità CO₂',      sub: 'Emissioni, ESG e rendicontazione CSRD' },
+  solare:     { title: 'FV & Rinnovabili',       sub: 'Fattibilità tecnico-economica impianti' },
+  report:     { title: 'Reportistica',           sub: 'Genera e archivia documenti per il cliente' },
+};
+
+const CLIENTS = [
+  { id:0, initials:'MF', color:'#4f8ef7,#a78bfa', name:'Manifattura Fabbri Srl',   piva:'02891540384', ateco:'25.62 · Lavorazione metalli', kwh:'487 MWh', gas:'1.24 MSm³', spend:'142k €' },
+  { id:1, initials:'TC', color:'#34d399,#22d3ee', name:'Termoidraulica Carbone Srl', piva:'01234567890', ateco:'43.22 · Impianti termici',     kwh:'312 MWh', gas:'0.88 MSm³', spend:'98k €' },
+  { id:2, initials:'BL', color:'#f59e0b,#f87171', name:'Barilla Logistica Spa',      piva:'09876543210', ateco:'52.10 · Logistica e magaz.',    kwh:'1.24 GWh', gas:'2.1 MSm³', spend:'384k €' },
+  { id:3, initials:'FP', color:'#a78bfa,#f87171', name:'Farmaceutica Pini Srl',       piva:'03456789012', ateco:'21.20 · Farmaceutica',          kwh:'892 MWh', gas:'0.44 MSm³', spend:'267k €' },
+  { id:4, initials:'CM', color:'#22d3ee,#4f8ef7', name:'Ceramiche Moretti Srl',       piva:'04567890123', ateco:'23.41 · Ceramica',              kwh:'2.1 GWh', gas:'3.8 MSm³', spend:'612k €' },
+  { id:5, initials:'RE', color:'#f87171,#f59e0b', name:'Ristoranti Emiliani Srl',     piva:'05678901234', ateco:'56.10 · Ristorazione',          kwh:'198 MWh', gas:'0.28 MSm³', spend:'61k €' },
+  { id:6, initials:'SF', color:'#34d399,#a78bfa', name:'Studio Fieno Architettura',    piva:'06789012345', ateco:'71.11 · Architettura',          kwh:'44 MWh',  gas:'—',         spend:'14k €' },
+  { id:7, initials:'GT', color:'#4f8ef7,#34d399', name:'Grafica Trevisi Srl',          piva:'07890123456', ateco:'18.12 · Stampa',                kwh:'128 MWh', gas:'0.12 MSm³', spend:'39k €' },
+];
+
+const ITALY_REGIONS = [
+  {name:"Valle d'Aosta",lat:45.74,lng:7.42},{name:'Piemonte',lat:45.07,lng:7.68},
+  {name:'Lombardia',lat:45.47,lng:9.19},{name:'Trentino-AA',lat:46.07,lng:11.12},
+  {name:'Veneto',lat:45.44,lng:12.33},{name:'Friuli-VG',lat:46.07,lng:13.23},
+  {name:'Liguria',lat:44.41,lng:8.93},{name:'Emilia-Romagna',lat:44.49,lng:11.34},
+  {name:'Toscana',lat:43.77,lng:11.25},{name:'Umbria',lat:43.11,lng:12.39},
+  {name:'Marche',lat:43.62,lng:13.51},{name:'Lazio',lat:41.90,lng:12.48},
+  {name:'Abruzzo',lat:42.35,lng:13.40},{name:'Molise',lat:41.67,lng:14.75},
+  {name:'Campania',lat:40.84,lng:14.25},{name:'Puglia',lat:41.13,lng:16.87},
+  {name:'Basilicata',lat:40.64,lng:15.97},{name:'Calabria',lat:38.91,lng:16.59},
+  {name:'Sicilia',lat:37.60,lng:14.02},{name:'Sardegna',lat:40.12,lng:9.07},
+];
+
+const EU_CITIES = [
+  {lat:48.9,lng:2.3,name:'Paris',r:'fr'},{lat:51.5,lng:-0.1,name:'London',r:'uk'},
+  {lat:52.5,lng:13.4,name:'Berlin',r:'de'},{lat:40.4,lng:-3.7,name:'Madrid',r:'es'},
+  {lat:41.9,lng:12.5,name:'Roma',r:'itc'},{lat:45.5,lng:9.2,name:'Milano',r:'itn'},
+  {lat:37.9,lng:23.7,name:'Atene',r:'gr'},{lat:50.1,lng:14.4,name:'Praga',r:'de'},
+  {lat:59.3,lng:18.1,name:'Stoccolma',r:'uk'},{lat:55.7,lng:12.6,name:'Copenaghen',r:'uk'},
+  {lat:38.7,lng:-9.1,name:'Lisbona',r:'es'},{lat:43.3,lng:5.4,name:'Marsiglia',r:'fr'},
+  {lat:48.2,lng:16.4,name:'Vienna',r:'de'},{lat:37.5,lng:15.1,name:'Catania',r:'its'},
+  {lat:40.8,lng:14.2,name:'Napoli',r:'its'},{lat:45.4,lng:10.9,name:'Verona',r:'itn'},
+  {lat:44.5,lng:11.3,name:'Bologna',r:'itn'},{lat:43.8,lng:11.2,name:'Firenze',r:'itc'},
+  {lat:47.5,lng:19.0,name:'Budapest',r:'de'},{lat:52.2,lng:21.0,name:'Varsavia',r:'de'},
+];
+
+const OUTAGE_COLORS = { elettrica:'#f87171', gas:'#f59e0b', manutenzione:'#a78bfa' };
+let currentOutages = [];
+
+const AI_PROMPTS = {
+  profilo:`Sei un consulente energetico per l'agenzia EnergyIQ. Il cliente è "Manifattura Fabbri Srl" (ATECO 25.62, Bologna). Dati: 487 MWh/anno elettricità, 1.24 MSm³/anno gas, spesa 142k €/anno. Contratto gas ENI scaduto. Prezzo elettrico attuale 148 €/MWh vs Axpo 121 €/MWh. Rispondi in italiano, conciso, max 3-4 frasi con numeri specifici.`,
+  consumi:`Sei un analista di fatture energetiche per aziende italiane con P.IVA. Il cliente è Manifattura Fabbri (ATECO 25.62, Bologna). Hai analizzato fatture: Edison a 148.5 €/MWh (+9% anomalia), ENI scaduto, Axpo offre 121 €/MWh. Rispondi in italiano, professionale, max 3-4 frasi.`,
+  previsioni:`Sei un analista di mercato energetico specializzato in previsioni per aziende italiane. Cliente: Manifattura Fabbri, 487 MWh/anno. Analizza scenari geopolitici, trend FER, mercati futures. Rispondi in italiano, conciso, con percentuali e numeri concreti, max 3-4 frasi.`,
+  co2:`Sei un esperto di sostenibilità ESG/CSRD per manifattura italiana. Cliente: ATECO 25.62, Scope 1: 48 tCO₂, Scope 2: 170 tCO₂, intensità 0.44 kgCO₂/€ (-18% vs settore). Rispondi in italiano, max 3-4 frasi professionali.`,
+  solare:`Sei un tecnico-economista per impianti FV e rinnovabili. Cliente: stabilimento Bologna 1.400m², 487 MWh/anno. FV 200kWp proposto, BESS 100kWh, colonnine 4×22kW. Transizione 5.0 al 40%. Rispondi in italiano, max 3-4 frasi con numeri concreti.`,
+};
+
+// ═══════════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════════
+function selectRole(el) {
+  document.querySelectorAll('.role-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  currentRole = el.dataset.role;
+}
+
+function doLogin() {
+  const email = document.getElementById('auth-email').value || 'ivan@energyiq.it';
+  const namePart = email.split('@')[0];
+  const displayName = namePart.charAt(0).toUpperCase() + namePart.slice(1).replace(/\./g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+  const initials = displayName.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('topbar-avatar').textContent = initials;
+  document.getElementById('topbar-name').textContent = displayName;
+  const roleLabels = { admin:'Admin · EnergyIQ Agency', manager:'Utility Manager', viewer:'Viewer — Sola lettura' };
+  document.getElementById('topbar-role').textContent = roleLabels[currentRole];
+  const roleBadge = document.getElementById('role-badge-clienti');
+  if(roleBadge) roleBadge.textContent = currentRole === 'admin' ? 'accesso completo' : currentRole === 'viewer' ? 'sola lettura' : 'accesso gestito';
+  const addBtn = document.getElementById('btn-add-client');
+  if(addBtn) addBtn.style.display = currentRole === 'viewer' ? 'none' : 'inline-flex';
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app').classList.add('visible');
+  loadSettings();
+  buildClientGrid();
+  initCharts();
+  buildSolarSim();
+  setTimeout(function(){
+    drawWeatherSun();
+    buildTrendsChart('1d');
+    startMktMapAnim();
+    initMaps();
+    drawBaseMaps();
+  }, 400);
+}
+
+function doLogout() {
+  stopMaps();
+  document.getElementById('app').classList.remove('visible');
+  document.getElementById('auth-screen').style.display = 'flex';
+}
+
+// ═══════════════════════════════════════════════
+// SETTINGS
+// ═══════════════════════════════════════════════
+function openSettings() { document.getElementById('settings-modal').classList.add('open'); }
+function closeSettings() { document.getElementById('settings-modal').classList.remove('open'); }
+
+function saveKeys() {
+  const k = {
+    anthropic: document.getElementById('key-anthropic').value,
+    weather: document.getElementById('key-weather').value,
+    gmaps: document.getElementById('key-gmaps').value,
+  };
+  localStorage.setItem('energyiq_keys', JSON.stringify(k));
+  updateKeyStatus();
+}
+
+function updateKeyStatus() {
+  const k = JSON.parse(localStorage.getItem('energyiq_keys')||'{}');
+  const set=(id,val)=>{ const el=document.getElementById(id); if(el){ el.className='api-status '+(val?'ok':'missing'); }};
+  set('st-anthropic', k.anthropic);
+  set('st-weather', k.weather);
+  set('st-gmaps', k.gmaps);
+  set('st-pvgis', true);
+}
+
+function saveConfig() {
+  const cfg = {
+    agency: document.getElementById('cfg-agency').value,
+    piva: document.getElementById('cfg-piva').value,
+    currency: document.getElementById('cfg-currency').value,
+  };
+  localStorage.setItem('energyiq_config', JSON.stringify(cfg));
+}
+
+function loadSettings() {
+  const k = JSON.parse(localStorage.getItem('energyiq_keys')||'{}');
+  if(k.anthropic) document.getElementById('key-anthropic').value = k.anthropic;
+  if(k.weather) document.getElementById('key-weather').value = k.weather;
+  if(k.gmaps) document.getElementById('key-gmaps').value = k.gmaps;
+  updateKeyStatus();
+  const cfg = JSON.parse(localStorage.getItem('energyiq_config')||'{}');
+  if(cfg.agency) document.getElementById('cfg-agency').value = cfg.agency;
+  if(cfg.piva) document.getElementById('cfg-piva').value = cfg.piva;
+}
+
+// ═══════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(n=>n.classList.remove('active'));
+  const pg = document.getElementById('page-'+id);
+  if(pg) pg.classList.add('active');
+  document.querySelectorAll('.sb-item').forEach(n=>{
+    if(n.getAttribute('onclick')==="showPage('"+id+"')") n.classList.add('active');
+  });
+  const cfg = PAGES[id];
+  if(cfg) {
+    document.getElementById('page-title').textContent = cfg.title;
+    document.getElementById('page-sub').textContent = cfg.sub;
+  }
+  currentPage = id;
+  if(id==='mappe'){ startMaps(); setTimeout(()=>{ drawBaseMaps(); Object.values(leafMaps).forEach(m=>m&&m.invalidateSize()); }, 100); }
+  else stopMaps();
+  if(id==='mercati'){ setTimeout(function(){ drawWeatherSun(); buildTrendsChart('1d'); startMktMapAnim(); }, 80); } else { stopMktMapAnim(); }
+}
+
+// ═══════════════════════════════════════════════
+// CLIENT GRID
+// ═══════════════════════════════════════════════
+function buildClientGrid() {
+  const grid = document.getElementById('client-grid');
+  if(!grid) return;
+  grid.innerHTML = CLIENTS.map(c=>`
+    <div class="client-card ${c.id===currentClientId?'selected':''}" onclick="selectClient(${c.id})">
+      <div class="cl-avatar" style="background:linear-gradient(135deg,${c.color})">${c.initials}</div>
+      <div class="cl-name">${c.name}</div>
+      <div class="cl-ateco">${c.ateco}</div>
+      <div style="font-size:10px;color:var(--text3);margin-bottom:8px">P.IVA ${c.piva}</div>
+      <div class="cl-kpis">
+        <span class="cl-kpi">⚡ ${c.kwh}</span>
+        ${c.gas!=='—'?`<span class="cl-kpi">🔥 ${c.gas}</span>`:''}
+        <span class="cl-kpi">💶 ${c.spend}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectClient(id) {
+  currentClientId = id;
+  const c = CLIENTS[id];
+  document.getElementById('sb-cl-name').textContent = c.name;
+  document.getElementById('sb-cl-piva').textContent = 'P.IVA '+c.piva;
+  buildClientGrid();
+  showPage('profilo');
+}
+
+// ═══════════════════════════════════════════════
+// CHARTS
+// ═══════════════════════════════════════════════
+const CC = { grid:'rgba(255,255,255,0.05)', tick:'#4e5268' };
+const baseOpts = { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } }, scales:{
+  x:{ grid:{ color:CC.grid }, ticks:{ color:CC.tick, font:{size:10} } },
+  y:{ grid:{ color:CC.grid }, ticks:{ color:CC.tick, font:{size:10} } }
+}};
+
+function mkChart(id, type, data, opts={}) {
+  const el = document.getElementById(id);
+  if(!el) return;
+  return new Chart(el, { type, data, options:{ ...baseOpts, ...opts }});
+}
+
+function initCharts() {
+  // PUN
+  mkChart('mkt-pun-chart','line',{
+    labels:['Nov23','Dic','Gen24','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov'],
+    datasets:[
+      { label:'PUN', data:[145,162,178,154,138,128,118,124,138,152,141,128,131], borderColor:'#4f8ef7', backgroundColor:'rgba(79,142,247,.07)', fill:true, tension:.4, pointRadius:3, borderWidth:2 },
+      { label:'TTF', data:[52,58,64,55,48,44,40,42,44,46,44,43,43], borderColor:'#f5a623', backgroundColor:'rgba(245,166,35,.05)', fill:true, tension:.4, pointRadius:3, borderWidth:2, borderDash:[5,4] }
+    ]
+  });
+
+  // Gas forward
+  mkChart('mkt-gas-chart','bar',{
+    labels:['Nov24','Dic24','Gen25','Feb25','Mar25','Giu25','Set25','Dic25','Mar26'],
+    datasets:[{ data:[42.8,46.2,48.8,45.4,42.1,38.6,35.2,36.8,34.4],
+      backgroundColor:ctx=>{ const v=ctx.raw; return v>45?'rgba(248,113,113,.55)':v>40?'rgba(245,166,35,.55)':'rgba(45,212,160,.55)'; },
+      borderWidth:0, borderRadius:4 }]
+  },{ scales:{ ...baseOpts.scales, y:{ ...baseOpts.scales.y, min:28, ticks:{ color:CC.tick, font:{size:10}, callback:v=>v+'€' }}}});
+
+  // Green mix
+  mkChart('green-mix-chart','bar',{
+    labels:['Idro','FV','Eolico','Gas','Geotermico','Biomasse','Carbone'],
+    datasets:[{ data:[4.8,4.2,2.1,8.4,0.9,1.1,0.3],
+      backgroundColor:['#22d3ee88','#f5a62388','#34d39988','#f8717155','#a78bfa88','#4f8ef788','#88888855'],
+      borderColor:['#22d3ee','#f5a623','#34d399','#f87171','#a78bfa','#4f8ef7','#888888'],
+      borderWidth:1, borderRadius:4 }]
+  },{ indexAxis:'y', scales:{ x:{ grid:{color:CC.grid}, ticks:{color:CC.tick,font:{size:10},callback:v=>v+' TWh'}}, y:{grid:{display:false},ticks:{color:CC.tick,font:{size:10}}} }});
+
+  // ETS
+  mkChart('ets-chart','line',{
+    labels:['Nov23','Dic','Gen24','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov'],
+    datasets:[{ data:[72,68,60,56,54,58,62,66,68,62,58,62,65], borderColor:'#a78bfa', backgroundColor:'rgba(167,139,250,.08)', fill:true, tension:.4, pointRadius:3, borderWidth:2 }]
+  },{ scales:{ ...baseOpts.scales, y:{ ...baseOpts.scales.y, min:45, ticks:{color:CC.tick,font:{size:10},callback:v=>v+'€'}}}});
+
+  // CO2
+  mkChart('co2-chart','bar',{
+    labels:['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott'],
+    datasets:[
+      { label:'Scope 1', data:[5.2,4.8,4.1,2.8,1.8,1.2,1.4,1.5,2.6,4.1], backgroundColor:'rgba(248,113,113,.5)', borderColor:'#f87171', borderWidth:1, stack:'s' },
+      { label:'Scope 2', data:[18.4,17.2,16.4,13.8,13.2,12.4,14.6,14.8,15.8,17.2], backgroundColor:'rgba(245,166,35,.4)', borderColor:'#f5a623', borderWidth:1, stack:'s' }
+    ]
+  },{ scales:{ x:{...baseOpts.scales.x, stacked:true}, y:{...baseOpts.scales.y, stacked:true, ticks:{color:CC.tick,font:{size:10},callback:v=>v+' t'}}}});
+
+  // Solar production
+  mkChart('solar-prod-chart','bar',{
+    labels:['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'],
+    datasets:[{ data:[52,78,112,142,168,180,188,174,138,98,62,44], backgroundColor:'rgba(245,166,35,.7)', borderColor:'#f5a623', borderWidth:1, borderRadius:3 }]
+  },{ scales:{ x:{grid:{color:CC.grid},ticks:{color:CC.tick,font:{size:9}}}, y:{grid:{color:CC.grid},ticks:{color:CC.tick,font:{size:9}}}}});
+
+  buildForecast('improve');
+}
+
+function buildForecast(scenario) {
+  const base=[142,139,136,133];
+  const mult={improve:[.96,.92,.88,.84],stable:[1,1,1.01,1.02],worsen:[1.05,1.10,1.16,1.22]}[scenario];
+  const data=base.map((v,i)=>Math.round(v*mult[i]));
+  document.getElementById('bud6').textContent=Math.round(data[0]/2)+'k €';
+  document.getElementById('bud12').textContent=data[1]+'k €';
+  document.getElementById('bud18').textContent=Math.round(data[2]*1.5)+'k €';
+  document.getElementById('bud24').textContent=Math.round(data[3]*2)+'k €';
+  const el=document.getElementById('forecast-chart');
+  if(!el) return;
+  if(forecastChartInst) forecastChartInst.destroy();
+  const col={improve:'#4f8ef7',stable:'#34d399',worsen:'#f87171'}[scenario];
+  forecastChartInst=new Chart(el,{
+    type:'line',
+    data:{ labels:['Oggi','Q1 25','Q2 25','Q3 25','Q4 25','Q1 26','Q2 26','Q3 26'],
+      datasets:[{ label:'Scenario', data:[142,data[0],data[0]+4,data[1]-10,data[1],data[2]-30,data[2]-10,data[3]],
+        borderColor:col, backgroundColor:col+'18', fill:true, tension:.4, borderWidth:2, pointRadius:3 }]},
+    options:{ ...baseOpts, scales:{ x:{grid:{color:CC.grid},ticks:{color:CC.tick,font:{size:10}}}, y:{grid:{color:CC.grid},ticks:{color:CC.tick,font:{size:10},callback:v=>v+'k €'}}}}
+  });
+}
+
+function selectScenario(s) {
+  ['stable','improve','worsen'].forEach(x=>document.getElementById('sc-'+x).classList.remove('active'));
+  document.getElementById('sc-'+s).classList.add('active');
+  buildForecast(s);
+}
+
+// ═══════════════════════════════════════════════
+// SOLAR SIM
+// ═══════════════════════════════════════════════
+function buildSolarSim() {
+  const g=document.getElementById('solar-sim'); if(!g) return;
+  const v=['high','high','high','med','med','low','high','high','high','high','med','med','high','high','high','high','high','med','high','high','high','high','med','med','med','high','high','med','low','low','low','med','med','low','low','low'];
+  v.forEach(cls=>{ const d=document.createElement('div'); d.className='s-cell s-'+cls; g.appendChild(d); });
+}
+
+// ═══════════════════════════════════════════════
+// UPLOAD SIM
+// ═══════════════════════════════════════════════
+function simUpload() {
+  const prog=document.getElementById('upload-prog'), bar=document.getElementById('upload-bar'), status=document.getElementById('upload-status');
+  prog.style.display='block';
+  let p=0, si=0;
+  const steps=['Caricamento PDF...','Estrazione OCR...','Riconoscimento fornitore...','Calcolo €/kWh...','Analisi anomalie...','Completato!'];
+  const iv=setInterval(()=>{ p+=18; bar.style.width=Math.min(p,100)+'%'; if(si<steps.length) status.textContent=steps[si++]; if(p>=100){ clearInterval(iv); setTimeout(()=>prog.style.display='none',1500); }},400);
+}
+
+// ═══════════════════════════════════════════════
+// AI CHAT
+// ═══════════════════════════════════════════════
+async function sendMsg(panel) {
+  const inputEl=document.getElementById('inp-'+panel);
+  const msgs=document.getElementById('msgs-'+panel);
+  const text=inputEl.value.trim(); if(!text) return;
+  inputEl.value='';
+
+  const userDiv=document.createElement('div'); userDiv.className='msg msg-user';
+  userDiv.innerHTML=`<div class="msg-av">Tu</div><div class="msg-bubble">${text}</div>`;
+  msgs.appendChild(userDiv);
+
+  const typingDiv=document.createElement('div'); typingDiv.className='msg msg-ai';
+  typingDiv.innerHTML=`<div class="msg-av">AI</div><div class="msg-bubble"><div class="typing"><div class="t-dot"></div><div class="t-dot"></div><div class="t-dot"></div></div></div>`;
+  msgs.appendChild(typingDiv);
+  msgs.scrollTop=msgs.scrollHeight;
+
+  const keys=JSON.parse(localStorage.getItem('energyiq_keys')||'{}');
+  const apiKey=keys.anthropic||'';
+
+  try {
+    const headers={'Content-Type':'application/json'};
+    if(apiKey) headers['x-api-key']=apiKey;
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST', headers,
+      body:JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1000, system:AI_PROMPTS[panel]||AI_PROMPTS.profilo, messages:[{role:'user',content:text}] })
+    });
+    const data=await res.json();
+    typingDiv.querySelector('.msg-bubble').textContent=data.content?.[0]?.text||'Errore nella risposta.';
+  } catch(e) {
+    typingDiv.querySelector('.msg-bubble').textContent='Errore di connessione. Verifica la chiave API nelle impostazioni.';
+  }
+  msgs.scrollTop=msgs.scrollHeight;
+}
+
+// ═══════════════════════════════════════════════
+// SOLAR MATH
+// ═══════════════════════════════════════════════
+function solarDecl(d){ const N=(d-new Date(d.getFullYear(),0,0))/864e5; return 23.45*Math.sin((360/365)*(N-81)*Math.PI/180); }
+function hourAngle(d,lng){ const ut=d.getUTCHours()+d.getUTCMinutes()/60+d.getUTCSeconds()/3600; return 15*(ut-12)+lng; }
+function solarAlt(lat,decl,ha){ const L=lat*Math.PI/180,D=decl*Math.PI/180,H=ha*Math.PI/180; return Math.asin(Math.sin(L)*Math.sin(D)+Math.cos(L)*Math.cos(D)*Math.cos(H))*180/Math.PI; }
+function sunPos(d){ const decl=solarDecl(d); const ut=d.getUTCHours()+d.getUTCMinutes()/60+d.getUTCSeconds()/3600; const lng=(ut-12)*-15; return{lat:decl,lng:((lng+180)%360)-180}; }
+
+// ═══════════════════════════════════════════════
+// BASE CANVAS MAPS (always-visible geographic reference)
+// ═══════════════════════════════════════════════
+function setupCanvas(id,W,H){
+  const el=document.getElementById(id); if(!el) return null;
+  const dpr=window.devicePixelRatio||1;
+  const rw=el.parentElement.offsetWidth||700, rh=el.parentElement.offsetHeight||H;
+  el.width=Math.round(rw*dpr); el.height=Math.round(rh*dpr);
+  const ctx=el.getContext('2d');
+  ctx.scale(dpr*rw/W, dpr*rh/H);
+  return ctx;
+}
+
+function cpoly(ctx,pts,fill,stroke,lw=0.7){
+  ctx.beginPath(); ctx.moveTo(pts[0][0],pts[0][1]);
+  pts.slice(1).forEach(([x,y])=>ctx.lineTo(x,y)); ctx.closePath();
+  if(fill){ctx.fillStyle=fill;ctx.fill();} if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=lw;ctx.stroke();}
+}
+function clabel(ctx,x,y,text,color,sz){
+  ctx.fillStyle=color; ctx.font=`${sz}px sans-serif`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(text,x,y);
+}
+
+function drawBaseMaps(){ drawWorldBase(); drawEuropeBase(); drawItalyBase(); }
+
+function drawWorldBase(){
+  const W=700,H=360,ctx=setupCanvas('base-world',W,H); if(!ctx) return;
+  ctx.fillStyle='#080e1a'; ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='rgba(255,255,255,.04)'; ctx.lineWidth=.5;
+  [90,180,270].forEach(y=>{ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();});
+  [116,233,350,466,583].forEach(x=>{ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();});
+  ctx.setLineDash([6,6]); ctx.strokeStyle='rgba(255,255,255,.1)'; ctx.lineWidth=.8;
+  ctx.beginPath();ctx.moveTo(0,180);ctx.lineTo(W,180);ctx.stroke(); ctx.setLineDash([]);
+  const L='#1a3620',B='rgba(255,255,255,.1)';
+  cpoly(ctx,[[25,58],[88,46],[133,52],[150,72],[145,102],[133,123],[120,143],[106,168],[96,183],[79,192],[62,176],[52,160],[42,140],[30,110],[22,84]],L,B);
+  cpoly(ctx,[[155,20],[192,14],[202,36],[185,57],[164,57],[150,40]],L,B);
+  cpoly(ctx,[[110,188],[146,177],[167,188],[177,213],[172,253],[156,288],[136,303],[115,297],[100,271],[95,242],[100,213]],L,B);
+  cpoly(ctx,[[310,56],[340,51],[361,53],[376,61],[380,75],[365,85],[350,90],[329,88],[313,79],[304,67]],L,B);
+  cpoly(ctx,[[314,90],[360,85],[390,90],[405,110],[410,145],[405,186],[390,220],[370,248],[350,255],[330,248],[310,225],[300,190],[295,154],[300,120],[310,100]],L,B);
+  cpoly(ctx,[[375,40],[452,30],[540,35],[600,40],[641,50],[660,65],[650,80],[620,85],[580,82],[540,78],[490,75],[450,70],[410,68],[385,65],[372,55]],L,B);
+  cpoly(ctx,[[385,90],[420,88],[470,90],[510,100],[530,115],[525,135],[505,145],[480,148],[450,142],[420,130],[400,115],[387,102]],L,B);
+  cpoly(ctx,[[543,118],[578,116],[603,123],[613,138],[603,153],[578,158],[553,153],[538,140],[536,128]],L,B);
+  cpoly(ctx,[[530,56],[580,52],[626,58],[650,75],[645,100],[625,115],[595,118],[565,110],[540,95],[524,78]],L,B);
+  cpoly(ctx,[[570,200],[616,195],[652,200],[666,220],[660,248],[640,263],[610,267],[580,259],[562,241],[558,218]],L,B);
+  ctx.fillStyle='#101e30'; ctx.fillRect(0,313,W,H-313);
+  clabel(ctx,70,132,'Nord America','rgba(255,255,255,.42)',9);
+  clabel(ctx,135,248,'Sud America','rgba(255,255,255,.42)',9);
+  clabel(ctx,345,172,'Africa','rgba(255,255,255,.42)',9);
+  clabel(ctx,342,72,'Europa','rgba(255,255,255,.5)',8);
+  clabel(ctx,520,60,'Asia','rgba(255,255,255,.42)',9);
+  clabel(ctx,612,230,'Australia','rgba(255,255,255,.42)',9);
+  clabel(ctx,210,170,'Oceano Atlantico','rgba(80,130,210,.25)',8);
+  clabel(ctx,490,200,'Oceano Indiano','rgba(80,130,210,.25)',8);
+  clabel(ctx,8,178,'Eq.','rgba(255,255,255,.18)',7);
+  ctx.fillStyle='#f87171'; ctx.beginPath(); ctx.arc(341,70,5,0,Math.PI*2); ctx.fill();
+  ctx.strokeStyle='rgba(248,113,113,.5)'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(341,70,10,0,Math.PI*2); ctx.stroke();
+  clabel(ctx,341,84,'Italia','#f87171',8);
+}
+
+function drawEuropeBase(){
+  const W=700,H=400,ctx=setupCanvas('base-europe',W,H); if(!ctx) return;
+  ctx.fillStyle='#080e1a'; ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='rgba(255,255,255,.04)'; ctx.lineWidth=.5;
+  [100,200,300].forEach(y=>{ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();});
+  [140,280,420,560].forEach(x=>{ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();});
+  const L='#1a3620',B='rgba(255,255,255,.13)',hi='rgba(248,113,113,.15)',hib='#f87171';
+  cpoly(ctx,[[380,20],[415,14],[448,20],[458,44],[443,74],[428,94],[413,105],[398,94],[383,70],[380,44]],L,B);
+  cpoly(ctx,[[343,25],[375,20],[383,46],[378,70],[357,80],[336,70],[329,50],[335,32]],L,B);
+  cpoly(ctx,[[460,32],[490,30],[500,52],[490,72],[470,80],[455,67],[448,50]],L,B);
+  cpoly(ctx,[[487,20],[515,15],[535,25],[539,55],[524,84],[506,95],[489,80],[483,55],[485,35]],L,B);
+  cpoly(ctx,[[239,74],[265,67],[280,82],[275,105],[254,118],[234,112],[227,95],[231,82]],L,B);
+  cpoly(ctx,[[222,68],[238,63],[243,79],[232,87],[218,84],[216,74]],L,B);
+  cpoly(ctx,[[202,88],[218,84],[220,98],[208,105],[198,100],[196,92]],L,B);
+  cpoly(ctx,[[251,121],[289,114],[317,117],[324,137],[317,161],[297,177],[269,181],[247,169],[237,149],[239,131]],L,B);
+  cpoly(ctx,[[172,164],[213,157],[247,167],[251,187],[244,215],[223,232],[193,238],[166,230],[150,209],[148,187],[156,171]],L,B);
+  cpoly(ctx,[[148,177],[168,171],[172,190],[165,210],[147,215],[137,202],[137,190]],L,B);
+  cpoly(ctx,[[317,109],[350,104],[371,111],[377,134],[367,154],[344,161],[319,157],[307,139],[307,121]],L,B);
+  cpoly(ctx,[[289,107],[317,104],[321,121],[307,127],[284,124],[279,115]],L,B);
+  cpoly(ctx,[[317,161],[354,157],[377,161],[381,177],[359,184],[331,181],[317,174]],L,B);
+  cpoly(ctx,[[371,104],[414,99],[431,111],[427,137],[404,147],[374,144],[361,129],[364,114]],L,B);
+  cpoly(ctx,[[359,147],[399,141],[427,144],[429,161],[407,167],[374,167],[354,161],[354,151]],L,B);
+  cpoly(ctx,[[381,167],[429,161],[461,164],[477,181],[471,204],[447,217],[414,219],[387,211],[374,194],[374,177]],L,B);
+  cpoly(ctx,[[354,181],[381,177],[387,197],[377,224],[357,241],[334,247],[317,237],[311,217],[321,199]],L,B);
+  cpoly(ctx,[[431,137],[489,129],[529,137],[534,161],[514,177],[479,184],[447,181],[427,167],[427,149]],L,B);
+  cpoly(ctx,[[414,87],[449,81],[461,94],[454,111],[429,117],[414,107]],L,B);
+  cpoly(ctx,[[431,117],[477,109],[497,121],[494,141],[467,149],[434,147],[424,134]],L,B);
+  cpoly(ctx,[[389,227],[414,221],[427,234],[421,257],[404,267],[387,259],[379,241]],L,B);
+  // Italy highlighted
+  cpoly(ctx,[[317,181],[344,174],[359,181],[357,204],[347,229],[334,254],[319,271],[304,277],[294,264],[291,241],[297,214],[304,194]],hi,hib,1.5);
+  cpoly(ctx,[[309,281],[329,277],[337,289],[327,299],[311,297],[304,287]],hi,hib,1.5);
+  cpoly(ctx,[[269,239],[281,234],[287,247],[281,261],[267,259],[261,247]],hi,hib,1.5);
+  clabel(ctx,421,57,'Norvegia','rgba(255,255,255,.46)',8);
+  clabel(ctx,358,52,'Svezia','rgba(255,255,255,.46)',8);
+  clabel(ctx,511,55,'Finlandia','rgba(255,255,255,.46)',8);
+  clabel(ctx,254,94,'UK','rgba(255,255,255,.46)',8);
+  clabel(ctx,282,151,'Francia','rgba(255,255,255,.46)',9);
+  clabel(ctx,198,199,'Spagna','rgba(255,255,255,.46)',8.5);
+  clabel(ctx,342,134,'Germania','rgba(255,255,255,.46)',8);
+  clabel(ctx,399,127,'Polonia','rgba(255,255,255,.46)',8);
+  clabel(ctx,479,157,'Ucraina','rgba(255,255,255,.46)',8);
+  clabel(ctx,429,194,'Romania','rgba(255,255,255,.46)',8);
+  clabel(ctx,404,247,'Grecia','rgba(255,255,255,.46)',8);
+  clabel(ctx,326,229,'Italia','#f87171',9.5);
+  clabel(ctx,310,335,'Mar Mediterraneo','rgba(80,130,210,.28)',8.5);
+  clabel(ctx,183,135,'Atlantico','rgba(80,130,210,.28)',8);
+}
+
+function drawItalyBase(){
+  const W=700,H=460,ctx=setupCanvas('base-italy',W,H); if(!ctx) return;
+  ctx.fillStyle='#080e1a'; ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='rgba(255,255,255,.04)'; ctx.lineWidth=.4;
+  [130,260,390].forEach(y=>{ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();});
+  [175,350,525].forEach(x=>{ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();});
+  const L='#1a3620',B='rgba(255,255,255,.16)';
+  const reg=(pts,lx,ly,lbl,sz=8)=>{ cpoly(ctx,pts,L,B,.6); clabel(ctx,lx,ly,lbl,'rgba(255,255,255,.6)',sz); };
+  reg([[234,55],[254,48],[268,55],[264,71],[246,75],[231,69]],249,65,'VdA',6);
+  reg([[200,65],[235,55],[268,55],[276,75],[271,103],[254,121],[229,128],[202,121],[185,103],[182,83],[192,71]],231,95,'Piemonte');
+  reg([[200,121],[229,128],[254,121],[276,128],[271,145],[249,155],[222,153],[200,143],[194,131]],236,141,'Liguria',7);
+  reg([[268,55],[315,48],[359,51],[372,65],[369,85],[352,98],[315,101],[282,98],[272,81],[264,68]],319,78,'Lombardia');
+  reg([[354,38],[389,31],[412,41],[415,58],[399,71],[372,73],[354,61],[351,48]],385,56,'T-AA',6.5);
+  reg([[369,73],[412,68],[445,73],[452,91],[437,108],[412,113],[382,111],[359,101],[355,88]],406,93,'Veneto');
+  reg([[445,65],[484,61],[501,71],[498,91],[477,101],[452,98],[442,85]],472,85,'FVG',6.5);
+  reg([[276,101],[315,98],[355,101],[382,111],[412,113],[425,131],[412,145],[382,151],[342,155],[305,151],[275,141],[267,125]],345,130,'Emilia-R.',7.5);
+  reg([[267,145],[305,151],[322,165],[325,191],[315,215],[295,228],[269,228],[249,215],[245,191],[252,168]],287,191,'Toscana');
+  reg([[382,151],[412,148],[437,155],[445,178],[435,198],[415,208],[392,203],[375,188],[375,171]],409,181,'Marche',7.5);
+  reg([[325,191],[359,185],[375,198],[372,221],[352,235],[327,235],[312,221],[309,205]],345,213,'Umbria',7.5);
+  reg([[295,228],[327,228],[352,235],[359,255],[352,278],[332,291],[305,293],[282,281],[275,258],[277,238]],315,261,'Lazio');
+  reg([[375,208],[412,208],[432,221],[435,245],[419,261],[395,265],[375,251],[365,233],[365,218]],402,238,'Abruzzo',7.5);
+  reg([[395,265],[422,261],[437,271],[435,288],[417,295],[395,291],[385,278]],412,280,'Molise',6);
+  reg([[332,291],[362,285],[385,291],[395,308],[392,335],[372,351],[345,355],[319,343],[309,321],[312,301]],352,323,'Campania');
+  reg([[372,351],[402,343],[429,348],[442,365],[437,388],[415,398],[389,395],[372,381],[367,365]],405,373,'Basilicata',7.5);
+  reg([[419,265],[452,258],[487,265],[505,285],[509,311],[495,338],[475,351],[452,348],[435,331],[429,305],[425,281],[415,271]],465,308,'Puglia');
+  reg([[389,395],[415,398],[435,411],[439,438],[427,463],[409,473],[387,468],[372,451],[369,428],[372,408]],405,435,'Calabria');
+  reg([[273,450],[322,440],[372,446],[400,456],[406,473],[388,488],[343,493],[296,488],[266,476],[263,463]],335,470,'Sicilia');
+  reg([[85,230],[113,220],[133,227],[140,251],[136,283],[118,305],[96,311],[76,301],[68,278],[70,251]],104,268,'Sardegna');
+  clabel(ctx,158,348,'Mar Tirreno','rgba(80,130,210,.28)',8);
+  clabel(ctx,565,208,'Mar Adriatico','rgba(80,130,210,.28)',8);
+  clabel(ctx,545,388,'Mar Ionio','rgba(80,130,210,.28)',8);
+  // Compass
+  const cx=655,cy=38;
+  ctx.strokeStyle='rgba(255,255,255,.18)'; ctx.lineWidth=.8;
+  ctx.beginPath();ctx.arc(cx,cy,16,0,Math.PI*2);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(cx,cy-13);ctx.lineTo(cx,cy+13);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(cx-13,cy);ctx.lineTo(cx+13,cy);ctx.stroke();
+  clabel(ctx,cx,cy-5,'N','rgba(255,255,255,.7)',10);
+  clabel(ctx,cx,cy+8,'S','rgba(255,255,255,.28)',7);
+  clabel(ctx,cx+10,cy,'E','rgba(255,255,255,.28)',7);
+  clabel(ctx,cx-10,cy,'O','rgba(255,255,255,.28)',7);
+  // Scale
+  ctx.strokeStyle='rgba(255,255,255,.3)'; ctx.lineWidth=1.2;
+  ctx.beginPath();ctx.moveTo(32,440);ctx.lineTo(112,440);ctx.stroke();
+  [[32,436],[32,444],[112,436],[112,444]].forEach(([x,y])=>{ctx.beginPath();ctx.moveTo(x,y-3);ctx.lineTo(x,y+3);ctx.stroke();});
+  clabel(ctx,72,432,'≈ 500 km','rgba(255,255,255,.3)',8);
+  // Bologna
+  ctx.fillStyle='#f87171'; ctx.beginPath();ctx.arc(345,113,6,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle='rgba(248,113,113,.45)'; ctx.lineWidth=2; ctx.beginPath();ctx.arc(345,113,11,0,Math.PI*2);ctx.stroke();
+  clabel(ctx,345,101,'Bologna ★','#f87171',8);
+}
+
+window.addEventListener('resize', drawBaseMaps);
+
+// ═══════════════════════════════════════════════
+// LEAFLET MAPS
+// ═══════════════════════════════════════════════
+const DARK_TILE = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+const DARK_ATTR = '&copy; OSM &copy; CARTO';
+
+function initMaps() {
+  if(!window.L) return;
+  if(!leafMaps.world && document.getElementById('lmap-world')) {
+    leafMaps.world = L.map('lmap-world',{zoomControl:true,attributionControl:true}).setView([20,10],2);
+    L.tileLayer(DARK_TILE,{attribution:DARK_ATTR,subdomains:'abcd',maxZoom:19}).addTo(leafMaps.world);
+    L.circleMarker([44.5,11.3],{radius:7,fillColor:'#f87171',color:'#fff',weight:2,fillOpacity:.9})
+      .addTo(leafMaps.world).bindPopup('<strong>Bologna</strong><br>Manifattura Fabbri Srl',{className:'map-popup'});
+  }
+  if(!leafMaps.europe && document.getElementById('lmap-europe')) {
+    leafMaps.europe = L.map('lmap-europe',{zoomControl:true,attributionControl:true}).setView([50,15],4);
+    L.tileLayer(DARK_TILE,{attribution:DARK_ATTR,subdomains:'abcd',maxZoom:19}).addTo(leafMaps.europe);
+  }
+  if(!leafMaps.italy && document.getElementById('lmap-italy')) {
+    leafMaps.italy = L.map('lmap-italy',{zoomControl:true,attributionControl:true}).setView([42.5,12.5],6);
+    L.tileLayer(DARK_TILE,{attribution:DARK_ATTR,subdomains:'abcd',maxZoom:19}).addTo(leafMaps.italy);
+  }
+  updateMaps();
+}
+
+function updateMaps() {
+  const now = new Date();
+  updateWorldMap(now);
+  updateEuropeMap(now);
+  updateItalyMap(now);
+}
+
+function startMaps() {
+  initMaps();
+  if(mapInterval) clearInterval(mapInterval);
+  mapInterval = setInterval(updateMaps, 60000);
+}
+function stopMaps() { if(mapInterval){ clearInterval(mapInterval); mapInterval=null; } }
+
+// World map update
+function updateWorldMap(date) {
+  if(!leafMaps.world||!window.L) return;
+  const decl=solarDecl(date), sp=sunPos(date);
+  if(nightLayer){leafMaps.world.removeLayer(nightLayer);nightLayer=null;}
+  try {
+    const pts=[];
+    for(let i=0;i<=360;i++){
+      const lon=sp.lng+(i-180);
+      const lat=-Math.atan(Math.cos((lon-sp.lng)*Math.PI/180)/Math.tan(decl*Math.PI/180))*180/Math.PI;
+      pts.push([lat,lon]);
+    }
+    const pole=sp.lat>0?-90:90;
+    pts.push([pole,180],[pole,-180],[pts[0][0],pts[0][1]]);
+    nightLayer=L.polygon(pts,{fillColor:'#000820',fillOpacity:.6,color:'#f5a623',weight:1.5,opacity:.8,dashArray:'6 4'}).addTo(leafMaps.world);
+  }catch(e){}
+  if(sunMarker){leafMaps.world.removeLayer(sunMarker);sunMarker=null;}
+  const sunIcon=L.divIcon({className:'',html:`<div style="width:22px;height:22px;border-radius:50%;background:radial-gradient(circle,#ffe066 30%,#f5a623 65%,transparent 100%);box-shadow:0 0 14px 5px rgba(245,166,35,.7)"></div>`,iconSize:[22,22],iconAnchor:[11,11]});
+  sunMarker=L.marker([sp.lat,sp.lng],{icon:sunIcon}).addTo(leafMaps.world)
+    .bindPopup(`<strong>☀️ Posizione Sole</strong><br>Lat: ${sp.lat.toFixed(1)}° · Lng: ${sp.lng.toFixed(1)}°<br>Decl: ${decl.toFixed(2)}°`,{className:'map-popup'});
+  const ut=`${String(date.getUTCHours()).padStart(2,'0')}:${String(date.getUTCMinutes()).padStart(2,'0')} UTC`;
+  const rLat=41.9,rLng=12.5;
+  const ha=hourAngle(date,rLng), alt=solarAlt(rLat,decl,ha);
+  const riseHA=Math.acos(Math.max(-1,Math.min(1,-Math.tan(rLat*Math.PI/180)*Math.tan(decl*Math.PI/180))))*180/Math.PI;
+  const riseUT=12-riseHA/15-rLng/15, setUT=12+riseHA/15-rLng/15;
+  const fmt=h=>{const hh=Math.floor(((h%24)+24)%24),mm=Math.round(Math.abs(h-Math.floor(h))*60);return`${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;};
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  set('sun-utc',ut); set('sun-elev-badge',alt>0?`Alt ${alt.toFixed(1)}°`:'Sotto orizzonte');
+  set('sd-rise',fmt(riseUT+1)); set('sd-set',fmt(setUT+1));
+  set('sd-elev',alt.toFixed(1)+'°'); set('sd-az',((ha+180)%360).toFixed(0)+'°');
+  set('sd-decl',decl.toFixed(2)+'°');
+  const rem=Math.max(0,setUT-(date.getUTCHours()+date.getUTCMinutes()/60));
+  set('sd-rem',alt>0?`${Math.floor(rem)}h ${Math.round((rem%1)*60)}m`:'—');
+}
+
+// Europe irradiance update
+function updateEuropeMap(date) {
+  if(!leafMaps.europe||!window.L) return;
+  irMarkers.forEach(m=>leafMaps.europe.removeLayer(m)); irMarkers=[];
+  const decl=solarDecl(date), day=date.getDate()+date.getMonth()*31;
+  const irVals={};
+  EU_CITIES.forEach((city,i)=>{
+    const ha=hourAngle(date,city.lng), alt=solarAlt(city.lat,decl,ha);
+    const seed=i+day*7+date.getUTCHours()*.1;
+    const cloud=Math.min(.95,Math.max(0,.2+.55*Math.abs(Math.sin(seed))));
+    const irr=alt>0?Math.round(1000*Math.sin(alt*Math.PI/180)*(1-.85*cloud)):0;
+    if(irVals[city.r]===undefined||irr>irVals[city.r]) irVals[city.r]=irr;
+    let fc,opa,r;
+    if(irr>600){fc='#f5a623';opa=.82;r=22;}
+    else if(irr>300){fc='#f5a623';opa=.48;r=18;}
+    else if(irr>50){fc='#f5c060';opa=.3;r=14;}
+    else if(alt>-6){fc='#6488cc';opa=cloud>.7?.55:.25;r=14;}
+    else{fc='#2a2f4a';opa=.4;r=12;}
+    const m=L.circleMarker([city.lat,city.lng],{radius:r,fillColor:fc,color:fc,weight:0,fillOpacity:opa}).addTo(leafMaps.europe);
+    m.bindPopup(`<strong>${city.name}</strong><br>Irradianza: <strong style="color:#f5a623">${irr} W/m²</strong><br>Alt. solare: ${alt.toFixed(1)}°<br>Nuvole: ${Math.round(cloud*100)}%`,{className:'map-popup'});
+    irMarkers.push(m);
+  });
+  const regions={itn:'Italia Nord',itc:'Italia Centro',its:'Italia Sud',es:'Spagna',fr:'Francia',de:'Germania'};
+  Object.keys(regions).forEach(k=>{
+    const v=irVals[k]||0;
+    const el=document.getElementById('ir-'+k); if(el) el.textContent=v>0?v+' W/m²':'—';
+    const bar=document.getElementById('irb-'+k); if(bar){bar.style.width=Math.min(100,v/7)+'%';bar.style.background=v>400?'#f5a623':v>150?'rgba(245,166,35,.6)':'#4f8ef7';}
+  });
+}
+
+// Italy outages update
+function updateItalyMap(date) {
+  if(!leafMaps.italy||!window.L) return;
+  outageMarkers.forEach(m=>leafMaps.italy.removeLayer(m)); outageMarkers=[];
+  const seed=date.getDate()+date.getMonth()*31;
+  currentOutages=[];
+  ITALY_REGIONS.forEach((r,i)=>{
+    const s=Math.abs(Math.sin(i*17.3+seed*.7));
+    if(s>.72){
+      const types=['elettrica','gas','manutenzione'];
+      const type=types[Math.floor(s*3)%3];
+      const aff=Math.round(500+s*12000);
+      currentOutages.push({...r,type,affected:aff,
+        started:`${String(Math.max(0,date.getHours()-Math.floor(s*4))).padStart(2,'0')}:${String(Math.floor(s*59)).padStart(2,'0')}`,
+        eta:`${String((date.getHours()+1+Math.floor(s*3))%24).padStart(2,'0')}:00`
+      });
+    }
+  });
+  currentOutages.forEach(o=>{
+    const col=OUTAGE_COLORS[o.type];
+    const ring=L.circleMarker([o.lat,o.lng],{radius:22,fillColor:col,color:col,weight:1,fillOpacity:.1}).addTo(leafMaps.italy);
+    outageMarkers.push(ring);
+    const sz=Math.min(20,8+o.affected/2000);
+    const m=L.circleMarker([o.lat,o.lng],{radius:sz,fillColor:col,color:'#0c0e14',weight:2,fillOpacity:.9}).addTo(leafMaps.italy);
+    m.bindPopup(`<strong style="color:${col}">⚡ ${o.name}</strong><br>Tipo: <strong>${o.type}</strong><br>Utenti: <strong>${o.affected.toLocaleString('it-IT')}</strong><br>Inizio: ${o.started} · ETA: ${o.eta}`,{className:'map-popup'});
+    outageMarkers.push(m);
+  });
+  ITALY_REGIONS.filter(r=>!currentOutages.find(o=>o.name===r.name)).forEach(r=>{
+    const m=L.circleMarker([r.lat,r.lng],{radius:5,fillColor:'#2dd4a0',color:'transparent',fillOpacity:.45}).addTo(leafMaps.italy);
+    m.bindPopup(`<strong style="color:#2dd4a0">✓ ${r.name}</strong><br>Rete regolare`,{className:'map-popup'});
+    outageMarkers.push(m);
+  });
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  set('outage-count',currentOutages.length+' eventi');
+  set('ok-regions',20-currentOutages.length);
+  const tot=currentOutages.reduce((s,o)=>s+o.affected,0);
+  set('total-affected',tot>0?tot.toLocaleString('it-IT'):'—');
+  const list=document.getElementById('outage-list');
+  if(list) list.innerHTML=currentOutages.length===0
+    ?'<div style="color:var(--green);font-size:11px;padding:6px 0">Nessuna interruzione attiva ✓</div>'
+    :currentOutages.map(o=>`<div style="display:flex;gap:7px;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--border)">
+        <span style="width:7px;height:7px;border-radius:50%;background:${OUTAGE_COLORS[o.type]};flex-shrink:0;margin-top:3px;display:inline-block"></span>
+        <div><div style="font-weight:500;font-size:11px">${o.name}</div>
+        <div style="color:var(--text3);font-size:10px">${o.type} · ${o.affected.toLocaleString('it-IT')} utenti</div>
+        <div style="color:var(--text3);font-size:10px">ETA ${o.eta}</div></div></div>`).join('');
+}
+
+window.addEventListener('resize',()=>{
+  if(currentPage==='mappe') Object.values(leafMaps).forEach(m=>m&&m.invalidateSize());
+});
+
+// ── WEATHER SUN ──
+function drawWeatherSun(){
+  const c=document.getElementById('weather-sun');if(!c)return;
+  const ctx=c.getContext('2d'),cx=34,cy=34,r=15;
+  ctx.clearRect(0,0,68,68);
+  const g=ctx.createRadialGradient(cx,cy,0,cx,cy,32);
+  g.addColorStop(0,'rgba(255,200,50,.5)');g.addColorStop(.6,'rgba(245,160,30,.12)');g.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,32,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle='rgba(255,200,50,.65)';ctx.lineWidth=2;ctx.lineCap='round';
+  for(let i=0;i<8;i++){const a=i*Math.PI/4,x1=cx+Math.cos(a)*(r+5),y1=cy+Math.sin(a)*(r+5),x2=cx+Math.cos(a)*(r+11),y2=cy+Math.sin(a)*(r+11);ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();}
+  const sg=ctx.createRadialGradient(cx,cy,0,cx,cy,r);
+  sg.addColorStop(0,'#fff7d0');sg.addColorStop(.4,'#ffd040');sg.addColorStop(1,'#f5960a');
+  ctx.fillStyle=sg;ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='rgba(195,215,255,.88)';
+  ctx.beginPath();ctx.arc(50,48,9,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.arc(43,52,8,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.arc(57,52,7,0,Math.PI*2);ctx.fill();
+  ctx.fillRect(35,50,28,10);
+}
+
+// ── ITALY SOLAR MAP ──
+let mktMapAnim=null;
+function drawMktItalyMap(){
+  const c=document.getElementById('mkt-italy-map');if(!c)return;
+  const W=c.offsetWidth||260,H=c.offsetHeight||218,dpr=window.devicePixelRatio||1;
+  if(c.width!==W*dpr){c.width=W*dpr;c.height=H*dpr;}
+  const ctx=c.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#020b18';ctx.fillRect(0,0,W,H);
+  function proj(lat,lng){return[(lng-6.2)/(18.8-6.2)*W,(47.5-lat)/(47.5-35.2)*H];}
+  const boot=[[47.1,10.5],[46.8,13.5],[45.8,13.8],[45.4,12.3],[45.0,8.1],[43.8,7.7],[44.0,8.2],[43.9,10.5],[43.0,11.3],[42.3,12.0],[41.4,13.2],[41.4,14.0],[40.5,15.0],[39.9,15.8],[39.6,16.1],[38.9,16.5],[38.0,15.7],[37.7,15.2],[37.5,14.0],[37.5,13.0],[37.9,12.5],[38.4,14.5],[39.3,16.8],[39.9,18.4],[40.6,18.1],[41.2,15.9],[41.7,14.0],[42.1,14.7],[43.4,13.8],[44.5,12.2],[45.5,12.5],[45.8,14.0],[46.5,13.3],[47.1,10.5]];
+  ctx.fillStyle='#0d2010';ctx.strokeStyle='rgba(79,142,247,.4)';ctx.lineWidth=1;
+  ctx.beginPath();const[bx,by]=proj(boot[0][0],boot[0][1]);ctx.moveTo(bx,by);
+  boot.slice(1).forEach(([la,ln])=>{const[x,y]=proj(la,ln);ctx.lineTo(x,y);});ctx.closePath();ctx.fill();ctx.stroke();
+  [[38.3,15.7],[37.5,15.0],[37.1,13.3],[37.5,12.4],[38.0,12.8],[38.5,14.7]].reduce((a,p,i)=>{
+    const[x,y]=proj(p[0],p[1]);i===0?(ctx.beginPath(),ctx.moveTo(x,y)):ctx.lineTo(x,y);
+    if(i===5){ctx.closePath();ctx.fill();ctx.stroke();}
+  },null);
+  [[41.0,8.2],[40.7,8.0],[39.8,8.4],[39.0,9.0],[38.9,9.7],[39.7,9.8],[40.6,9.5]].reduce((a,p,i)=>{
+    const[x,y]=proj(p[0],p[1]);i===0?(ctx.beginPath(),ctx.moveTo(x,y)):ctx.lineTo(x,y);
+    if(i===6){ctx.closePath();ctx.fill();ctx.stroke();}
+  },null);
+  [[37.6,14.0,.92],[40.8,14.2,.82],[38.9,16.6,.88],[36.8,14.7,.96],[37.5,12.8,.90],[40.1,9.0,.72],[41.9,12.5,.62],[43.8,11.2,.50],[45.5,9.2,.32]].forEach(([lat,lng,intensity])=>{
+    const[x,y]=proj(lat,lng),g=ctx.createRadialGradient(x,y,0,x,y,24*intensity);
+    g.addColorStop(0,`rgba(245,166,35,${.72*intensity})`);g.addColorStop(.5,`rgba(245,130,10,${.32*intensity})`);g.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,24*intensity,0,Math.PI*2);ctx.fill();
+  });
+  const t=Date.now()/2400;
+  [[44.5,11.3],[43.8,11.2],[45.5,9.2],[46.1,13.2]].forEach(([lat,lng])=>{
+    const[x,y]=proj(lat,lng);
+    ctx.strokeStyle='rgba(34,211,238,.65)';ctx.lineWidth=1.2;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(x,y-10);ctx.lineTo(x,y+6);ctx.stroke();
+    for(let i=0;i<3;i++){const a=i*2.094+t;ctx.beginPath();ctx.moveTo(x,y-10);ctx.lineTo(x+Math.cos(a)*8,y-10+Math.sin(a)*8);ctx.stroke();}
+    ctx.fillStyle='rgba(34,211,238,.6)';ctx.beginPath();ctx.arc(x,y-10,2.5,0,Math.PI*2);ctx.fill();
+  });
+  ctx.strokeStyle='rgba(79,142,247,.06)';ctx.lineWidth=.5;ctx.setLineDash([3,4]);
+  for(let lat=36;lat<=47;lat+=2){const[,y]=proj(lat,0);ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+  for(let lng=8;lng<=18;lng+=2){const[x]=proj(0,lng);ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+  ctx.setLineDash([]);
+  ctx.fillStyle='rgba(122,179,245,.75)';ctx.font='9px sans-serif';ctx.textAlign='center';
+  const[mx,my]=proj(45.5,9.2);ctx.fillText('Milano',mx,my-14);
+  const[rx,ry]=proj(41.9,12.5);ctx.fillText('Roma',rx,ry-14);
+}
+function startMktMapAnim(){
+  if(mktMapAnim) return;
+  function loop(){ drawMktItalyMap(); mktMapAnim=requestAnimationFrame(loop); }
+  mktMapAnim=requestAnimationFrame(loop);
+}
+function stopMktMapAnim(){ if(mktMapAnim){cancelAnimationFrame(mktMapAnim);mktMapAnim=null;} }
+
+// ── TRENDS CHART ──
+let trendsChart=null;
+const TREND_DATA={
+  '1d':{labels:['08','09','10','11','12','13','14','15','16','17','18','19'],pun:[118,122,128,134,140,148,151,149,145,138,132,126],gas:[126,129,132,135,138,138,141,138,135,132,129,129],co2:[77,78,78,79,80,81,81,80,79,78,78,77],cert:[71,72,72,73,73,73,74,73,73,72,72,72]},
+  '1w':{labels:['Lun','Mar','Mer','Gio','Ven','Sab','Dom'],pun:[125,132,138,145,151,128,115],gas:[129,132,135,138,141,132,123],co2:[78,79,80,81,82,79,76],cert:[71,72,73,74,74,72,70]},
+  '1m':{labels:['1/11','5','10','15','20','25','30'],pun:[118,124,131,138,142,138,126],gas:[120,126,132,138,141,135,129],co2:[75,77,79,81,82,80,78],cert:[68,70,72,73,74,73,72]},
+  '1y':{labels:['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov'],pun:[178,154,138,128,118,124,138,152,141,128,125],gas:[192,165,144,132,120,126,132,138,132,129,135],co2:[88,84,80,78,75,77,79,81,79,78,78],cert:[75,73,72,71,70,71,72,73,72,72,72]}
+};
+function buildTrendsChart(period){
+  period=period||'1d';
+  const el=document.getElementById('mkt-trends-chart');if(!el)return;
+  if(trendsChart)trendsChart.destroy();
+  const d=TREND_DATA[period];
+  trendsChart=new Chart(el,{type:'line',data:{labels:d.labels,datasets:[
+    {label:'Power PUN',data:d.pun,borderColor:'#4f8ef7',backgroundColor:'rgba(79,142,247,.1)',fill:true,tension:.4,pointRadius:3,pointHoverRadius:5,borderWidth:2.5},
+    {label:'Gas TTF',data:d.gas,borderColor:'#f5a623',backgroundColor:'rgba(245,166,35,.06)',fill:false,tension:.4,pointRadius:3,borderWidth:2},
+    {label:'CO2',data:d.co2,borderColor:'#f87171',fill:false,tension:.4,pointRadius:3,borderWidth:2},
+    {label:'Certificati',data:d.cert,borderColor:'#2dd4a0',fill:false,tension:.4,pointRadius:2,borderWidth:1.5,borderDash:[5,4]},
+  ]},options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,backgroundColor:'rgba(8,14,28,.95)',borderColor:'rgba(79,142,247,.3)',borderWidth:1,titleColor:'#7ab3f5',bodyColor:'#e2e4f0',padding:10}},
+    scales:{
+      x:{grid:{color:'rgba(79,142,247,.06)'},ticks:{color:'#4e5268',font:{size:10}}},
+      y:{grid:{color:'rgba(79,142,247,.07)'},ticks:{color:'#4e5268',font:{size:10},callback:function(v){return v+'€';}}}
+    },interaction:{mode:'index',intersect:false}
+  }});
+}
+function setTrendTab(period,btn){
+  document.querySelectorAll('.tp-tab').forEach(function(t){t.classList.remove('active');});
+  btn.classList.add('active');
+  buildTrendsChart(period);
+}
+
+</script>
+</body>
+</html>
