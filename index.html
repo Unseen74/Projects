@@ -67,7 +67,7 @@ input,textarea,select{font-family:inherit}
 .sidebar{width:var(--sidebar);background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100vh;flex-shrink:0;overflow-y:auto}
 .sidebar::-webkit-scrollbar{width:3px}
 .sidebar::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
-.sb-logo{padding:18px 16px 14px;border-bottom:1px solid var(--border);flex-shrink:0}
+.sb-logo{padding:16px 14px 12px;border-bottom:1px solid var(--border);flex-shrink:0;text-align:center}
 .sb-logo .brand{font-size:17px;font-weight:600;letter-spacing:-.3px}
 .sb-logo .brand span{color:var(--accent)}
 .sb-logo .tagline{font-size:10px;color:var(--text3);margin-top:2px;text-transform:uppercase;letter-spacing:.6px}
@@ -222,8 +222,11 @@ input,textarea,select{font-family:inherit}
 .cl-kpi{font-size:10px;padding:2px 7px;background:var(--bg3);border-radius:4px;color:var(--text2)}
 
 /* UPLOAD */
-.upload-zone{border:2px dashed var(--border2);border-radius:var(--r-lg);padding:24px;text-align:center;cursor:pointer;transition:all .15s}
-.upload-zone:hover{border-color:var(--accent);background:var(--accent-dim)}
+.upload-zone{border:2px dashed var(--border2);border-radius:var(--r-lg);padding:28px;text-align:center;cursor:pointer;transition:all .18s;user-select:none}
+.upload-zone:hover,.upload-zone.drag-over{border-color:var(--accent);background:var(--accent-dim)}
+.upload-zone.drag-over{transform:scale(1.01);box-shadow:0 0 20px var(--accent-dim)}
+.invoice-row-new{animation:fadeInRow .4s ease}
+@keyframes fadeInRow{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 
 /* DIVIDER */
 .divider{height:1px;background:var(--border);margin:14px 0}
@@ -434,8 +437,8 @@ body{background:var(--bg);letter-spacing:-0.01em}
 <div id="auth-screen">
   <div class="auth-box">
     <div style="text-align:center;margin-bottom:16px">
-      <div id="login-logo-wrap" style="display:none;margin-bottom:10px">
-        <img id="login-logo-img" style="max-height:56px;max-width:180px;object-fit:contain;border-radius:8px">
+      <div id="login-logo-wrap" style="display:none;margin-bottom:12px">
+        <img id="login-logo-img" style="max-height:112px;max-width:200px;object-fit:contain;border-radius:10px;display:inline-block">
       </div>
       <div class="auth-logo" id="login-text-logo">Energy<span>IQ</span></div>
     </div>
@@ -592,8 +595,8 @@ body{background:var(--bg);letter-spacing:-0.01em}
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sb-logo">
-      <div id="sb-logo-img-wrap" style="display:none;margin-bottom:8px">
-        <img id="sb-logo-img" style="max-height:36px;max-width:180px;object-fit:contain;border-radius:6px">
+      <div id="sb-logo-img-wrap" style="display:none;margin-bottom:10px;text-align:center">
+        <img id="sb-logo-img" style="max-height:72px;max-width:192px;object-fit:contain;border-radius:8px;display:inline-block">
       </div>
       <div class="brand" id="sb-text-logo">Energy<span>IQ</span></div>
       <div class="tagline">Utility Manager Platform</div>
@@ -1267,15 +1270,43 @@ body{background:var(--bg);letter-spacing:-0.01em}
         <div class="row">
           <div class="col">
             <div class="card mb12">
-              <div class="card-header"><div><div class="card-title">Carica Fatture</div><div class="card-sub">PDF · XML FatturaPA · CSV — analisi automatica AI</div></div><span class="badge b-blue">Analisi AI</span></div>
-              <div class="upload-zone" onclick="simUpload()">
-                <div style="font-size:24px;margin-bottom:6px">📄</div>
-                <div style="font-size:12px;font-weight:500;margin-bottom:3px">Trascina le fatture qui o clicca per caricare</div>
-                <div style="font-size:11px;color:var(--text3)">Estrazione automatica dati · rilevamento anomalie prezzi</div>
+              <div class="card-header">
+                <div><div class="card-title">Carica Fatture</div><div class="card-sub">PDF · XML FatturaPA · CSV · Immagine — analisi automatica AI</div></div>
+                <span class="badge b-blue">Analisi AI</span>
               </div>
-              <div id="upload-prog" style="display:none;margin-top:12px">
-                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><div class="spinner"></div><span style="font-size:11px" id="upload-status">Analisi in corso...</span></div>
-                <div class="progress"><div class="progress-fill" id="upload-bar" style="width:0%;background:var(--accent)"></div></div>
+
+              <!-- Drop zone — real file input -->
+              <div class="upload-zone" id="invoice-drop-zone"
+                onclick="document.getElementById('invoice-file-input').click()"
+                ondragover="event.preventDefault();this.classList.add('drag-over')"
+                ondragleave="this.classList.remove('drag-over')"
+                ondrop="handleInvoiceDrop(event)">
+                <input type="file" id="invoice-file-input" accept=".pdf,.xml,.csv,.jpg,.jpeg,.png"
+                  multiple style="display:none" onchange="handleInvoiceFiles(this.files)">
+                <div style="font-size:28px;margin-bottom:8px">📄</div>
+                <div style="font-size:13px;font-weight:600;margin-bottom:4px">Trascina le fatture qui o clicca per selezionare</div>
+                <div style="font-size:11px;color:var(--text3)">PDF · XML FatturaPA · CSV · JPG/PNG — max 10MB per file</div>
+              </div>
+
+              <!-- Progress bar (shown during analysis) -->
+              <div id="upload-prog" style="display:none;margin-top:14px">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+                  <div style="display:flex;align-items:center;gap:8px">
+                    <div class="spinner"></div>
+                    <span style="font-size:11px;color:var(--text2)" id="upload-status">Caricamento in corso...</span>
+                  </div>
+                  <span style="font-size:10px;color:var(--text3)" id="upload-pct">0%</span>
+                </div>
+                <div class="progress" style="height:4px"><div class="progress-fill" id="upload-bar" style="width:0%;background:var(--accent);transition:width .3s"></div></div>
+                <div style="font-size:10px;color:var(--text3);margin-top:5px" id="upload-file-name"></div>
+              </div>
+
+              <!-- Error / info -->
+              <div id="upload-error" style="display:none;margin-top:10px;padding:10px 12px;background:var(--red-dim);border:1px solid rgba(239,68,68,.2);border-radius:var(--r);font-size:11px;color:var(--red)"></div>
+
+              <!-- API key warning -->
+              <div id="upload-no-key" style="display:none;margin-top:10px;padding:10px 12px;background:var(--amber-dim);border:1px solid rgba(245,158,11,.2);border-radius:var(--r);font-size:11px;color:var(--amber)">
+                ⚠ Per l'analisi AI inserisci la chiave Anthropic nelle <span style="text-decoration:underline;cursor:pointer" onclick="openSettings()">Impostazioni</span>. Senza chiave i dati vengono estratti in modalità base (solo testo).
               </div>
             </div>
             <div class="card mb12">
@@ -2701,12 +2732,258 @@ function buildSolarSim() {
 // ═══════════════════════════════════════════════
 // UPLOAD SIM
 // ═══════════════════════════════════════════════
-function simUpload() {
-  const prog=document.getElementById('upload-prog'), bar=document.getElementById('upload-bar'), status=document.getElementById('upload-status');
+// ═══════════════════════════════════════════════
+// INVOICE UPLOAD & AI ANALYSIS — REAL
+// ═══════════════════════════════════════════════
+
+function handleInvoiceDrop(event) {
+  event.preventDefault();
+  document.getElementById('invoice-drop-zone').classList.remove('drag-over');
+  const files = event.dataTransfer.files;
+  if(files && files.length > 0) handleInvoiceFiles(files);
+}
+
+async function handleInvoiceFiles(files) {
+  if(!files || files.length === 0) return;
+
+  // Check API key
+  const keys = JSON.parse(localStorage.getItem('energyiq_keys')||'{}');
+  const noKeyEl = document.getElementById('upload-no-key');
+  if(!keys.anthropic) {
+    if(noKeyEl) noKeyEl.style.display='block';
+    // still proceed with basic extraction
+  } else {
+    if(noKeyEl) noKeyEl.style.display='none';
+  }
+
+  for(let i=0; i<files.length; i++) {
+    await processInvoiceFile(files[i], i, files.length, keys.anthropic);
+  }
+}
+
+async function processInvoiceFile(file, idx, total, apiKey) {
+  const prog   = document.getElementById('upload-prog');
+  const bar    = document.getElementById('upload-bar');
+  const status = document.getElementById('upload-status');
+  const pct    = document.getElementById('upload-pct');
+  const fname  = document.getElementById('upload-file-name');
+  const errEl  = document.getElementById('upload-error');
+
+  // Validate size
+  if(file.size > 10 * 1024 * 1024) {
+    showUploadError('File troppo grande: ' + file.name + ' (max 10MB)');
+    return;
+  }
+
   prog.style.display='block';
-  let p=0, si=0;
-  const steps=['Caricamento PDF...','Estrazione OCR...','Riconoscimento fornitore...','Calcolo €/kWh...','Analisi anomalie...','Completato!'];
-  const iv=setInterval(()=>{ p+=18; bar.style.width=Math.min(p,100)+'%'; if(si<steps.length) status.textContent=steps[si++]; if(p>=100){ clearInterval(iv); setTimeout(()=>prog.style.display='none',1500); }},400);
+  errEl.style.display='none';
+  if(fname) fname.textContent = file.name + (total>1 ? ` (${idx+1}/${total})` : '');
+
+  const steps = [
+    {pct:10, msg:'Lettura file...'},
+    {pct:30, msg:'Estrazione contenuto...'},
+    {pct:55, msg:'Analisi AI in corso...'},
+    {pct:80, msg:'Rilevamento anomalie prezzi...'},
+    {pct:95, msg:'Finalizzazione...'},
+  ];
+
+  function setProgress(p, msg) {
+    if(bar) bar.style.width = p+'%';
+    if(pct) pct.textContent = p+'%';
+    if(status) status.textContent = msg;
+  }
+
+  try {
+    setProgress(10, 'Lettura file...');
+
+    // Read file as base64 for images/PDF, as text for CSV/XML
+    const ext = file.name.split('.').pop().toLowerCase();
+    let fileContent = null;
+    let mediaType = null;
+    let isText = false;
+
+    await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = reject;
+      if(['jpg','jpeg','png'].includes(ext)) {
+        reader.onload = e => { fileContent = e.target.result.split(',')[1]; mediaType = file.type; resolve(); };
+        reader.readAsDataURL(file);
+      } else if(ext === 'pdf') {
+        reader.onload = e => { fileContent = e.target.result.split(',')[1]; mediaType = 'application/pdf'; resolve(); };
+        reader.readAsDataURL(file);
+      } else {
+        isText = true;
+        reader.onload = e => { fileContent = e.target.result; resolve(); };
+        reader.readAsText(file, 'UTF-8');
+      }
+    });
+
+    setProgress(30, 'Estrazione contenuto...');
+
+    let analysisResult = null;
+
+    if(apiKey) {
+      setProgress(55, 'Analisi AI Claude in corso...');
+
+      // Build message content
+      let msgContent = [];
+      if(isText) {
+        // Text-based: send directly
+        msgContent = [{
+          type:'text',
+          text: `Analizza questa fattura energetica italiana e restituisci SOLO un JSON con questa struttura (nessun testo prima o dopo):
+{
+  "fornitore": "nome fornitore",
+  "periodo": "Mese Anno (es. Mar 2026)",
+  "vettore": "elettricità" o "gas" o "teleriscaldamento",
+  "quantita": "valore con unità (es. 28.4k kWh o 98.4k Sm³)",
+  "importo_eur": numero solo (es. 4218),
+  "prezzo_mwh": numero solo (€/MWh o €/Smc convertito),
+  "anomalia": "descrizione breve o null",
+  "anomalia_tipo": "alto" o "medio" o "ok",
+  "note": "osservazione chiave in 1 frase"
+}
+
+Contenuto fattura:
+${fileContent.substring(0, 6000)}`
+        }];
+      } else {
+        // Binary (PDF or image): send as document/image
+        const contentType = ext === 'pdf'
+          ? {type:'document', source:{type:'base64', media_type:'application/pdf', data:fileContent}}
+          : {type:'image',    source:{type:'base64', media_type:mediaType,           data:fileContent}};
+        msgContent = [
+          contentType,
+          {type:'text', text:`Analizza questa fattura energetica italiana ed estrai i dati. Restituisci SOLO un JSON con questa struttura (nessun testo prima o dopo):
+{
+  "fornitore": "nome fornitore energia",
+  "periodo": "Mese Anno (es. Mar 2026)",
+  "vettore": "elettricità" o "gas",
+  "quantita": "valore con unità (es. 28.4k kWh)",
+  "importo_eur": numero (importo totale in euro),
+  "prezzo_mwh": numero (prezzo unitario in €/MWh),
+  "anomalia": "descrizione anomalia o null se nessuna",
+  "anomalia_tipo": "alto" o "medio" o "ok",
+  "note": "osservazione principale in 1 frase"
+}`}
+        ];
+      }
+
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json', 'x-api-key': apiKey},
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 800,
+          messages: [{role:'user', content: msgContent}]
+        })
+      });
+      const data = await res.json();
+      const raw = data.content?.[0]?.text || '{}';
+
+      // Parse JSON (strip markdown fences if present)
+      try {
+        const clean = raw.replace(/```json|```/g,'').trim();
+        analysisResult = JSON.parse(clean);
+      } catch(e) {
+        // Fallback: basic extraction from filename
+        analysisResult = fallbackExtract(file.name);
+      }
+
+    } else {
+      // No API key: basic extraction from filename/metadata
+      setProgress(55, 'Estrazione base (nessuna chiave AI)...');
+      analysisResult = fallbackExtract(file.name);
+    }
+
+    setProgress(95, 'Aggiornamento tabella...');
+
+    // Add row to invoice table
+    addInvoiceRow(analysisResult, file.name);
+
+    // Update AI chat with analysis
+    addAIMessage('consumi', buildAnalysisMessage(analysisResult));
+
+    setProgress(100, 'Analisi completata ✓');
+    setTimeout(() => { if(prog) prog.style.display='none'; }, 2000);
+
+  } catch(err) {
+    console.error('Invoice analysis error:', err);
+    showUploadError('Errore durante l\'analisi: ' + err.message + '. Verifica connessione o chiave API.');
+    if(prog) prog.style.display='none';
+  }
+}
+
+function fallbackExtract(filename) {
+  // Best-effort extraction from filename alone
+  const name = filename.toLowerCase();
+  return {
+    fornitore: name.includes('edison') ? 'Edison Energia' : name.includes('eni') ? 'ENI Plenitude' : name.includes('enel') ? 'Enel Business' : name.includes('a2a') ? 'A2A Energia' : 'Fornitore non riconosciuto',
+    periodo: 'Mar 2026',
+    vettore: name.includes('gas') ? 'gas' : 'elettricità',
+    quantita: '—',
+    importo_eur: null,
+    prezzo_mwh: null,
+    anomalia: null,
+    anomalia_tipo: 'ok',
+    note: 'Analisi base — carica chiave Anthropic per estrazione completa'
+  };
+}
+
+function addInvoiceRow(data, filename) {
+  const tbody = document.querySelector('#page-consumi .tbl tbody');
+  if(!tbody) return;
+
+  const vettoreIcon = data.vettore === 'gas' ? '🔥' : '⚡';
+  const importoStr  = data.importo_eur ? data.importo_eur.toLocaleString('it-IT') + ' €' : '—';
+  const prezzoStr   = data.prezzo_mwh  ? parseFloat(data.prezzo_mwh).toFixed(1) : '—';
+
+  let badgeHtml = '<span class="badge b-green">OK</span>';
+  if(data.anomalia_tipo === 'alto') badgeHtml = `<span class="badge b-red">${data.anomalia || 'Anomalia'}</span>`;
+  else if(data.anomalia_tipo === 'medio') badgeHtml = `<span class="badge b-amber">${data.anomalia || 'Verifica'}</span>`;
+
+  const tr = document.createElement('tr');
+  tr.className = 'invoice-row-new';
+  tr.innerHTML = `
+    <td><strong>${data.fornitore || filename}</strong></td>
+    <td>${data.periodo || '—'}</td>
+    <td style="text-align:center">${vettoreIcon}</td>
+    <td>${data.quantita || '—'}</td>
+    <td><strong>${importoStr}</strong></td>
+    <td style="font-family:'JetBrains Mono',monospace;font-size:11px">${prezzoStr}</td>
+    <td>${badgeHtml}</td>`;
+
+  // Insert at top of table
+  tbody.insertBefore(tr, tbody.firstChild);
+}
+
+function buildAnalysisMessage(data) {
+  const parts = [];
+  if(data.fornitore && data.fornitore !== 'Fornitore non riconosciuto')
+    parts.push(`Ho estratto la fattura **${data.fornitore}** per ${data.periodo}.`);
+  if(data.importo_eur)
+    parts.push(`Importo: **${data.importo_eur.toLocaleString('it-IT')} €** — ${data.quantita || ''}.`);
+  if(data.prezzo_mwh)
+    parts.push(`Prezzo unitario: **${parseFloat(data.prezzo_mwh).toFixed(1)} €/MWh**.`);
+  if(data.anomalia)
+    parts.push(`⚠ Anomalia rilevata: **${data.anomalia}**.`);
+  if(data.note)
+    parts.push(data.note);
+  return parts.join(' ') || 'Fattura analizzata. Hai domande sui dati estratti?';
+}
+
+function addAIMessage(panel, text) {
+  const msgs = document.getElementById('msgs-' + panel); if(!msgs) return;
+  const div = document.createElement('div');
+  div.className = 'msg msg-ai';
+  div.innerHTML = `<div class="msg-av">AI</div><div class="msg-bubble">${text}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function showUploadError(msg) {
+  const el = document.getElementById('upload-error');
+  if(el) { el.style.display='block'; el.textContent=msg; }
 }
 
 // ═══════════════════════════════════════════════
@@ -3196,12 +3473,11 @@ function applyLogo(dataUrl) {
   const loginWrap = document.getElementById('login-logo-wrap');
   const loginImg = document.getElementById('login-logo-img');
   const loginText = document.getElementById('login-text-logo');
-  if(loginWrap && loginImg){ loginImg.src=dataUrl; loginWrap.style.display='block'; if(loginText) loginText.style.display='none'; }
-  // Sidebar logo
+  if(loginWrap && loginImg){ loginImg.src=dataUrl; loginWrap.style.display='block'; }
+  // Sidebar logo — mostra sopra EnergyIQ, non lo nasconde
   const sbWrap = document.getElementById('sb-logo-img-wrap');
   const sbImg = document.getElementById('sb-logo-img');
-  const sbText = document.getElementById('sb-text-logo');
-  if(sbWrap && sbImg){ sbImg.src=dataUrl; sbWrap.style.display='block'; if(sbText) sbText.style.display='none'; }
+  if(sbWrap && sbImg){ sbImg.src=dataUrl; sbWrap.style.display='block'; }
 }
 function clearLogo() {
   localStorage.removeItem('energyiq_logo');
@@ -3209,13 +3485,9 @@ function clearLogo() {
   const ph = document.getElementById('logo-placeholder');
   if(prev){ prev.style.display='none'; if(ph) ph.style.display='block'; }
   const loginWrap = document.getElementById('login-logo-wrap');
-  const loginText = document.getElementById('login-text-logo');
   if(loginWrap) loginWrap.style.display='none';
-  if(loginText) loginText.style.display='block';
   const sbWrap = document.getElementById('sb-logo-img-wrap');
-  const sbText = document.getElementById('sb-text-logo');
   if(sbWrap) sbWrap.style.display='none';
-  if(sbText) sbText.style.display='block';
 }
 function loadLogo() {
   const dataUrl = localStorage.getItem('energyiq_logo');
