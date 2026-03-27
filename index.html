@@ -2869,24 +2869,43 @@ ${fileContent.substring(0, 6000)}`
         ];
       }
 
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json', 'x-api-key': apiKey},
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 800,
-          messages: [{role:'user', content: msgContent}]
-        })
-      });
-      const data = await res.json();
-      const raw = data.content?.[0]?.text || '{}';
-
-      // Parse JSON (strip markdown fences if present)
+      // Timeout 20s + headers corretti per browser (no proxy)
+      const ctl = new AbortController();
+      const tid = setTimeout(() => ctl.abort(), 20000);
       try {
+        const res = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          signal: ctl.signal,
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey,
+            'anthropic-version': '2023-06-01',
+            'anthropic-dangerous-request-check': 'skip'
+          },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 800,
+            messages: [{role:'user', content: msgContent}]
+          })
+        });
+        clearTimeout(tid);
+        if(!res.ok) {
+          const errBody = await res.json().catch(()=>({}));
+          throw new Error('API ' + res.status + ': ' + (errBody.error?.message || res.statusText));
+        }
+        const data = await res.json();
+        const raw = data.content?.[0]?.text || '{}';
         const clean = raw.replace(/```json|```/g,'').trim();
         analysisResult = JSON.parse(clean);
-      } catch(e) {
-        // Fallback: basic extraction from filename
+      } catch(fetchErr) {
+        clearTimeout(tid);
+        if(fetchErr.name === 'AbortError') {
+          setProgress(60, 'Timeout API — uso estrazione base...');
+          showCorsWarning();
+        } else {
+          // Mostra errore dettagliato reale
+          showUploadError('Errore API: ' + fetchErr.message);
+        }
         analysisResult = fallbackExtract(file.name);
       }
 
@@ -3008,8 +3027,12 @@ async function sendMsg(panel) {
   const apiKey=keys.anthropic||'';
 
   try {
-    const headers={'Content-Type':'application/json'};
-    if(apiKey) headers['x-api-key']=apiKey;
+    const headers = {
+      'Content-Type': 'application/json',
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-request-check': 'skip'
+    };
+    if(apiKey) headers['x-api-key'] = apiKey;
     const res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST', headers,
       body:JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1000, system:AI_PROMPTS[panel]||AI_PROMPTS.profilo, messages:[{role:'user',content:text}] })
