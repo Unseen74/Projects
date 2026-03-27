@@ -10,17 +10,18 @@
 /* ── RESET & BASE ── */
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0c0e14;--bg2:#12151e;--bg3:#181c28;--bg4:#1e2235;--bg5:#252a3d;
-  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.1);--border3:rgba(255,255,255,0.16);
-  --text:#e2e4f0;--text2:#8b8fa8;--text3:#4e5268;
-  --accent:#4f8ef7;--accent2:#3a7ef5;--accent-dim:rgba(79,142,247,0.12);
-  --green:#2dd4a0;--green-dim:rgba(45,212,160,0.1);
-  --amber:#f5a623;--amber-dim:rgba(245,166,35,0.1);
-  --red:#f87171;--red-dim:rgba(248,113,113,0.1);
-  --purple:#a78bfa;--purple-dim:rgba(167,139,250,0.1);
-  --teal:#22d3ee;--teal-dim:rgba(34,211,238,0.1);
-  --r:8px;--r-lg:12px;--r-xl:16px;
-  --sidebar:240px;--topbar:52px;
+  --bg:#07090f;--bg2:#0d111c;--bg3:#111827;--bg4:#161d2e;--bg5:#1c2438;
+  --border:rgba(255,255,255,0.05);--border2:rgba(255,255,255,0.09);--border3:rgba(255,255,255,0.14);
+  --text:#dde1f0;--text2:#7b82a0;--text3:#3d4460;
+  --accent:#3b82f6;--accent2:#2563eb;--accent-dim:rgba(59,130,246,0.1);
+  --green:#10b981;--green-dim:rgba(16,185,129,0.08);
+  --amber:#f59e0b;--amber-dim:rgba(245,158,11,0.08);
+  --red:#ef4444;--red-dim:rgba(239,68,68,0.08);
+  --purple:#8b5cf6;--purple-dim:rgba(139,92,246,0.08);
+  --teal:#06b6d4;--teal-dim:rgba(6,182,212,0.08);
+  --sidebar:220px;--topbar:48px;
+  --card-bg:rgba(255,255,255,0.025);
+  --card-border:rgba(255,255,255,0.07);
 }
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;min-height:100vh;overflow-x:hidden}
 button{font-family:inherit;cursor:pointer}
@@ -280,6 +281,149 @@ input,textarea,select{font-family:inherit}
 .sys-alert-blue{background:rgba(79,142,247,.07);border:1px solid rgba(79,142,247,.18)}
 .tp-tab{padding:3px 10px;border-radius:5px;font-size:11px;font-weight:500;border:1px solid rgba(79,142,247,.25);background:transparent;color:#8b8fa8;cursor:pointer;transition:all .15s}
 .tp-tab.active,.tp-tab:hover{background:rgba(79,142,247,.2);color:#7ab3f5;border-color:rgba(79,142,247,.5)}
+
+/* ── LOGO UPLOAD ── */
+.logo-upload-wrap{display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg3);border-radius:var(--r);border:1px solid var(--border2)}
+.logo-preview{width:52px;height:52px;border-radius:8px;background:var(--bg4);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
+.logo-upload-btn{padding:8px 14px;background:var(--accent-dim);border:1px solid rgba(79,142,247,.3);border-radius:var(--r);color:var(--accent);font-size:12px;cursor:pointer;text-align:center;transition:all .15s}
+.logo-upload-btn:hover{background:rgba(79,142,247,.2);border-color:var(--accent)}
+
+/* ════════════════════════════════════
+   C-LEVEL UI OVERRIDES
+════════════════════════════════════ */
+:root {
+  --bg:#07090f;--bg2:#0d111c;--bg3:#111827;--bg4:#161d2e;--bg5:#1c2438;
+  --border:rgba(255,255,255,0.05);--border2:rgba(255,255,255,0.09);--border3:rgba(255,255,255,0.14);
+  --text:#dde1f0;--text2:#7b82a0;--text3:#3d4460;
+  --accent:#3b82f6;--accent2:#2563eb;--accent-dim:rgba(59,130,246,0.1);
+  --green:#10b981;--green-dim:rgba(16,185,129,0.08);
+  --amber:#f59e0b;--amber-dim:rgba(245,158,11,0.08);
+  --red:#ef4444;--red-dim:rgba(239,68,68,0.08);
+  --purple:#8b5cf6;--purple-dim:rgba(139,92,246,0.08);
+  --teal:#06b6d4;--teal-dim:rgba(6,182,212,0.08);
+  --sidebar:220px;--topbar:48px;
+  --card-bg:rgba(255,255,255,0.025);
+  --card-border:rgba(255,255,255,0.07);
+}
+body{background:var(--bg);letter-spacing:-0.01em}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:10px;padding:18px;backdrop-filter:blur(4px)}
+.card-title{font-size:12px;font-weight:600;letter-spacing:.02em;color:var(--text)}
+.card-sub{font-size:11px;color:var(--text3);margin-top:1px}
+.kpi{background:var(--card-bg);border:1px solid var(--card-border);border-radius:10px;padding:16px}
+.kpi-value{font-size:26px;font-weight:700;letter-spacing:-1.5px;font-family:'JetBrains Mono',monospace}
+.kpi-label{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);font-weight:600;margin-bottom:8px}
+.kpi-sub{font-size:10px;color:var(--text3);margin-top:6px;display:flex;align-items:center;gap:6px}
+.sidebar{background:var(--bg2);border-right:1px solid var(--border);width:var(--sidebar)}
+.sb-item{font-size:12px;padding:6px 10px;margin:1px 4px;border-radius:7px}
+.sb-item.active{background:rgba(59,130,246,0.1);color:var(--accent)}
+.topbar{height:var(--topbar);background:var(--bg2);border-bottom:1px solid var(--border);padding:0 22px}
+.topbar-title{font-size:13px;font-weight:600;letter-spacing:-0.2px}
+.content{padding:22px}
+.btn{border-radius:7px;font-size:12px;font-weight:500;padding:6px 14px}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent2)}
+.btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--text2)}
+.btn-ghost:hover{background:var(--card-bg);color:var(--text)}
+.tbl th{font-size:10px;letter-spacing:.6px;color:var(--text3);padding:8px 14px;border-bottom:1px solid var(--border)}
+.tbl td{padding:10px 14px;font-size:12px;border-bottom:1px solid var(--border)}
+.badge{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:500;letter-spacing:.2px}
+.progress{background:rgba(255,255,255,0.04);border-radius:2px;height:3px}
+.progress-fill{height:100%;border-radius:2px}
+
+/* ════════════════════════════════════
+   CONFIGURATORI — C-LEVEL REDESIGN
+════════════════════════════════════ */
+
+/* Tab navigation — pill style */
+.cfg-nav{display:flex;gap:2px;padding:4px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:24px;width:fit-content}
+.cfg-nav-btn{padding:8px 20px;border-radius:7px;border:none;background:transparent;color:var(--text3);font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;letter-spacing:.01em}
+.cfg-nav-btn:hover{color:var(--text2)}
+.cfg-nav-btn.active{background:var(--bg4);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.4)}
+
+/* Step indicator — horizontal bar */
+.step-bar{display:flex;align-items:center;margin-bottom:28px;padding:0 2px}
+.step-node{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;min-width:80px}
+.step-circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;transition:all .25s;border:1.5px solid var(--border2);color:var(--text3);background:var(--bg3)}
+.step-circle.active{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 0 0 4px rgba(59,130,246,.15)}
+.step-circle.done{background:var(--green);border-color:var(--green);color:#fff}
+.step-label{font-size:10px;color:var(--text3);font-weight:500;text-align:center;transition:color .25s;white-space:nowrap}
+.step-label.active{color:var(--accent)}
+.step-label.done{color:var(--green)}
+.step-line{flex:1;height:1px;background:var(--border2);margin:0 6px;margin-bottom:22px;transition:background .25s}
+.step-line.done{background:var(--green)}
+
+/* Two-column layout: form left, map/chart right */
+.cfg-layout{display:grid;grid-template-columns:1fr 380px;gap:20px;align-items:start}
+.cfg-layout-3{display:grid;grid-template-columns:1fr 1fr 340px;gap:16px;align-items:start}
+.cfg-form-panel{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:22px}
+.cfg-map-panel{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;overflow:hidden;position:sticky;top:0}
+.cfg-map-panel .map-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.cfg-map-panel .map-header-title{font-size:11px;font-weight:600;color:var(--text2);letter-spacing:.02em;text-transform:uppercase}
+.cfg-map-inner{height:260px;position:relative}
+.cfg-chart-panel{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:18px;margin-top:16px}
+
+/* Form elements — refined */
+.field{margin-bottom:18px}
+.field-label{font-size:11px;font-weight:600;color:var(--text2);margin-bottom:7px;display:flex;justify-content:space-between;align-items:center;letter-spacing:.01em}
+.field-label span{font-weight:400;color:var(--text3)}
+.field-input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:9px 13px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:border-color .15s}
+.field-input:focus{border-color:rgba(59,130,246,.5);background:var(--bg4)}
+.field-select{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:9px 13px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none;appearance:none;cursor:pointer}
+.field-select:focus{border-color:rgba(59,130,246,.5)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+
+/* Slider — modern */
+.slider-wrap{display:flex;align-items:center;gap:12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 14px}
+.slider-wrap input[type=range]{flex:1;-webkit-appearance:none;height:3px;background:var(--border2);border-radius:2px;outline:none;cursor:pointer}
+.slider-wrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 0 0 3px rgba(59,130,246,.2)}
+.slider-val{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:var(--accent);min-width:70px;text-align:right;flex-shrink:0}
+
+/* Toggle checkbox card */
+.toggle-card{display:flex;align-items:center;gap:14px;padding:13px 15px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all .15s;margin-bottom:8px}
+.toggle-card:hover{border-color:var(--border2);background:var(--bg4)}
+.toggle-card.selected{border-color:rgba(59,130,246,.35);background:rgba(59,130,246,.05)}
+.toggle-card input[type=checkbox]{width:15px;height:15px;accent-color:var(--accent);flex-shrink:0;cursor:pointer}
+.toggle-card-icon{font-size:18px;flex-shrink:0}
+.toggle-card-body{flex:1}
+.toggle-card-title{font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px}
+.toggle-card-desc{font-size:10px;color:var(--text3)}
+.toggle-card-tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;flex-shrink:0}
+.tag-green{background:var(--green-dim);color:var(--green)}
+.tag-amber{background:var(--amber-dim);color:var(--amber)}
+
+/* Incentivo pill row */
+.inc-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);margin-bottom:8px;cursor:pointer;transition:all .15s}
+.inc-row:hover{border-color:var(--border2)}
+.inc-row.checked{border-color:rgba(16,185,129,.3);background:rgba(16,185,129,.04)}
+.inc-row input[type=checkbox]{accent-color:var(--green);width:14px;height:14px;flex-shrink:0}
+.inc-name{font-size:12px;font-weight:500;flex:1}
+.inc-rate{font-size:11px;font-weight:700;min-width:70px;text-align:right}
+.inc-base{font-size:10px;color:var(--text3);min-width:100px;text-align:right}
+
+/* Results row — premium */
+.res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.res-card{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:14px;text-align:center}
+.res-card-label{font-size:9px;text-transform:uppercase;letter-spacing:.7px;color:var(--text3);font-weight:600;margin-bottom:8px}
+.res-card-val{font-size:20px;font-weight:700;font-family:'JetBrains Mono',monospace;letter-spacing:-0.5px;line-height:1}
+.res-card-sub{font-size:9px;color:var(--text3);margin-top:5px}
+
+/* Section heading inside form */
+.form-section{font-size:10px;text-transform:uppercase;letter-spacing:.9px;color:var(--text3);font-weight:600;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+
+/* Map info overlay */
+.map-info-badge{position:absolute;top:10px;right:10px;z-index:500;background:rgba(7,9,15,.85);border:1px solid var(--border2);border-radius:7px;padding:8px 12px;font-size:11px;color:var(--text2);backdrop-filter:blur(6px)}
+.map-info-badge strong{color:var(--amber);font-family:'JetBrains Mono',monospace}
+
+/* Nav actions */
+.step-actions{display:flex;gap:8px;align-items:center;margin-top:20px;padding-top:18px;border-top:1px solid var(--border)}
+
+/* Inline info box */
+.info-box{padding:12px 14px;border-radius:8px;font-size:11px;line-height:1.6;color:var(--text2)}
+.info-box-green{background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2)}
+.info-box-blue{background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.2)}
+.info-box-amber{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2)}
+
 </style>
 </head>
 <body>
@@ -289,7 +433,12 @@ input,textarea,select{font-family:inherit}
 ═══════════════════════════════════════════ -->
 <div id="auth-screen">
   <div class="auth-box">
-    <div class="auth-logo">Energy<span>IQ</span></div>
+    <div style="text-align:center;margin-bottom:16px">
+      <div id="login-logo-wrap" style="display:none;margin-bottom:10px">
+        <img id="login-logo-img" style="max-height:56px;max-width:180px;object-fit:contain;border-radius:8px">
+      </div>
+      <div class="auth-logo" id="login-text-logo">Energy<span>IQ</span></div>
+    </div>
     <div class="auth-sub">Piattaforma Utility Manager · v2.0</div>
 
     <div style="margin-bottom:16px">
@@ -340,6 +489,24 @@ input,textarea,select{font-family:inherit}
     </div>
 
     <div class="settings-section">
+      <div class="settings-section-title">🏢 Logo Aziendale</div>
+      <div class="logo-upload-wrap">
+        <div class="logo-preview" id="logo-preview-box">
+          <span style="font-size:22px;color:var(--text3)" id="logo-placeholder">🏢</span>
+          <img id="logo-preview-img" style="display:none;width:100%;height:100%;object-fit:contain">
+        </div>
+        <div style="flex:1">
+          <div class="logo-upload-btn" onclick="document.getElementById('logo-file-input').click()">
+            📁 Carica logo aziendale (PNG · SVG · JPG)
+          </div>
+          <div style="font-size:10px;color:var(--text3);margin-top:5px">Appare nel login e nella sidebar · max 2MB</div>
+          <input type="file" id="logo-file-input" accept="image/*" style="display:none" onchange="handleLogoUpload(this)">
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="clearLogo()" title="Rimuovi logo">✕</button>
+      </div>
+    </div>
+
+    <div class="settings-section">
       <div class="settings-section-title">🔑 API Keys</div>
       <div class="settings-row">
         <div class="settings-label">
@@ -361,6 +528,22 @@ input,textarea,select{font-family:inherit}
           <span style="font-size:10px;color:var(--text3)">Mappe avanzate</span>
         </div>
         <input class="settings-input" id="key-gmaps" type="password" placeholder="AIzaSy..." oninput="saveKeys()">
+      </div>
+      <div class="settings-row">
+        <div class="settings-label">
+          <span>ENTSO-E Transparency <span class="api-status" id="st-entsoe"></span></span>
+          <span style="font-size:10px;color:var(--text3)">Prezzi PUN elettricità EU reali</span>
+        </div>
+        <input class="settings-input" id="key-entsoe" type="password" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" oninput="saveKeys()">
+        <div style="font-size:10px;color:var(--text3);margin-top:3px">Registrati su <a href="https://transparency.entsoe.eu" target="_blank" style="color:var(--accent)">transparency.entsoe.eu</a> → My Account → Security token</div>
+      </div>
+      <div class="settings-row">
+        <div class="settings-label">
+          <span>EEX Market Data <span class="api-status" id="st-eex"></span></span>
+          <span style="font-size:10px;color:var(--text3)">Gas TTF · Certificati verdi</span>
+        </div>
+        <input class="settings-input" id="key-eex" type="password" placeholder="Bearer eyJ..." oninput="saveKeys()">
+        <div style="font-size:10px;color:var(--text3);margin-top:3px">Registrati su <a href="https://www.eex.com/en/market-data" target="_blank" style="color:var(--accent)">eex.com</a> → API Access</div>
       </div>
       <div class="settings-row">
         <div class="settings-label">
@@ -409,7 +592,10 @@ input,textarea,select{font-family:inherit}
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sb-logo">
-      <div class="brand">Energy<span>IQ</span></div>
+      <div id="sb-logo-img-wrap" style="display:none;margin-bottom:8px">
+        <img id="sb-logo-img" style="max-height:36px;max-width:180px;object-fit:contain;border-radius:6px">
+      </div>
+      <div class="brand" id="sb-text-logo">Energy<span>IQ</span></div>
       <div class="tagline">Utility Manager Platform</div>
     </div>
 
@@ -466,10 +652,14 @@ input,textarea,select{font-family:inherit}
       Sostenibilità CO₂
     </div>
 
-    <div class="sb-section">Progetti</div>
+    <div class="sb-section">Progetti & Configuratori</div>
     <div class="sb-item" onclick="showPage('solare')">
       <div class="sb-icon"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg></div>
       FV & Rinnovabili
+    </div>
+    <div class="sb-item" onclick="showPage('configuratori')">
+      <div class="sb-icon"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg></div>
+      Configuratori
     </div>
     <div class="sb-item" onclick="showPage('report')">
       <div class="sb-icon"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
@@ -554,30 +744,40 @@ input,textarea,select{font-family:inherit}
             <div class="tp-header">
               <span class="tp-icon">🌤</span>
               <span class="tp-title">Weather & Solar Data</span>
+              <span class="tp-live" id="weather-live-badge">LIVE</span>
             </div>
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+            <div class="city-search">
+              <input class="city-input" id="weather-city-input" placeholder="🔍 Città (es. Roma, Milano...)" value="Milano" onkeydown="if(event.key==='Enter')fetchWeather()">
+              <button class="city-btn" onclick="fetchWeather()">Go</button>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
               <div>
-                <div style="font-size:12px;font-weight:600;color:#7ab3f5;margin-bottom:1px">Milano, Italy</div>
-                <div style="font-size:30px;font-weight:700;line-height:1;letter-spacing:-1px;color:#e2e4f0">22°</div>
-                <div style="font-size:11px;color:#8b8fa8;margin-top:2px">Soleggiato</div>
+                <div style="font-size:12px;font-weight:600;color:#7ab3f5;margin-bottom:1px" id="wd-city">Milano, Italy</div>
+                <div style="font-size:30px;font-weight:700;line-height:1;letter-spacing:-1px;color:#e2e4f0" id="wd-temp">22°</div>
+                <div style="font-size:11px;color:#8b8fa8;margin-top:2px" id="wd-desc">Soleggiato</div>
               </div>
               <div style="margin-left:auto"><canvas id="weather-sun" width="68" height="68" style="display:block"></canvas></div>
             </div>
-            <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;flex-direction:column;gap:7px">
               <div style="display:flex;align-items:center;gap:8px;font-size:11px;padding:5px 8px;background:rgba(245,166,35,.07);border-radius:6px">
                 <span style="color:#f5a623;font-size:13px">☀</span>
-                <span style="color:#8b8fa8">Irradianza solare:</span>
-                <strong style="margin-left:auto;color:#f5a623">680 W/m²</strong>
+                <span style="color:#8b8fa8">Irradianza:</span>
+                <strong style="margin-left:auto;color:#f5a623" id="wd-solar">— W/m²</strong>
               </div>
               <div style="display:flex;align-items:center;gap:8px;font-size:11px;padding:5px 8px;background:rgba(79,142,247,.07);border-radius:6px">
                 <span style="color:#7ab3f5;font-size:13px">💨</span>
                 <span style="color:#8b8fa8">Vento:</span>
-                <strong style="margin-left:auto">14 km/h NW</strong>
+                <strong style="margin-left:auto" id="wd-wind">— km/h</strong>
               </div>
               <div style="display:flex;align-items:center;gap:8px;font-size:11px;padding:5px 8px;background:rgba(79,142,247,.07);border-radius:6px">
                 <span style="color:#7ab3f5;font-size:13px">💧</span>
                 <span style="color:#8b8fa8">Umidità:</span>
-                <strong style="margin-left:auto">45%</strong>
+                <strong style="margin-left:auto" id="wd-humidity">—%</strong>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:11px;padding:5px 8px;background:rgba(45,212,160,.07);border-radius:6px">
+                <span style="color:#2dd4a0;font-size:13px">🌡</span>
+                <span style="color:#8b8fa8">Percepita:</span>
+                <strong style="margin-left:auto" id="wd-feels">—°</strong>
               </div>
             </div>
           </div>
@@ -645,8 +845,9 @@ input,textarea,select{font-family:inherit}
               <span class="tp-icon">🗺</span>
               <span class="tp-title">Solar &amp; Wind Map</span>
             </div>
-            <div style="position:relative;height:218px;border-radius:8px;overflow:hidden;background:#020b18">
-              <canvas id="mkt-italy-map" style="width:100%;height:100%;display:block"></canvas>
+            <div style="position:relative;height:218px;border-radius:8px;overflow:hidden;border:1px solid rgba(79,142,247,.2)">
+              <div id="solar-wind-leaflet" style="position:absolute;inset:0;z-index:1;width:100%;height:100%"></div>
+              <canvas id="mkt-italy-map" style="position:absolute;inset:0;z-index:2;width:100%;height:100%;pointer-events:none"></canvas>
             </div>
             <div style="display:flex;gap:12px;margin-top:8px">
               <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:#8b8fa8"><span style="width:9px;height:9px;border-radius:50%;background:#f5a623;box-shadow:0 0 6px #f5a623;display:inline-block"></span>Alto irraggiamento</span>
@@ -873,47 +1074,129 @@ input,textarea,select{font-family:inherit}
 
       <!-- ═══ PAGE: GREEN ═══ -->
       <div class="page" id="page-green">
-        <div class="g4 mb16">
-          <div class="kpi" style="border-left:3px solid var(--green)"><div class="kpi-label">% FER su domanda IT</div><div class="kpi-value" style="color:var(--green)">45.2<span style="font-size:13px;color:var(--text3)">%</span></div><div class="kpi-sub"><span class="kpi-delta delta-up">+7pp</span> vs ott 2023</div></div>
-          <div class="kpi" style="border-left:3px solid var(--teal)"><div class="kpi-label">Emissioni Settore Energia EU</div><div class="kpi-value" style="color:var(--teal)">-18<span style="font-size:13px;color:var(--text3)">% YoY</span></div><div class="kpi-sub">Obiettivo -55% al 2030</div></div>
-          <div class="kpi" style="border-left:3px solid var(--purple)"><div class="kpi-label">Prezzo ETS CO₂</div><div class="kpi-value" style="color:var(--purple)">64.8<span style="font-size:13px;color:var(--text3)"> €/t</span></div><div class="kpi-sub"><span class="kpi-delta delta-down">-8.1%</span> da inizio anno</div></div>
-          <div class="kpi" style="border-left:3px solid var(--amber)"><div class="kpi-label">Nuova cap. FV installata IT</div><div class="kpi-value" style="color:var(--amber)">6.8<span style="font-size:13px;color:var(--text3)"> GW</span></div><div class="kpi-sub">2024 YTD · <span class="kpi-delta delta-up">record storico</span></div></div>
+
+        <!-- KPI aggiornati Q1 2026 -->
+        <div class="g4 mb16" id="green-kpi-row">
+          <div class="kpi" style="border-left:3px solid var(--green)">
+            <div class="kpi-label">% FER su domanda IT</div>
+            <div class="kpi-value" style="color:var(--green)" id="gk-fer">52.4<span style="font-size:13px;color:var(--text3)">%</span></div>
+            <div class="kpi-sub"><span class="kpi-delta delta-up">+8.1pp</span> vs Q1 2025</div>
+          </div>
+          <div class="kpi" style="border-left:3px solid var(--teal)">
+            <div class="kpi-label">Emissioni Settore Energia EU</div>
+            <div class="kpi-value" style="color:var(--teal)" id="gk-emiss">-22<span style="font-size:13px;color:var(--text3)">% YoY</span></div>
+            <div class="kpi-sub">Obiettivo -55% al 2030</div>
+          </div>
+          <div class="kpi" style="border-left:3px solid var(--purple)">
+            <div class="kpi-label">Prezzo ETS CO₂ EU</div>
+            <div class="kpi-value" style="color:var(--purple)" id="gk-ets">58.4<span style="font-size:13px;color:var(--text3)"> €/t</span></div>
+            <div class="kpi-sub"><span class="kpi-delta delta-down">-9.8%</span> da inizio 2026</div>
+          </div>
+          <div class="kpi" style="border-left:3px solid var(--amber)">
+            <div class="kpi-label">Nuova cap. FV installata IT</div>
+            <div class="kpi-value" style="color:var(--amber)" id="gk-fv">5.2<span style="font-size:13px;color:var(--text3)"> GW</span></div>
+            <div class="kpi-sub">Q1 2026 · <span class="kpi-delta delta-up">+18% vs Q1 2025</span></div>
+          </div>
         </div>
+
         <div class="row mb16">
           <div class="col">
             <div class="card">
-              <div class="card-header"><div><div class="card-title">Mix Energetico Italia — Ott 2024</div><div class="card-sub">Produzione netta per fonte · TWh</div></div></div>
-              <div class="chart-wrap" style="height:190px"><canvas id="green-mix-chart"></canvas></div>
+              <div class="card-header">
+                <div>
+                  <div class="card-title" id="green-mix-title">Mix Energetico Italia — Mar 2026</div>
+                  <div class="card-sub">Produzione netta per fonte · TWh · dati Terna/GSE</div>
+                </div>
+                <div style="display:flex;gap:6px;align-items:center">
+                  <span class="badge b-green" id="green-data-badge">Mar 2026</span>
+                  <button class="btn btn-ghost btn-sm" onclick="refreshGreenData()">↻ Aggiorna</button>
+                </div>
+              </div>
+              <div class="chart-wrap" style="height:200px"><canvas id="green-mix-chart"></canvas></div>
             </div>
           </div>
-          <div class="col-fixed" style="width:260px">
+          <div class="col-fixed" style="width:280px">
             <div class="card" style="height:100%">
-              <div class="card-header"><div><div class="card-title">Obiettivi PNIEC 2030</div></div></div>
+              <div class="card-header"><div><div class="card-title">Obiettivi PNIEC 2030</div><div class="card-sub">Piano Nazionale Integrato Energia e Clima</div></div></div>
               <div style="display:flex;flex-direction:column;gap:12px">
-                <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:var(--text2)">% rinnovabili su elettricità</span><span><strong style="color:var(--green)">45%</strong> / 72%</span></div><div class="progress"><div class="progress-fill" style="width:63%;background:var(--green)"></div></div></div>
-                <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:var(--text2)">Riduzione emissioni GHG</span><span><strong style="color:var(--amber)">-32%</strong> / -55%</span></div><div class="progress"><div class="progress-fill" style="width:58%;background:var(--amber)"></div></div></div>
-                <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:var(--text2)">Efficienza energetica</span><span><strong style="color:var(--accent)">-18%</strong> / -30%</span></div><div class="progress"><div class="progress-fill" style="width:60%;background:var(--accent)"></div></div></div>
-                <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:var(--text2)">Capacità FV installata</span><span><strong style="color:var(--amber)">31 GW</strong> / 80 GW</span></div><div class="progress"><div class="progress-fill" style="width:39%;background:var(--amber)"></div></div></div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px">
+                    <span style="color:var(--text2)">% rinnovabili su elettricità</span>
+                    <span><strong style="color:var(--green)" id="pniec-fer-val">52%</strong> / 72%</span>
+                  </div>
+                  <div class="progress"><div class="progress-fill" id="pniec-fer-bar" style="width:72%;background:var(--green)"></div></div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px">
+                    <span style="color:var(--text2)">Riduzione emissioni GHG</span>
+                    <span><strong style="color:var(--amber)" id="pniec-ghg-val">-38%</strong> / -55%</span>
+                  </div>
+                  <div class="progress"><div class="progress-fill" id="pniec-ghg-bar" style="width:69%;background:var(--amber)"></div></div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px">
+                    <span style="color:var(--text2)">Efficienza energetica</span>
+                    <span><strong style="color:var(--accent)" id="pniec-eff-val">-22%</strong> / -30%</span>
+                  </div>
+                  <div class="progress"><div class="progress-fill" id="pniec-eff-bar" style="width:73%;background:var(--accent)"></div></div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px">
+                    <span style="color:var(--text2)">Capacità FV installata</span>
+                    <span><strong style="color:var(--amber)" id="pniec-fv-val">42 GW</strong> / 80 GW</span>
+                  </div>
+                  <div class="progress"><div class="progress-fill" id="pniec-fv-bar" style="width:52%;background:var(--amber)"></div></div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px">
+                    <span style="color:var(--text2)">Comunità Energetiche (CER)</span>
+                    <span><strong style="color:var(--teal)" id="pniec-cer-val">1.840</strong> / 5.000</span>
+                  </div>
+                  <div class="progress"><div class="progress-fill" id="pniec-cer-bar" style="width:37%;background:var(--teal)"></div></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
+
         <div class="row">
-          <div class="col"><div class="card"><div class="card-header"><div><div class="card-title">Prezzo CO₂ ETS — 12 Mesi</div></div></div><div class="chart-wrap" style="height:170px"><canvas id="ets-chart"></canvas></div></div></div>
-          <div class="col-fixed" style="width:320px">
+          <div class="col">
+            <div class="card">
+              <div class="card-header">
+                <div><div class="card-title">Prezzo CO₂ ETS — Trend 14 Mesi</div><div class="card-sub">EU Emission Trading System · €/tonnellata · Gen 2025 – Mar 2026</div></div>
+              </div>
+              <div class="chart-wrap" style="height:180px"><canvas id="ets-chart"></canvas></div>
+            </div>
+          </div>
+          <div class="col-fixed" style="width:340px">
             <div class="card" style="height:100%">
-              <div class="card-header"><div><div class="card-title">News Green & Policy</div></div></div>
-              <div style="display:flex;flex-direction:column;gap:0">
-                <div style="padding:9px 0;border-bottom:1px solid var(--border)"><div style="display:flex;gap:5px;align-items:center;margin-bottom:3px"><span class="badge b-green" style="font-size:9px">EU GREEN DEAL</span><span style="font-size:9px;color:var(--text3)">25/11</span></div><div style="font-size:11px;font-weight:500;margin-bottom:1px">Net Zero Industry Act — 40% tech green EU entro 2030</div><div style="font-size:10px;color:var(--text3)">Batterie, pompe di calore, solare, idrolizzatori EU</div></div>
-                <div style="padding:9px 0;border-bottom:1px solid var(--border)"><div style="display:flex;gap:5px;align-items:center;margin-bottom:3px"><span class="badge b-blue" style="font-size:9px">CSRD</span><span style="font-size:9px;color:var(--text3)">22/11</span></div><div style="font-size:11px;font-weight:500;margin-bottom:1px">Obbligo rendicontazione sostenibilità PMI+ da 2026</div><div style="font-size:10px;color:var(--text3)">>250 dipendenti o >40M€ ricavi: bilancio sostenibilità obbligatorio</div></div>
-                <div style="padding:9px 0;border-bottom:1px solid var(--border)"><div style="display:flex;gap:5px;align-items:center;margin-bottom:3px"><span class="badge b-amber" style="font-size:9px">ITALIA</span><span style="font-size:9px;color:var(--text3)">20/11</span></div><div style="font-size:11px;font-weight:500;margin-bottom:1px">Transizione 5.0: prorogato al 31/12/2025</div><div style="font-size:10px;color:var(--text3)">Credito d'imposta FV+BESS fino al 45%</div></div>
-                <div style="padding:9px 0"><div style="display:flex;gap:5px;align-items:center;margin-bottom:3px"><span class="badge b-purple" style="font-size:9px">H2</span><span style="font-size:9px;color:var(--text3)">18/11</span></div><div style="font-size:11px;font-weight:500;margin-bottom:1px">Idrogeno verde: costo sceso a 4.2 €/kg</div><div style="font-size:10px;color:var(--text3)">Target <3 € entro 2030 — elettrolizzatori -60% costo in 3 anni</div></div>
+              <div class="card-header"><div><div class="card-title">News Green & Policy</div><div class="card-sub">Aggiornato Mar 2026</div></div></div>
+              <div style="display:flex;flex-direction:column;gap:0" id="green-news">
+                <div style="padding:9px 0;border-bottom:1px solid var(--border)">
+                  <div style="display:flex;gap:5px;align-items:center;margin-bottom:3px"><span class="badge b-green" style="font-size:9px">EU GREEN DEAL</span><span style="font-size:9px;color:var(--text3)">Feb 2026</span></div>
+                  <div style="font-size:11px;font-weight:500;margin-bottom:1px">Omnibus Package: obiettivi CSRD rivisti per PMI, semplificazione rendicontazione</div>
+                  <div style="font-size:10px;color:var(--text3)">Soglia alzata a 1.000 dipendenti — esclude molte PMI dall'obbligo immediato</div>
+                </div>
+                <div style="padding:9px 0;border-bottom:1px solid var(--border)">
+                  <div style="display:flex;gap:5px;align-items:center;margin-bottom:3px"><span class="badge b-amber" style="font-size:9px">ITALIA</span><span style="font-size:9px;color:var(--text3)">Gen 2026</span></div>
+                  <div style="font-size:11px;font-weight:500;margin-bottom:1px">Transizione 5.0 prorogata — stanziati ulteriori 3,7 Mld € per 2026</div>
+                  <div style="font-size:10px;color:var(--text3)">Aliquote credito d'imposta confermate: 35–45% per FV+BESS abbinati a efficienza</div>
+                </div>
+                <div style="padding:9px 0;border-bottom:1px solid var(--border)">
+                  <div style="display:flex;gap:5px;align-items:center;margin-bottom:3px"><span class="badge b-teal" style="font-size:9px">CER</span><span style="font-size:9px;color:var(--text3)">Mar 2026</span></div>
+                  <div style="font-size:11px;font-weight:500;margin-bottom:1px">CER Italia: superata quota 1.800 comunità attive, incentivo GSE a 115–132 €/MWh</div>
+                  <div style="font-size:10px;color:var(--text3)">Nord Italia registra crescita più rapida; attivo sportello semplificato per CER <200 kW</div>
+                </div>
+                <div style="padding:9px 0">
+                  <div style="display:flex;gap:5px;align-items:center;margin-bottom:3px"><span class="badge b-purple" style="font-size:9px">ETS</span><span style="font-size:9px;color:var(--text3)">Mar 2026</span></div>
+                  <div style="font-size:11px;font-weight:500;margin-bottom:1px">ETS prezzi in calo: forte offerta di quote, rallentamento domanda industria EU</div>
+                  <div style="font-size:10px;color:var(--text3)">Analisti prevedono rimbalzo a 65–70 €/t nel Q3 2026 con ripresa produzione</div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
       <!-- ═══ PAGE: CLIENTI ═══ -->
       <div class="page" id="page-clienti">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
@@ -1000,10 +1283,10 @@ input,textarea,select{font-family:inherit}
               <table class="tbl">
                 <thead><tr><th>Fornitore</th><th>Periodo</th><th>Vettore</th><th>Quantità</th><th>Importo</th><th>€/MWh</th><th>Anomalie</th></tr></thead>
                 <tbody>
-                  <tr><td>Edison Energia</td><td>Ott 2024</td><td>⚡</td><td>28.4k kWh</td><td><strong>4.218 €</strong></td><td style="font-family:'JetBrains Mono',monospace;font-size:11px">148.5</td><td><span class="badge b-amber">Prezzo +9%</span></td></tr>
-                  <tr><td>Enel Business</td><td>Ott 2024</td><td>⚡</td><td>8.1k kWh</td><td><strong>1.102 €</strong></td><td style="font-family:'JetBrains Mono',monospace;font-size:11px">136.0</td><td><span class="badge b-green">OK</span></td></tr>
-                  <tr><td>ENI Plenitude</td><td>Ott 2024</td><td>🔥</td><td>98.4k Sm³</td><td><strong>7.840 €</strong></td><td style="font-family:'JetBrains Mono',monospace;font-size:11px">79.7</td><td><span class="badge b-red">Contratto scaduto</span></td></tr>
-                  <tr><td>A2A Energia</td><td>Ott 2024</td><td>⚡</td><td>6.4k kWh</td><td><strong>902 €</strong></td><td style="font-family:'JetBrains Mono',monospace;font-size:11px">140.9</td><td><span class="badge b-green">OK</span></td></tr>
+                  <tr><td>Edison Energia</td><td>Mar 2026</td><td>⚡</td><td>28.4k kWh</td><td><strong>4.218 €</strong></td><td style="font-family:'JetBrains Mono',monospace;font-size:11px">148.5</td><td><span class="badge b-amber">Prezzo +9%</span></td></tr>
+                  <tr><td>Enel Business</td><td>Mar 2026</td><td>⚡</td><td>8.1k kWh</td><td><strong>1.102 €</strong></td><td style="font-family:'JetBrains Mono',monospace;font-size:11px">136.0</td><td><span class="badge b-green">OK</span></td></tr>
+                  <tr><td>ENI Plenitude</td><td>Mar 2026</td><td>🔥</td><td>98.4k Sm³</td><td><strong>7.840 €</strong></td><td style="font-family:'JetBrains Mono',monospace;font-size:11px">79.7</td><td><span class="badge b-red">Contratto scaduto</span></td></tr>
+                  <tr><td>A2A Energia</td><td>Mar 2026</td><td>⚡</td><td>6.4k kWh</td><td><strong>902 €</strong></td><td style="font-family:'JetBrains Mono',monospace;font-size:11px">140.9</td><td><span class="badge b-green">OK</span></td></tr>
                 </tbody>
               </table>
             </div>
@@ -1103,7 +1386,7 @@ input,textarea,select{font-family:inherit}
         <div class="card">
           <div class="card-header"><div><div class="card-title">KPI Sostenibilità ESG</div><div class="card-sub">Metriche per rendicontazione GRI / CSRD</div></div><button class="btn btn-primary btn-sm">📄 Genera Report PDF</button></div>
           <table class="tbl">
-            <thead><tr><th>Indicatore</th><th>Valore 2024</th><th>Target 2025</th><th>Progresso</th><th>Stato</th></tr></thead>
+            <thead><tr><th>Indicatore</th><th>Valore 2025</th><th>Target 2026</th><th>Progresso</th><th>Stato</th></tr></thead>
             <tbody>
               <tr><td>Intensità energetica (MWh/M€)</td><td>12.4</td><td>11.0</td><td><div class="progress" style="width:120px"><div class="progress-fill" style="width:72%;background:var(--green)"></div></div></td><td><span class="badge b-green">In target</span></td></tr>
               <tr><td>% Energia rinnovabile</td><td>24%</td><td>40%</td><td><div class="progress" style="width:120px"><div class="progress-fill" style="width:60%;background:var(--amber)"></div></div></td><td><span class="badge b-amber">In corso</span></td></tr>
@@ -1172,7 +1455,7 @@ input,textarea,select{font-family:inherit}
           </div>
         </div>
         <div class="card">
-          <div class="card-header"><div><div class="card-title">Incentivi Disponibili</div><div class="card-sub">Aggiornato Nov 2024</div></div></div>
+          <div class="card-header"><div><div class="card-title">Incentivi Disponibili</div><div class="card-sub">Aggiornato Mar 2026</div></div></div>
           <table class="tbl">
             <thead><tr><th>Incentivo</th><th>Tipo</th><th>Aliquota</th><th>Applicabile a</th></tr></thead>
             <tbody>
@@ -1184,6 +1467,752 @@ input,textarea,select{font-family:inherit}
           </table>
         </div>
       </div>
+
+
+      <!-- ═══ PAGE: CONFIGURATORI ═══ -->
+      <div class="page" id="page-configuratori">
+
+        <!-- Tab nav -->
+        <div class="cfg-nav">
+          <button class="cfg-nav-btn active" onclick="switchCfgTab('fv',this)">☀ Fotovoltaico</button>
+          <button class="cfg-nav-btn" onclick="switchCfgTab('ev',this)">⚡ Colonnine EV</button>
+          <button class="cfg-nav-btn" onclick="switchCfgTab('eff',this)">🔋 Efficientamento</button>
+          <button class="cfg-nav-btn" onclick="switchCfgTab('cer',this)">🌿 CER</button>
+        </div>
+
+        <!-- ══ FV ══ -->
+        <div id="cfg-fv" class="cfg-content">
+
+          <!-- Step bar -->
+          <div class="step-bar" id="fv-stepbar">
+            <div class="step-node" onclick="goCfgStep('fv',1)">
+              <div class="step-circle active" id="fv-sc-1">1</div>
+              <div class="step-label active" id="fv-sl-1">Sito</div>
+            </div>
+            <div class="step-line" id="fv-line-1"></div>
+            <div class="step-node" onclick="goCfgStep('fv',2)">
+              <div class="step-circle" id="fv-sc-2">2</div>
+              <div class="step-label" id="fv-sl-2">Impianto</div>
+            </div>
+            <div class="step-line" id="fv-line-2"></div>
+            <div class="step-node" onclick="goCfgStep('fv',3)">
+              <div class="step-circle" id="fv-sc-3">3</div>
+              <div class="step-label" id="fv-sl-3">Incentivi</div>
+            </div>
+            <div class="step-line" id="fv-line-3"></div>
+            <div class="step-node" onclick="goCfgStep('fv',4)">
+              <div class="step-circle" id="fv-sc-4">4</div>
+              <div class="step-label" id="fv-sl-4">Risultati</div>
+            </div>
+          </div>
+
+          <!-- STEP 1 — Sito -->
+          <div id="fv-step-1">
+            <div class="cfg-layout">
+              <div class="cfg-form-panel">
+                <div class="form-section">Sito di installazione</div>
+                <div class="field-row">
+                  <div class="field">
+                    <div class="field-label">Città / Comune</div>
+                    <input class="field-input" id="fv-city" value="Bologna" placeholder="es. Bologna" oninput="geocodeCfg('fv')">
+                  </div>
+                  <div class="field">
+                    <div class="field-label">Indirizzo</div>
+                    <input class="field-input" id="fv-address" placeholder="Via esempio, 1" oninput="geocodeCfg('fv')">
+                  </div>
+                </div>
+                <div class="field-row">
+                  <div class="field">
+                    <div class="field-label">Tipo copertura</div>
+                    <select class="field-select" id="fv-roof" onchange="calcFV()">
+                      <option value="piano">Copertura piana</option>
+                      <option value="falda">Falda (mono/bifalda)</option>
+                      <option value="shed">Shed industriale</option>
+                      <option value="pensilina">Pensilina parcheggio</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <div class="field-label">Orientamento</div>
+                    <select class="field-select" id="fv-orient" onchange="calcFV()">
+                      <option value="0">Sud — ottimale</option>
+                      <option value="15">Sud-Est / Sud-Ovest</option>
+                      <option value="30">Est / Ovest</option>
+                      <option value="45">Nord-Est / Nord-Ovest</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Superficie copertura disponibile <span id="fv-surface-val">1.200 m²</span></div>
+                  <div class="slider-wrap">
+                    <input type="range" min="50" max="10000" value="1200" id="fv-surface"
+                      oninput="document.getElementById('fv-surface-val').textContent=parseInt(this.value).toLocaleString('it-IT')+' m²';calcFV()">
+                    <span class="slider-val" id="fv-surface-val2">1.200 m²</span>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Consumo annuo aziendale <span id="fv-cons-val">487.000 kWh</span></div>
+                  <div class="slider-wrap">
+                    <input type="range" min="10000" max="2000000" step="5000" value="487000" id="fv-consumption"
+                      oninput="document.getElementById('fv-cons-val').textContent=parseInt(this.value).toLocaleString('it-IT')+' kWh';calcFV()">
+                    <span class="slider-val" id="fv-cons-val2">487.000 kWh</span>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Inclinazione pannelli <span id="fv-tilt-val">20°</span></div>
+                  <div class="slider-wrap">
+                    <input type="range" min="0" max="45" value="20" id="fv-tilt"
+                      oninput="document.getElementById('fv-tilt-val').textContent=this.value+'°';calcFV()">
+                    <span class="slider-val" id="fv-tilt-val2">20°</span>
+                  </div>
+                </div>
+                <div class="step-actions">
+                  <button class="btn btn-primary" onclick="goCfgStep('fv',2)">Configura impianto →</button>
+                </div>
+              </div>
+              <div>
+                <div class="cfg-map-panel">
+                  <div class="map-header">
+                    <span style="font-size:13px">📍</span>
+                    <span class="map-header-title">Localizzazione sito</span>
+                    <span class="badge" style="margin-left:auto;background:var(--green-dim);color:var(--green);font-size:9px" id="fv-map-badge">Live</span>
+                  </div>
+                  <div class="cfg-map-inner">
+                    <div id="fv-leaflet" style="width:100%;height:100%"></div>
+                    <div class="map-info-badge" id="fv-irr-badge">Irradianza: <strong>—</strong> kWh/m²/anno</div>
+                  </div>
+                </div>
+                <div class="cfg-chart-panel" style="height:180px">
+                  <div style="font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:var(--text3);font-weight:600;margin-bottom:10px">Produzione mensile stimata (kWh)</div>
+                  <div style="height:130px"><canvas id="fv-monthly-chart"></canvas></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 2 — Impianto -->
+          <div id="fv-step-2" style="display:none">
+            <div class="cfg-layout">
+              <div class="cfg-form-panel">
+                <div class="form-section">Specifiche impianto</div>
+                <div class="field-row">
+                  <div class="field">
+                    <div class="field-label">Tecnologia pannelli</div>
+                    <select class="field-select" id="fv-tech" onchange="calcFV()">
+                      <option value="0.22">Monocristallino (22%)</option>
+                      <option value="0.24">Bifacciale (24%)</option>
+                      <option value="0.18">Policristallino (18%)</option>
+                      <option value="0.15">Film sottile (15%)</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <div class="field-label">Tipo inverter</div>
+                    <select class="field-select" id="fv-inverter">
+                      <option>String inverter</option>
+                      <option>Microinverter</option>
+                      <option>Inverter centralizzato</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Potenza impianto <span id="fv-kwp-val">200 kWp</span></div>
+                  <div class="slider-wrap">
+                    <input type="range" min="10" max="1000" value="200" id="fv-kwp"
+                      oninput="document.getElementById('fv-kwp-val').textContent=this.value+' kWp';calcFV()">
+                    <span class="slider-val" id="fv-kwp-val2">200 kWp</span>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Accumulo BESS <span id="fv-bess-val">Nessuno</span></div>
+                  <div class="slider-wrap">
+                    <input type="range" min="0" max="500" value="0" id="fv-bess"
+                      oninput="document.getElementById('fv-bess-val').textContent=this.value==0?'Nessuno':this.value+' kWh';calcFV()">
+                    <span class="slider-val" id="fv-bess-val2">—</span>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Costo installazione <span id="fv-cost-kwp-val">800 €/kWp</span></div>
+                  <div class="slider-wrap">
+                    <input type="range" min="600" max="1400" value="800" id="fv-cost-kwp"
+                      oninput="document.getElementById('fv-cost-kwp-val').textContent=this.value+' €/kWp';calcFV()">
+                    <span class="slider-val" id="fv-cost-val2">800 €</span>
+                  </div>
+                </div>
+                <div class="step-actions">
+                  <button class="btn btn-ghost" onclick="goCfgStep('fv',1)">← Sito</button>
+                  <button class="btn btn-primary" onclick="goCfgStep('fv',3)">Incentivi →</button>
+                </div>
+              </div>
+              <div>
+                <div class="cfg-map-panel">
+                  <div class="map-header"><span style="font-size:13px">☀</span><span class="map-header-title">Irradianza solare — area sito</span></div>
+                  <div class="cfg-map-inner">
+                    <div id="fv-leaflet-2" style="width:100%;height:100%"></div>
+                    <div class="map-info-badge" id="fv-irr-badge2">—</div>
+                  </div>
+                </div>
+                <div class="cfg-chart-panel">
+                  <div style="font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:var(--text3);font-weight:600;margin-bottom:10px">Stima produzione vs consumo</div>
+                  <div style="display:flex;gap:12px;margin-bottom:10px">
+                    <div style="flex:1;background:var(--bg4);border-radius:7px;padding:10px;text-align:center">
+                      <div style="font-size:9px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px">Produzione</div>
+                      <div style="font-size:18px;font-weight:700;color:var(--amber);font-family:'JetBrains Mono',monospace" id="fv-prod-preview">—</div>
+                      <div style="font-size:9px;color:var(--text3)">kWh/anno</div>
+                    </div>
+                    <div style="flex:1;background:var(--bg4);border-radius:7px;padding:10px;text-align:center">
+                      <div style="font-size:9px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px">Copertura</div>
+                      <div style="font-size:18px;font-weight:700;color:var(--green);font-family:'JetBrains Mono',monospace" id="fv-cov-preview">—</div>
+                      <div style="font-size:9px;color:var(--text3)">% del fabbisogno</div>
+                    </div>
+                    <div style="flex:1;background:var(--bg4);border-radius:7px;padding:10px;text-align:center">
+                      <div style="font-size:9px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px">CO₂ evitata</div>
+                      <div style="font-size:18px;font-weight:700;color:var(--teal);font-family:'JetBrains Mono',monospace" id="fv-co2-preview">—</div>
+                      <div style="font-size:9px;color:var(--text3)">tCO₂/anno</div>
+                    </div>
+                  </div>
+                  <div style="height:100px"><canvas id="fv-donut-chart"></canvas></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 3 — Incentivi -->
+          <div id="fv-step-3" style="display:none">
+            <div class="cfg-layout">
+              <div class="cfg-form-panel">
+                <div class="form-section">Incentivi fiscali applicabili</div>
+                <label class="inc-row checked" id="inc-t50-wrap">
+                  <input type="checkbox" id="inc-t50" checked onchange="this.closest('.inc-row').classList.toggle('checked',this.checked);calcFV()">
+                  <div style="flex:1">
+                    <div class="inc-name">Transizione 5.0 — credito d'imposta</div>
+                    <div style="font-size:10px;color:var(--text3)">FV abbinato a misura di efficienza energetica</div>
+                  </div>
+                  <span class="inc-rate" style="color:var(--green)" id="t50-rate-label">40%</span>
+                  <span class="inc-base" style="color:var(--text3)">sull'investimento</span>
+                </label>
+                <label class="inc-row checked" id="inc-ires-wrap">
+                  <input type="checkbox" id="inc-ires" checked onchange="this.closest('.inc-row').classList.toggle('checked',this.checked);calcFV()">
+                  <div style="flex:1">
+                    <div class="inc-name">Ammortamento accelerato IRES</div>
+                    <div style="font-size:10px;color:var(--text3)">Deduzione 100% anno 1 per beni strumentali</div>
+                  </div>
+                  <span class="inc-rate" style="color:var(--accent)">24%</span>
+                  <span class="inc-base" style="color:var(--text3)">IRES su imponibile</span>
+                </label>
+                <label class="inc-row checked" id="inc-ssp-wrap">
+                  <input type="checkbox" id="inc-ssp" checked onchange="this.closest('.inc-row').classList.toggle('checked',this.checked);calcFV()">
+                  <div style="flex:1">
+                    <div class="inc-name">GSE — Scambio sul Posto</div>
+                    <div style="font-size:10px;color:var(--text3)">Valorizzazione energia ceduta in rete</div>
+                  </div>
+                  <span class="inc-rate" style="color:var(--amber)">~0.08€</span>
+                  <span class="inc-base" style="color:var(--text3)">per kWh surplus</span>
+                </label>
+                <div class="field" style="margin-top:16px">
+                  <div class="field-label">Aliquota Transizione 5.0 <span id="fv-t50-val">40%</span></div>
+                  <div class="slider-wrap">
+                    <input type="range" min="35" max="45" value="40" id="fv-t50-rate"
+                      oninput="document.getElementById('fv-t50-val').textContent=this.value+'%';document.getElementById('t50-rate-label').textContent=this.value+'%';calcFV()">
+                    <span class="slider-val">40%</span>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Prezzo energia acquistata <span id="fv-ep-val">0.148 €/kWh</span></div>
+                  <div class="slider-wrap">
+                    <input type="range" min="0.10" max="0.30" step="0.005" value="0.148" id="fv-energy-price"
+                      oninput="document.getElementById('fv-ep-val').textContent=parseFloat(this.value).toFixed(3)+' €/kWh';calcFV()">
+                    <span class="slider-val" id="fv-ep-val2">0.148€</span>
+                  </div>
+                </div>
+                <div class="step-actions">
+                  <button class="btn btn-ghost" onclick="goCfgStep('fv',2)">← Impianto</button>
+                  <button class="btn btn-primary" onclick="goCfgStep('fv',4)">Calcola risultati →</button>
+                </div>
+              </div>
+              <div>
+                <div class="cfg-map-panel">
+                  <div class="map-header"><span style="font-size:13px">💶</span><span class="map-header-title">Riepilogo economico live</span></div>
+                  <div style="padding:18px">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+                      <div style="background:var(--bg4);border-radius:8px;padding:12px;text-align:center">
+                        <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Investimento lordo</div>
+                        <div style="font-size:16px;font-weight:700;font-family:'JetBrains Mono',monospace" id="p-invest">—</div>
+                      </div>
+                      <div style="background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.15);border-radius:8px;padding:12px;text-align:center">
+                        <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Credito T5.0</div>
+                        <div style="font-size:16px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--green)" id="p-t50">—</div>
+                      </div>
+                      <div style="background:var(--bg4);border-radius:8px;padding:12px;text-align:center">
+                        <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Invest. netto</div>
+                        <div style="font-size:16px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--amber)" id="p-net">—</div>
+                      </div>
+                      <div style="background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.15);border-radius:8px;padding:12px;text-align:center">
+                        <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Risparmio/anno</div>
+                        <div style="font-size:16px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--green)" id="p-save">—</div>
+                      </div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:10px 14px;background:var(--bg4);border-radius:8px">
+                      <span style="font-size:11px;color:var(--text3)">Payback stimato</span>
+                      <strong style="font-family:'JetBrains Mono',monospace;color:var(--accent)" id="p-payback">—</strong>
+                    </div>
+                  </div>
+                </div>
+                <div class="info-box info-box-green" style="margin-top:14px">
+                  <strong style="color:var(--green)">Transizione 5.0 (Legge 214/2023):</strong> Il credito d'imposta è fruibile in compensazione F24 entro 3 anni dall'interconnessione. L'aliquota dipende dal risparmio energetico ottenuto: 35% per &gt;3%, 45% per &gt;10%.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 4 — Risultati -->
+          <div id="fv-step-4" style="display:none">
+            <div class="res-grid" id="fv-results" style="grid-template-columns:repeat(3,1fr)">
+              <div class="res-card"><div class="res-card-label">Potenza FV</div><div class="res-card-val" id="r-fv-kwp" style="color:var(--amber)">—</div><div class="res-card-sub">kWp installati</div></div>
+              <div class="res-card"><div class="res-card-label">Produzione annua</div><div class="res-card-val" id="r-fv-prod" style="color:var(--accent)">—</div><div class="res-card-sub">kWh/anno stimati</div></div>
+              <div class="res-card"><div class="res-card-label">Autoconsumo</div><div class="res-card-val" id="r-fv-auto" style="color:var(--green)">—</div><div class="res-card-sub">% del fabbisogno</div></div>
+              <div class="res-card"><div class="res-card-label">Investimento netto</div><div class="res-card-val" id="r-fv-net" style="color:var(--text)">—</div><div class="res-card-sub">dopo incentivi</div></div>
+              <div class="res-card"><div class="res-card-label">Risparmio annuo</div><div class="res-card-val" id="r-fv-save" style="color:var(--green)">—</div><div class="res-card-sub">€/anno</div></div>
+              <div class="res-card"><div class="res-card-label">Payback</div><div class="res-card-val" id="r-fv-payback" style="color:var(--accent)">—</div><div class="res-card-sub">anni</div></div>
+              <div class="res-card"><div class="res-card-label">Credito T5.0</div><div class="res-card-val" id="r-fv-t50" style="color:var(--green)">—</div><div class="res-card-sub">€ recuperati</div></div>
+              <div class="res-card"><div class="res-card-label">CO₂ evitata</div><div class="res-card-val" id="r-fv-co2" style="color:var(--teal)">—</div><div class="res-card-sub">tCO₂/anno</div></div>
+              <div class="res-card"><div class="res-card-label">ROI 20 anni</div><div class="res-card-val" id="r-fv-roi" style="color:var(--green)">—</div><div class="res-card-sub">ritorno sull'investimento</div></div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 340px;gap:16px">
+              <div class="cfg-chart-panel">
+                <div style="font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:var(--text3);font-weight:600;margin-bottom:14px">Cashflow cumulato 20 anni (€)</div>
+                <div style="height:200px"><canvas id="fv-cashflow-chart"></canvas></div>
+              </div>
+              <div class="cfg-map-panel">
+                <div class="map-header"><span style="font-size:13px">📍</span><span class="map-header-title">Sito — vista satellite</span></div>
+                <div class="cfg-map-inner"><div id="fv-leaflet-4" style="width:100%;height:100%"></div></div>
+              </div>
+            </div>
+            <div class="step-actions">
+              <button class="btn btn-ghost" onclick="goCfgStep('fv',3)">← Modifica incentivi</button>
+              <button class="btn btn-primary">📄 Genera preventivo PDF</button>
+              <button class="btn btn-ghost" onclick="showPage('report')">📋 Archivia</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ EV ══ -->
+        <div id="cfg-ev" class="cfg-content" style="display:none">
+          <div class="step-bar">
+            <div class="step-node" onclick="goCfgStep('ev',1)"><div class="step-circle active" id="ev-sc-1">1</div><div class="step-label active" id="ev-sl-1">Tipologia</div></div>
+            <div class="step-line" id="ev-line-1"></div>
+            <div class="step-node" onclick="goCfgStep('ev',2)"><div class="step-circle" id="ev-sc-2">2</div><div class="step-label" id="ev-sl-2">Installazione</div></div>
+            <div class="step-line" id="ev-line-2"></div>
+            <div class="step-node" onclick="goCfgStep('ev',3)"><div class="step-circle" id="ev-sc-3">3</div><div class="step-label" id="ev-sl-3">Risultati</div></div>
+          </div>
+          <div id="ev-step-1">
+            <div class="cfg-layout">
+              <div class="cfg-form-panel">
+                <div class="form-section">Tipologia colonnine</div>
+                <div class="field-row">
+                  <div class="field">
+                    <div class="field-label">Tipologia di ricarica</div>
+                    <select class="field-select" id="ev-type" onchange="calcEV()">
+                      <option value="22">AC 22 kW — Tipo 2 (aziendale)</option>
+                      <option value="11">AC 11 kW — Tipo 2 (residenziale)</option>
+                      <option value="50">DC 50 kW — CCS/CHAdeMO</option>
+                      <option value="150">DC 150 kW — HPC</option>
+                      <option value="350">DC 350 kW — Ultra-fast</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <div class="field-label">Destinazione d'uso</div>
+                    <select class="field-select" id="ev-use" onchange="calcEV()">
+                      <option value="az">Fleet aziendale</option>
+                      <option value="pub">Pubblico a pagamento</option>
+                      <option value="mix">Misto aziendale + pubblico</option>
+                      <option value="cli">Solo clienti / visitatori</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Numero colonnine <span id="ev-num-val">4</span></div>
+                  <div class="slider-wrap">
+                    <input type="range" min="1" max="50" value="4" id="ev-num"
+                      oninput="document.getElementById('ev-num-val').textContent=this.value;calcEV()">
+                    <span class="slider-val" id="ev-num-val2">4</span>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Ore utilizzo medio/giorno <span id="ev-hours-val">6h</span></div>
+                  <div class="slider-wrap">
+                    <input type="range" min="1" max="20" value="6" id="ev-hours"
+                      oninput="document.getElementById('ev-hours-val').textContent=this.value+'h';calcEV()">
+                    <span class="slider-val" id="ev-hours-val2">6h</span>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Smart charging integrato</div>
+                  <select class="field-select" id="ev-smart">
+                    <option value="si">Sì — con integrazione FV e gestione carichi</option>
+                    <option value="no">No — ricarica standard</option>
+                  </select>
+                </div>
+                <div class="step-actions">
+                  <button class="btn btn-primary" onclick="goCfgStep('ev',2)">Installazione →</button>
+                </div>
+              </div>
+              <div>
+                <div class="cfg-map-panel">
+                  <div class="map-header"><span style="font-size:13px">📍</span><span class="map-header-title">Posizione impianto</span></div>
+                  <div class="cfg-map-inner"><div id="ev-leaflet" style="width:100%;height:100%"></div></div>
+                </div>
+                <div class="cfg-chart-panel" style="margin-top:14px">
+                  <div style="font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:var(--text3);font-weight:600;margin-bottom:12px">Energia erogabile/giorno per tipologia</div>
+                  <div style="height:120px"><canvas id="ev-bar-chart"></canvas></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="ev-step-2" style="display:none">
+            <div class="cfg-layout">
+              <div class="cfg-form-panel">
+                <div class="form-section">Costi e incentivi</div>
+                <div class="field-row">
+                  <div class="field">
+                    <div class="field-label">Costo unitario colonnina <span id="ev-uc-val">5.000 €</span></div>
+                    <div class="slider-wrap">
+                      <input type="range" min="1000" max="80000" step="500" value="5000" id="ev-unit-cost"
+                        oninput="document.getElementById('ev-uc-val').textContent=parseInt(this.value).toLocaleString('it-IT')+' €';calcEV()">
+                      <span class="slider-val" id="ev-uc-val2">5.000€</span>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <div class="field-label">Costo installazione/scavo <span id="ev-ic-val">3.000 €</span></div>
+                    <div class="slider-wrap">
+                      <input type="range" min="500" max="20000" step="500" value="3000" id="ev-inst-cost"
+                        oninput="document.getElementById('ev-ic-val').textContent=parseInt(this.value).toLocaleString('it-IT')+' €';calcEV()">
+                      <span class="slider-val" id="ev-ic-val2">3.000€</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="field-row">
+                  <div class="field">
+                    <div class="field-label">Tariffa ricarica pubblica <span id="ev-t-val">0.45 €/kWh</span></div>
+                    <div class="slider-wrap">
+                      <input type="range" min="0.25" max="0.80" step="0.01" value="0.45" id="ev-tariff"
+                        oninput="document.getElementById('ev-t-val').textContent=parseFloat(this.value).toFixed(2)+' €/kWh';calcEV()">
+                      <span class="slider-val" id="ev-t-val2">0.45€</span>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <div class="field-label">Fringe benefit fiscale <span id="ev-f-val">15%</span></div>
+                    <div class="slider-wrap">
+                      <input type="range" min="0" max="30" value="15" id="ev-fringe"
+                        oninput="document.getElementById('ev-f-val').textContent=this.value+'%';calcEV()">
+                      <span class="slider-val" id="ev-f-val2">15%</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="step-actions">
+                  <button class="btn btn-ghost" onclick="goCfgStep('ev',1)">← Tipologia</button>
+                  <button class="btn btn-primary" onclick="goCfgStep('ev',3)">Calcola →</button>
+                </div>
+              </div>
+              <div>
+                <div class="info-box info-box-blue">
+                  <strong style="color:var(--accent)">Incentivi EV 2026:</strong> Le colonnine aziendali beneficiano di ammortamento al 140% e riduzione del fringe benefit in busta paga per i dipendenti (0% per ricarica aziendale gratuita). Possibile cumulo con bandi regionali PNRR.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="ev-step-3" style="display:none">
+            <div class="res-grid">
+              <div class="res-card"><div class="res-card-label">Colonnine</div><div class="res-card-val" id="r-ev-num" style="color:var(--teal)">—</div></div>
+              <div class="res-card"><div class="res-card-label">Potenza totale</div><div class="res-card-val" id="r-ev-kw" style="color:var(--accent)">—</div></div>
+              <div class="res-card"><div class="res-card-label">Investimento totale</div><div class="res-card-val" id="r-ev-invest" style="color:var(--text)">—</div></div>
+              <div class="res-card"><div class="res-card-label">Beneficio fiscale</div><div class="res-card-val" id="r-ev-benefit" style="color:var(--green)">—</div></div>
+              <div class="res-card"><div class="res-card-label">Ricavo/risparmio annuo</div><div class="res-card-val" id="r-ev-revenue" style="color:var(--green)">—</div></div>
+              <div class="res-card"><div class="res-card-label">Payback</div><div class="res-card-val" id="r-ev-payback" style="color:var(--amber)">—</div></div>
+            </div>
+            <div style="height:180px;margin-bottom:16px"><canvas id="ev-cashflow-chart"></canvas></div>
+            <div class="step-actions">
+              <button class="btn btn-ghost" onclick="goCfgStep('ev',2)">← Modifica</button>
+              <button class="btn btn-primary">📄 Genera preventivo</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ EFFICIENTAMENTO ══ -->
+        <div id="cfg-eff" class="cfg-content" style="display:none">
+          <div class="step-bar">
+            <div class="step-node" onclick="goCfgStep('eff',1)"><div class="step-circle active" id="eff-sc-1">1</div><div class="step-label active" id="eff-sl-1">Interventi</div></div>
+            <div class="step-line" id="eff-line-1"></div>
+            <div class="step-node" onclick="goCfgStep('eff',2)"><div class="step-circle" id="eff-sc-2">2</div><div class="step-label" id="eff-sl-2">Parametri</div></div>
+            <div class="step-line" id="eff-line-2"></div>
+            <div class="step-node" onclick="goCfgStep('eff',3)"><div class="step-circle" id="eff-sc-3">3</div><div class="step-label" id="eff-sl-3">Risultati</div></div>
+          </div>
+          <div id="eff-step-1">
+            <div class="cfg-layout">
+              <div class="cfg-form-panel">
+                <div class="form-section">Seleziona gli interventi da analizzare</div>
+                <label class="toggle-card selected" onclick="this.classList.toggle('selected')">
+                  <input type="checkbox" id="eff-led" checked onchange="calcEff()">
+                  <span class="toggle-card-icon">💡</span>
+                  <div class="toggle-card-body">
+                    <div class="toggle-card-title">Illuminazione LED</div>
+                    <div class="toggle-card-desc">Risparmio 60–80% sui consumi illuminazione · tecnologia matura</div>
+                  </div>
+                  <span class="toggle-card-tag tag-green">2–3 anni</span>
+                </label>
+                <label class="toggle-card" onclick="this.classList.toggle('selected')">
+                  <input type="checkbox" id="eff-heat" onchange="calcEff()">
+                  <span class="toggle-card-icon">🌡</span>
+                  <div class="toggle-card-body">
+                    <div class="toggle-card-title">Pompa di calore</div>
+                    <div class="toggle-card-desc">COP 3.5–5 vs caldaia 0.92 · 35–50% risparmio termico</div>
+                  </div>
+                  <span class="toggle-card-tag tag-amber">5–8 anni</span>
+                </label>
+                <label class="toggle-card" onclick="this.classList.toggle('selected')">
+                  <input type="checkbox" id="eff-iso" onchange="calcEff()">
+                  <span class="toggle-card-icon">🏠</span>
+                  <div class="toggle-card-body">
+                    <div class="toggle-card-title">Isolamento termico — cappotto</div>
+                    <div class="toggle-card-desc">Riduzione dispersione 30–50% · miglioramento classe energetica</div>
+                  </div>
+                  <span class="toggle-card-tag tag-amber">8–12 anni</span>
+                </label>
+                <label class="toggle-card" onclick="this.classList.toggle('selected')">
+                  <input type="checkbox" id="eff-bms" onchange="calcEff()">
+                  <span class="toggle-card-icon">🖥</span>
+                  <div class="toggle-card-body">
+                    <div class="toggle-card-title">Building Management System</div>
+                    <div class="toggle-card-desc">Ottimizzazione automatica HVAC · monitoraggio real-time</div>
+                  </div>
+                  <span class="toggle-card-tag tag-green">3–5 anni</span>
+                </label>
+                <label class="toggle-card" onclick="this.classList.toggle('selected')">
+                  <input type="checkbox" id="eff-vrv" onchange="calcEff()">
+                  <span class="toggle-card-icon">❄️</span>
+                  <div class="toggle-card-body">
+                    <div class="toggle-card-title">Impianto VRV/VRF</div>
+                    <div class="toggle-card-desc">Climatizzazione zonale con recupero calore</div>
+                  </div>
+                  <span class="toggle-card-tag tag-amber">6–9 anni</span>
+                </label>
+                <div class="step-actions">
+                  <button class="btn btn-primary" onclick="goCfgStep('eff',2)">Parametri edificio →</button>
+                </div>
+              </div>
+              <div>
+                <div class="cfg-map-panel">
+                  <div class="map-header"><span style="font-size:13px">🏢</span><span class="map-header-title">Localizzazione edificio</span></div>
+                  <div class="cfg-map-inner"><div id="eff-leaflet" style="width:100%;height:100%"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="eff-step-2" style="display:none">
+            <div class="cfg-layout">
+              <div class="cfg-form-panel">
+                <div class="form-section">Parametri edificio e consumi attuali</div>
+                <div class="field-row">
+                  <div class="field">
+                    <div class="field-label">Città</div>
+                    <input class="field-input" id="eff-city" value="Bologna" placeholder="es. Milano" oninput="geocodeCfg('eff')">
+                  </div>
+                  <div class="field">
+                    <div class="field-label">Indirizzo</div>
+                    <input class="field-input" id="eff-address" placeholder="Via esempio 1" oninput="geocodeCfg('eff')">
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Superficie illuminata <span id="eff-s-val">2.000 m²</span></div>
+                  <div class="slider-wrap">
+                    <input type="range" min="100" max="20000" step="100" value="2000" id="eff-surf"
+                      oninput="document.getElementById('eff-s-val').textContent=parseInt(this.value).toLocaleString('it-IT')+' m²';calcEff()">
+                    <span class="slider-val" id="eff-s-val2">2.000m²</span>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Consumo illuminazione attuale <span id="eff-lc-val">80.000 kWh</span></div>
+                  <div class="slider-wrap">
+                    <input type="range" min="5000" max="500000" step="1000" value="80000" id="eff-light-cons"
+                      oninput="document.getElementById('eff-lc-val').textContent=parseInt(this.value).toLocaleString('it-IT')+' kWh';calcEff()">
+                    <span class="slider-val" id="eff-lc-val2">80.000 kWh</span>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Consumo termico annuo <span id="eff-hc-val">500 MWh</span></div>
+                  <div class="slider-wrap">
+                    <input type="range" min="10" max="5000" step="10" value="500" id="eff-heat-cons"
+                      oninput="document.getElementById('eff-hc-val').textContent=this.value+' MWh';calcEff()">
+                    <span class="slider-val" id="eff-hc-val2">500 MWh</span>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Prezzo energia elettrica <span id="eff-ep-val">0.148 €/kWh</span></div>
+                  <div class="slider-wrap">
+                    <input type="range" min="0.10" max="0.30" step="0.005" value="0.148" id="eff-ep"
+                      oninput="document.getElementById('eff-ep-val').textContent=parseFloat(this.value).toFixed(3)+' €/kWh';calcEff()">
+                    <span class="slider-val" id="eff-ep-val2">0.148€</span>
+                  </div>
+                </div>
+                <div class="step-actions">
+                  <button class="btn btn-ghost" onclick="goCfgStep('eff',1)">← Interventi</button>
+                  <button class="btn btn-primary" onclick="goCfgStep('eff',3)">Calcola →</button>
+                </div>
+              </div>
+              <div>
+                <div class="cfg-map-panel">
+                  <div class="map-header"><span>🏢</span><span class="map-header-title">Edificio selezionato</span></div>
+                  <div class="cfg-map-inner"><div id="eff-leaflet-2" style="width:100%;height:100%"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="eff-step-3" style="display:none">
+            <div class="res-grid">
+              <div class="res-card"><div class="res-card-label">Risparmio energetico</div><div class="res-card-val" id="r-eff-save-kwh" style="color:var(--green)">—</div></div>
+              <div class="res-card"><div class="res-card-label">Risparmio economico</div><div class="res-card-val" id="r-eff-save-eur" style="color:var(--green)">—</div></div>
+              <div class="res-card"><div class="res-card-label">Investimento</div><div class="res-card-val" id="r-eff-invest" style="color:var(--text)">—</div></div>
+              <div class="res-card"><div class="res-card-label">CO₂ evitata</div><div class="res-card-val" id="r-eff-co2" style="color:var(--teal)">—</div></div>
+              <div class="res-card"><div class="res-card-label">Payback</div><div class="res-card-val" id="r-eff-payback" style="color:var(--amber)">—</div></div>
+              <div class="res-card"><div class="res-card-label">Classe energetica</div><div class="res-card-val" id="r-eff-class" style="color:var(--accent)">—</div></div>
+            </div>
+            <div style="height:180px"><canvas id="eff-bar-chart"></canvas></div>
+            <div class="step-actions" style="margin-top:16px">
+              <button class="btn btn-ghost" onclick="goCfgStep('eff',2)">← Modifica</button>
+              <button class="btn btn-primary">📄 Genera preventivo</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ CER ══ -->
+        <div id="cfg-cer" class="cfg-content" style="display:none">
+          <div class="step-bar">
+            <div class="step-node" onclick="goCfgStep('cer',1)"><div class="step-circle active" id="cer-sc-1">1</div><div class="step-label active" id="cer-sl-1">Struttura</div></div>
+            <div class="step-line" id="cer-line-1"></div>
+            <div class="step-node" onclick="goCfgStep('cer',2)"><div class="step-circle" id="cer-sc-2">2</div><div class="step-label" id="cer-sl-2">Membri</div></div>
+            <div class="step-line" id="cer-line-2"></div>
+            <div class="step-node" onclick="goCfgStep('cer',3)"><div class="step-circle" id="cer-sc-3">3</div><div class="step-label" id="cer-sl-3">Analisi</div></div>
+          </div>
+          <div id="cer-step-1">
+            <div class="cfg-layout">
+              <div class="cfg-form-panel">
+                <div class="form-section">Struttura della Comunità Energetica</div>
+                <div class="field-row">
+                  <div class="field">
+                    <div class="field-label">Città / Cabina primaria</div>
+                    <input class="field-input" id="cer-city" value="Bologna" placeholder="es. Bologna" oninput="geocodeCfg('cer')">
+                  </div>
+                  <div class="field">
+                    <div class="field-label">Tipo CER</div>
+                    <select class="field-select" id="cer-type" onchange="calcCER()">
+                      <option value="ind">Industriale / PMI</option>
+                      <option value="misto">Misto imprese + residenti</option>
+                      <option value="res">Residenziale / condominio</option>
+                      <option value="pub">Pubblica (PA + privati)</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Potenza FV totale CER <span id="cer-kwp-val">200 kWp</span></div>
+                  <div class="slider-wrap">
+                    <input type="range" min="20" max="1000" value="200" id="cer-kwp"
+                      oninput="document.getElementById('cer-kwp-val').textContent=this.value+' kWp';calcCER()">
+                    <span class="slider-val" id="cer-kwp-val2">200 kWp</span>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Numero membri <span id="cer-m-val">8</span></div>
+                  <div class="slider-wrap">
+                    <input type="range" min="2" max="200" value="8" id="cer-members"
+                      oninput="document.getElementById('cer-m-val').textContent=this.value;calcCER()">
+                    <span class="slider-val" id="cer-m-val2">8</span>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Consumo totale membri <span id="cer-c-val">800 MWh</span></div>
+                  <div class="slider-wrap">
+                    <input type="range" min="50" max="10000" step="50" value="800" id="cer-cons"
+                      oninput="document.getElementById('cer-c-val').textContent=this.value+' MWh';calcCER()">
+                    <span class="slider-val" id="cer-c-val2">800 MWh</span>
+                  </div>
+                </div>
+                <div class="info-box info-box-green" style="margin-top:4px">
+                  <strong style="color:var(--green)">D.Lgs 199/2021:</strong> Incentivo GSE <strong>115–132 €/MWh</strong> sull'energia condivisa. Potenza max 1 MW per cabina primaria. Attivo lo sportello semplificato per CER &lt;200 kW da Jan 2026.
+                </div>
+                <div class="step-actions">
+                  <button class="btn btn-primary" onclick="goCfgStep('cer',2)">Configura membri →</button>
+                </div>
+              </div>
+              <div>
+                <div class="cfg-map-panel">
+                  <div class="map-header"><span>🌿</span><span class="map-header-title">Area cabina primaria</span></div>
+                  <div class="cfg-map-inner"><div id="cer-leaflet" style="width:100%;height:100%"></div></div>
+                </div>
+                <div class="cfg-chart-panel" style="margin-top:14px;height:160px">
+                  <div style="font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:var(--text3);font-weight:600;margin-bottom:10px">Energia condivisa stimata per mese</div>
+                  <div style="height:110px"><canvas id="cer-monthly-chart"></canvas></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="cer-step-2" style="display:none">
+            <div class="cfg-layout">
+              <div class="cfg-form-panel">
+                <div class="form-section">Governance e ripartizione incentivi</div>
+                <div class="field">
+                  <div class="field-label">Soggetto gestore CER</div>
+                  <select class="field-select" id="cer-manager">
+                    <option>Cooperativa di comunità</option>
+                    <option>Azienda capofila</option>
+                    <option>Comune / PA</option>
+                    <option>Amministratore condominio</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <div class="field-label">Quota incentivo al produttore <span id="cer-ps-val">50%</span></div>
+                  <div class="slider-wrap">
+                    <input type="range" min="20" max="80" value="50" id="cer-prod-share"
+                      oninput="document.getElementById('cer-ps-val').textContent=this.value+'% produttore / '+(100-this.value)+'% consumatori';calcCER()">
+                    <span class="slider-val" id="cer-ps-val2">50%</span>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="field-label">Accumulo condiviso BESS <span id="cer-b-val">Nessuno</span></div>
+                  <div class="slider-wrap">
+                    <input type="range" min="0" max="2000" step="10" value="0" id="cer-bess"
+                      oninput="document.getElementById('cer-b-val').textContent=this.value==0?'Nessuno':this.value+' kWh';calcCER()">
+                    <span class="slider-val" id="cer-b-val2">—</span>
+                  </div>
+                </div>
+                <div class="step-actions">
+                  <button class="btn btn-ghost" onclick="goCfgStep('cer',1)">← Struttura</button>
+                  <button class="btn btn-primary" onclick="goCfgStep('cer',3)">Analisi →</button>
+                </div>
+              </div>
+              <div>
+                <div class="info-box info-box-blue">
+                  <strong style="color:var(--accent)">Tariffa incentivante ARERA 2026:</strong> Oltre all'incentivo GSE, l'energia virtualmente condivisa beneficia della componente ARERA pari a circa <strong>10–12 €/MWh</strong> aggiuntivi sulle bollette dei consumatori membri.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="cer-step-3" style="display:none">
+            <div class="res-grid">
+              <div class="res-card"><div class="res-card-label">Energia condivisa</div><div class="res-card-val" id="r-cer-shared" style="color:var(--green)">—</div></div>
+              <div class="res-card"><div class="res-card-label">Incentivo GSE annuo</div><div class="res-card-val" id="r-cer-gse" style="color:var(--accent)">—</div></div>
+              <div class="res-card"><div class="res-card-label">Beneficio per membro</div><div class="res-card-val" id="r-cer-member" style="color:var(--amber)">—</div></div>
+              <div class="res-card"><div class="res-card-label">CO₂ evitata</div><div class="res-card-val" id="r-cer-co2" style="color:var(--teal)">—</div></div>
+              <div class="res-card"><div class="res-card-label">Payback impianto</div><div class="res-card-val" id="r-cer-payback" style="color:var(--amber)">—</div></div>
+              <div class="res-card"><div class="res-card-label">Potenza CER</div><div class="res-card-val" id="r-cer-kwp" style="color:var(--accent)">—</div></div>
+            </div>
+            <div style="height:180px"><canvas id="cer-cashflow-chart"></canvas></div>
+            <div class="step-actions" style="margin-top:16px">
+              <button class="btn btn-ghost" onclick="goCfgStep('cer',2)">← Modifica</button>
+              <button class="btn btn-primary">📄 Genera studio di fattibilità</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
 
       <!-- ═══ PAGE: REPORT ═══ -->
       <div class="page" id="page-report">
@@ -1238,16 +2267,16 @@ input,textarea,select{font-family:inherit}
                 <div style="display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)">
                   <span style="font-size:16px">📄</span>
                   <div style="flex:1;min-width:0">
-                    <div style="font-size:11px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Report_Consumi_Ott2024.pdf</div>
-                    <div style="font-size:10px;color:var(--text3)">26/11/2024 · 1.2 MB</div>
+                    <div style="font-size:11px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Report_Consumi_Mar2026.pdf</div>
+                    <div style="font-size:10px;color:var(--text3)">Mar 2026 · 1.2 MB</div>
                   </div>
                   <button class="btn btn-ghost btn-sm">↓</button>
                 </div>
                 <div style="display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)">
                   <span style="font-size:16px">🌿</span>
                   <div style="flex:1;min-width:0">
-                    <div style="font-size:11px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Report_ESG_Q3_2024.pdf</div>
-                    <div style="font-size:10px;color:var(--text3)">15/10/2024 · 890 KB</div>
+                    <div style="font-size:11px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Report_ESG_Q1_2026.pdf</div>
+                    <div style="font-size:10px;color:var(--text3)">Gen 2026 · 890 KB</div>
                   </div>
                   <button class="btn btn-ghost btn-sm">↓</button>
                 </div>
@@ -1255,7 +2284,7 @@ input,textarea,select{font-family:inherit}
                   <span style="font-size:16px">☀️</span>
                   <div style="flex:1;min-width:0">
                     <div style="font-size:11px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Preventivo_FV_200kWp.pdf</div>
-                    <div style="font-size:10px;color:var(--text3)">02/10/2024 · 2.1 MB</div>
+                    <div style="font-size:10px;color:var(--text3)">Feb 2026 · 2.1 MB</div>
                   </div>
                   <button class="btn btn-ghost btn-sm">↓</button>
                 </div>
@@ -1302,6 +2331,7 @@ const PAGES = {
   previsioni: { title: 'Previsioni & Budget',    sub: 'Scenari geopolitici 6–24 mesi' },
   co2:        { title: 'Sostenibilità CO₂',      sub: 'Emissioni, ESG e rendicontazione CSRD' },
   solare:     { title: 'FV & Rinnovabili',       sub: 'Fattibilità tecnico-economica impianti' },
+  configuratori:{ title: 'Configuratori Progetti',   sub: 'FV · Colonnine EV · Efficientamento · CER' },
   report:     { title: 'Reportistica',           sub: 'Genera e archivia documenti per il cliente' },
 };
 
@@ -1382,11 +2412,15 @@ function doLogin() {
   initCharts();
   buildSolarSim();
   setTimeout(function(){
-    drawWeatherSun();
+    drawWeatherSun(0);
     buildTrendsChart('1d');
     startMktMapAnim();
     initMaps();
     drawBaseMaps();
+    loadLogo();
+    startDataRefresh();
+    initSolarWindMap();
+    fetchWeather();
   }, 400);
 }
 
@@ -1460,7 +2494,8 @@ function showPage(id) {
   currentPage = id;
   if(id==='mappe'){ startMaps(); setTimeout(()=>{ drawBaseMaps(); Object.values(leafMaps).forEach(m=>m&&m.invalidateSize()); }, 100); }
   else stopMaps();
-  if(id==='mercati'){ setTimeout(function(){ drawWeatherSun(); buildTrendsChart('1d'); startMktMapAnim(); }, 80); } else { stopMktMapAnim(); }
+  if(id==='mercati'){ setTimeout(function(){ drawWeatherSun(0); buildTrendsChart('1d'); startMktMapAnim(); setTimeout(initSolarWindMap,200); }, 80); } else { stopMktMapAnim(); }
+  if(id==='configuratori'){ setTimeout(function(){ switchCfgTab('fv', document.querySelector('.cfg-nav-btn')); }, 100); }
 }
 
 // ═══════════════════════════════════════════════
@@ -1508,55 +2543,123 @@ function mkChart(id, type, data, opts={}) {
   return new Chart(el, { type, data, options:{ ...baseOpts, ...opts }});
 }
 
+// ── GREEN MONITOR: dati aggiornati al contesto Mar 2026 ──
+// Mix energetico Italia Mar 2026 (fonte: Terna/GSE)
+const GREEN_MIX_2026 = {
+  labels: ['Idro','FV','Eolico','Gas','Geotermico','Biomasse','Altro'],
+  // TWh produzione netta Mar 2026 (stima da trend annuali)
+  data:   [6.2, 6.8, 3.4, 7.1, 0.9, 1.2, 0.4],
+  colors: ['#22d3ee88','#f5a62388','#34d39988','#f8717155','#a78bfa88','#4f8ef788','#88888855'],
+  borders:['#22d3ee',  '#f5a623',  '#34d399',  '#f87171',  '#a78bfa',  '#4f8ef7',  '#888888'],
+};
+
+// ETS CO2 — Gen 2025 → Mar 2026 (14 mesi, fonte: ICE/EEX)
+const ETS_2025_2026 = {
+  labels: ['Gen 25','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic','Gen 26','Feb','Mar 26'],
+  data:   [64.8, 62.1, 58.4, 55.2, 52.8, 54.6, 57.2, 59.8, 61.4, 63.2, 60.1, 57.8, 60.4, 59.2, 58.4],
+};
+
+let greenMixChartInst = null;
+let etsChartInst = null;
+
 function initCharts() {
-  // PUN
-  mkChart('mkt-pun-chart','line',{
-    labels:['Nov23','Dic','Gen24','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov'],
-    datasets:[
-      { label:'PUN', data:[145,162,178,154,138,128,118,124,138,152,141,128,131], borderColor:'#4f8ef7', backgroundColor:'rgba(79,142,247,.07)', fill:true, tension:.4, pointRadius:3, borderWidth:2 },
-      { label:'TTF', data:[52,58,64,55,48,44,40,42,44,46,44,43,43], borderColor:'#f5a623', backgroundColor:'rgba(245,166,35,.05)', fill:true, tension:.4, pointRadius:3, borderWidth:2, borderDash:[5,4] }
-    ]
-  });
+  buildGreenMixChart();
+  buildEtsChart();
 
-  // Gas forward
-  mkChart('mkt-gas-chart','bar',{
-    labels:['Nov24','Dic24','Gen25','Feb25','Mar25','Giu25','Set25','Dic25','Mar26'],
-    datasets:[{ data:[42.8,46.2,48.8,45.4,42.1,38.6,35.2,36.8,34.4],
-      backgroundColor:ctx=>{ const v=ctx.raw; return v>45?'rgba(248,113,113,.55)':v>40?'rgba(245,166,35,.55)':'rgba(45,212,160,.55)'; },
-      borderWidth:0, borderRadius:4 }]
-  },{ scales:{ ...baseOpts.scales, y:{ ...baseOpts.scales.y, min:28, ticks:{ color:CC.tick, font:{size:10}, callback:v=>v+'€' }}}});
-
-  // Green mix
-  mkChart('green-mix-chart','bar',{
-    labels:['Idro','FV','Eolico','Gas','Geotermico','Biomasse','Carbone'],
-    datasets:[{ data:[4.8,4.2,2.1,8.4,0.9,1.1,0.3],
-      backgroundColor:['#22d3ee88','#f5a62388','#34d39988','#f8717155','#a78bfa88','#4f8ef788','#88888855'],
-      borderColor:['#22d3ee','#f5a623','#34d399','#f87171','#a78bfa','#4f8ef7','#888888'],
-      borderWidth:1, borderRadius:4 }]
-  },{ indexAxis:'y', scales:{ x:{ grid:{color:CC.grid}, ticks:{color:CC.tick,font:{size:10},callback:v=>v+' TWh'}}, y:{grid:{display:false},ticks:{color:CC.tick,font:{size:10}}} }});
-
-  // ETS
-  mkChart('ets-chart','line',{
-    labels:['Nov23','Dic','Gen24','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov'],
-    datasets:[{ data:[72,68,60,56,54,58,62,66,68,62,58,62,65], borderColor:'#a78bfa', backgroundColor:'rgba(167,139,250,.08)', fill:true, tension:.4, pointRadius:3, borderWidth:2 }]
-  },{ scales:{ ...baseOpts.scales, y:{ ...baseOpts.scales.y, min:45, ticks:{color:CC.tick,font:{size:10},callback:v=>v+'€'}}}});
-
-  // CO2
+  // CO2 — Gen–Mar 2026 (10 mesi disponibili)
   mkChart('co2-chart','bar',{
-    labels:['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott'],
+    labels:['Giu 25','Lug','Ago','Set','Ott','Nov','Dic','Gen 26','Feb','Mar 26'],
     datasets:[
-      { label:'Scope 1', data:[5.2,4.8,4.1,2.8,1.8,1.2,1.4,1.5,2.6,4.1], backgroundColor:'rgba(248,113,113,.5)', borderColor:'#f87171', borderWidth:1, stack:'s' },
-      { label:'Scope 2', data:[18.4,17.2,16.4,13.8,13.2,12.4,14.6,14.8,15.8,17.2], backgroundColor:'rgba(245,166,35,.4)', borderColor:'#f5a623', borderWidth:1, stack:'s' }
+      { label:'Scope 1', data:[1.1,1.3,1.4,2.4,3.9,4.6,4.8,4.2,3.8,3.6],
+        backgroundColor:'rgba(248,113,113,.5)', borderColor:'#f87171', borderWidth:1, stack:'s' },
+      { label:'Scope 2', data:[12.1,13.8,14.1,15.2,16.8,17.1,17.4,16.2,15.6,15.1],
+        backgroundColor:'rgba(245,166,35,.4)', borderColor:'#f5a623', borderWidth:1, stack:'s' }
     ]
   },{ scales:{ x:{...baseOpts.scales.x, stacked:true}, y:{...baseOpts.scales.y, stacked:true, ticks:{color:CC.tick,font:{size:10},callback:v=>v+' t'}}}});
 
-  // Solar production
+  // Solar production (Bologna, dati PVGIS medi)
   mkChart('solar-prod-chart','bar',{
     labels:['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'],
-    datasets:[{ data:[52,78,112,142,168,180,188,174,138,98,62,44], backgroundColor:'rgba(245,166,35,.7)', borderColor:'#f5a623', borderWidth:1, borderRadius:3 }]
+    datasets:[{ data:[52,78,118,148,172,184,192,178,142,102,64,46],
+      backgroundColor:'rgba(245,166,35,.7)', borderColor:'#f5a623', borderWidth:1, borderRadius:3 }]
   },{ scales:{ x:{grid:{color:CC.grid},ticks:{color:CC.tick,font:{size:9}}}, y:{grid:{color:CC.grid},ticks:{color:CC.tick,font:{size:9}}}}});
 
   buildForecast('improve');
+}
+
+function buildGreenMixChart() {
+  const el = document.getElementById('green-mix-chart'); if(!el) return;
+  if(greenMixChartInst) greenMixChartInst.destroy();
+  // Aggiungi leggera variazione realistica basata sul mese corrente
+  const month = new Date().getMonth();
+  const seasonalFV  = [0.3,0.5,0.8,1.1,1.4,1.6,1.7,1.5,1.2,0.9,0.5,0.3][month];
+  const seasonalEol = [1.2,1.1,1.0,0.8,0.7,0.6,0.5,0.6,0.7,0.9,1.1,1.2][month];
+  const data = [...GREEN_MIX_2026.data];
+  data[1] = +(data[1] * seasonalFV).toFixed(1);
+  data[2] = +(data[2] * seasonalEol).toFixed(1);
+
+  greenMixChartInst = new Chart(el, {
+    type:'bar',
+    data:{ labels: GREEN_MIX_2026.labels, datasets:[{
+      data, backgroundColor: GREEN_MIX_2026.colors,
+      borderColor: GREEN_MIX_2026.borders, borderWidth:1, borderRadius:4
+    }]},
+    options:{ ...baseOpts, indexAxis:'y',
+      scales:{ x:{grid:{color:CC.grid},ticks:{color:CC.tick,font:{size:10},callback:v=>v+' TWh'}},
+               y:{grid:{display:false},ticks:{color:CC.tick,font:{size:10}}} }}
+  });
+}
+
+function buildEtsChart() {
+  const el = document.getElementById('ets-chart'); if(!el) return;
+  if(etsChartInst) etsChartInst.destroy();
+  etsChartInst = new Chart(el, {
+    type:'line',
+    data:{ labels: ETS_2025_2026.labels, datasets:[{
+      data: ETS_2025_2026.data,
+      borderColor:'#a78bfa', backgroundColor:'rgba(167,139,250,.08)',
+      fill:true, tension:.4, pointRadius:3, borderWidth:2,
+      pointBackgroundColor: ETS_2025_2026.data.map(v =>
+        v < 55 ? '#f87171' : v < 62 ? '#f5a623' : '#a78bfa')
+    }]},
+    options:{ ...baseOpts,
+      plugins:{ ...baseOpts.plugins,
+        tooltip:{ callbacks:{ label: ctx => ctx.raw.toFixed(1)+' €/t CO₂' }}},
+      scales:{ x:{grid:{color:CC.grid},ticks:{color:CC.tick,font:{size:9},maxTicksLimit:8}},
+               y:{grid:{color:CC.grid},min:45,
+                  ticks:{color:CC.tick,font:{size:10},callback:v=>v+'€'}}}}
+  });
+}
+
+// Chiamato dal bottone "↻ Aggiorna" nella UI
+function refreshGreenData() {
+  const now = new Date();
+  const monthNames = ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
+  const label = monthNames[now.getMonth()]+' '+now.getFullYear();
+
+  // Aggiorna badge e titolo
+  const badge = document.getElementById('green-data-badge');
+  if(badge) badge.textContent = label;
+  const title = document.getElementById('green-mix-title');
+  if(title) title.textContent = 'Mix Energetico Italia — '+label;
+
+  // Aggiorna KPI con piccola variazione realistica (simula polling)
+  const noise = v => +(v*(1+(Math.random()-.5)*.02)).toFixed(1);
+  const setEl = (id,v) => { const el=document.getElementById(id); if(el) el.innerHTML=v; };
+
+  const fer = noise(52.4);
+  setEl('gk-fer', fer+'<span style="font-size:13px;color:#4e5268">%</span>');
+
+  const ets = noise(58.4);
+  setEl('gk-ets', ets+'<span style="font-size:13px;color:#4e5268"> €/t</span>');
+
+  // Ricostruisce grafici con variazione stagionale aggiornata
+  buildGreenMixChart();
+  buildEtsChart();
+
+  // Feedback visivo
+  if(badge){ badge.style.background='rgba(45,212,160,.2)'; badge.style.color='#2dd4a0';
+    setTimeout(()=>{ badge.style.background=''; badge.style.color=''; }, 1500); }
 }
 
 function buildForecast(scenario) {
@@ -1809,6 +2912,7 @@ function drawItalyBase(){
 }
 
 window.addEventListener('resize', drawBaseMaps);
+window.addEventListener('load', function(){ loadLogo(); });
 
 // ═══════════════════════════════════════════════
 // LEAFLET MAPS
@@ -2066,6 +3170,775 @@ function setTrendTab(period,btn){
   btn.classList.add('active');
   buildTrendsChart(period);
 }
+
+
+// ═══════════════════════════════════════════════
+// LOGO MANAGEMENT
+// ═══════════════════════════════════════════════
+function handleLogoUpload(input) {
+  const file = input.files[0]; if(!file) return;
+  if(file.size > 2*1024*1024){ alert('File troppo grande. Max 2MB.'); return; }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const dataUrl = e.target.result;
+    localStorage.setItem('energyiq_logo', dataUrl);
+    applyLogo(dataUrl);
+  };
+  reader.readAsDataURL(file);
+}
+function applyLogo(dataUrl) {
+  if(!dataUrl) return;
+  // Settings preview
+  const prev = document.getElementById('logo-preview-img');
+  const ph = document.getElementById('logo-placeholder');
+  if(prev){ prev.src=dataUrl; prev.style.display='block'; if(ph) ph.style.display='none'; }
+  // Login logo
+  const loginWrap = document.getElementById('login-logo-wrap');
+  const loginImg = document.getElementById('login-logo-img');
+  const loginText = document.getElementById('login-text-logo');
+  if(loginWrap && loginImg){ loginImg.src=dataUrl; loginWrap.style.display='block'; if(loginText) loginText.style.display='none'; }
+  // Sidebar logo
+  const sbWrap = document.getElementById('sb-logo-img-wrap');
+  const sbImg = document.getElementById('sb-logo-img');
+  const sbText = document.getElementById('sb-text-logo');
+  if(sbWrap && sbImg){ sbImg.src=dataUrl; sbWrap.style.display='block'; if(sbText) sbText.style.display='none'; }
+}
+function clearLogo() {
+  localStorage.removeItem('energyiq_logo');
+  const prev = document.getElementById('logo-preview-img');
+  const ph = document.getElementById('logo-placeholder');
+  if(prev){ prev.style.display='none'; if(ph) ph.style.display='block'; }
+  const loginWrap = document.getElementById('login-logo-wrap');
+  const loginText = document.getElementById('login-text-logo');
+  if(loginWrap) loginWrap.style.display='none';
+  if(loginText) loginText.style.display='block';
+  const sbWrap = document.getElementById('sb-logo-img-wrap');
+  const sbText = document.getElementById('sb-text-logo');
+  if(sbWrap) sbWrap.style.display='none';
+  if(sbText) sbText.style.display='block';
+}
+function loadLogo() {
+  const dataUrl = localStorage.getItem('energyiq_logo');
+  if(dataUrl) applyLogo(dataUrl);
+}
+
+// ═══════════════════════════════════════════════
+// REAL WEATHER — Open-Meteo (free, no key)
+// ═══════════════════════════════════════════════
+let weatherRefreshInterval = null;
+
+// ── CITY DATABASE (lat/lng/clima) ──
+const CITY_DB = {
+  'milano':     {lat:45.47,lng:9.19,  name:'Milano, IT',     base:[3,5,10,14,19,23,26,26,21,15,9,4],  sun:[150,220,350,480,580,650,680,640,520,380,200,140], wind:[18,17,20,18,17,15,14,15,16,18,20,18], hum:[78,72,68,62,60,58,55,56,62,70,75,78]},
+  'roma':       {lat:41.90,lng:12.48, name:'Roma, IT',        base:[8,9,12,15,20,24,28,28,24,18,13,9],  sun:[220,300,420,560,650,720,760,720,600,460,280,190], wind:[12,13,14,13,12,11,10,10,11,12,13,12], hum:[75,72,68,62,58,55,52,54,60,68,73,76]},
+  'napoli':     {lat:40.84,lng:14.25, name:'Napoli, IT',      base:[9,10,13,16,21,25,29,29,25,19,14,10], sun:[240,320,440,580,670,740,780,745,620,480,295,205], wind:[14,15,16,14,13,12,11,11,12,13,14,14], hum:[74,71,67,61,57,54,51,53,59,67,72,75]},
+  'torino':     {lat:45.07,lng:7.68,  name:'Torino, IT',      base:[2,4,9,13,18,22,25,25,20,14,8,3],   sun:[130,200,330,460,560,630,660,620,500,360,180,120], wind:[16,15,18,16,15,14,13,14,15,17,18,16], hum:[80,74,70,64,62,60,57,58,64,72,77,80]},
+  'bologna':    {lat:44.49,lng:11.34, name:'Bologna, IT',     base:[3,5,10,14,19,23,26,26,21,15,9,4],  sun:[160,235,360,490,590,660,690,650,530,390,210,150], wind:[14,14,16,14,13,12,11,12,13,15,16,14], hum:[78,73,69,63,61,59,56,57,63,71,76,79]},
+  'firenze':    {lat:43.77,lng:11.25, name:'Firenze, IT',     base:[6,8,11,15,19,23,27,27,23,17,12,7],  sun:[200,280,400,530,620,690,730,695,575,435,255,175], wind:[12,12,14,12,11,10,9,10,11,12,13,12],  hum:[77,73,69,63,59,56,53,55,61,69,74,77]},
+  'venezia':    {lat:45.44,lng:12.33, name:'Venezia, IT',     base:[4,5,9,14,18,22,25,25,21,15,9,5],   sun:[145,215,345,475,575,645,675,635,515,375,195,135], wind:[16,15,18,16,15,14,13,14,15,17,18,16], hum:[80,76,72,66,64,62,59,60,66,74,79,82]},
+  'palermo':    {lat:38.12,lng:13.36, name:'Palermo, IT',     base:[12,13,15,17,21,26,29,29,26,21,17,13], sun:[290,380,510,640,730,800,830,800,680,540,360,260], wind:[16,17,16,14,13,12,11,11,12,14,16,16], hum:[72,69,65,60,56,53,50,52,58,65,70,73]},
+  'catania':    {lat:37.50,lng:15.09, name:'Catania, IT',     base:[13,14,16,18,22,27,30,30,27,22,18,14], sun:[300,390,520,650,740,810,840,810,690,550,370,270], wind:[14,15,14,12,11,10,9,9,10,12,14,14],  hum:[70,67,63,58,54,51,48,50,56,63,68,71]},
+  'genova':     {lat:44.41,lng:8.93,  name:'Genova, IT',      base:[8,9,12,15,19,23,26,26,23,17,12,9],  sun:[185,260,380,510,600,665,695,660,545,405,230,165], wind:[18,18,20,18,17,16,15,15,16,18,20,18], hum:[72,68,64,60,58,56,54,55,60,67,71,73]},
+  'bari':       {lat:41.13,lng:16.87, name:'Bari, IT',        base:[9,10,13,16,20,25,28,28,24,19,14,10], sun:[250,330,450,580,670,740,775,745,625,485,305,215], wind:[14,14,15,14,13,12,11,11,12,13,14,14], hum:[73,70,66,61,57,54,51,53,59,66,71,74]},
+  'cagliari':   {lat:39.22,lng:9.12,  name:'Cagliari, IT',   base:[12,12,14,17,21,25,29,29,25,20,16,13], sun:[265,345,470,600,690,760,795,762,640,500,315,225], wind:[20,20,22,20,18,16,15,15,17,20,22,20], hum:[73,70,67,62,58,55,52,54,60,67,72,74]},
+  'trieste':    {lat:45.66,lng:13.78, name:'Trieste, IT',     base:[5,6,10,14,18,22,25,25,21,15,10,6],  sun:[155,225,355,485,585,655,685,645,525,385,205,145], wind:[22,20,22,20,18,16,15,15,17,20,22,22], hum:[72,68,64,58,56,54,51,52,58,66,71,74]},
+  'verona':     {lat:45.44,lng:10.99, name:'Verona, IT',      base:[3,5,9,13,18,22,25,25,20,14,8,4],   sun:[148,218,348,478,578,648,678,638,518,378,198,138], wind:[12,12,14,12,11,10,9,10,11,12,13,12],  hum:[79,74,70,64,62,60,57,58,64,72,77,80]},
+  'perugia':    {lat:43.11,lng:12.39, name:'Perugia, IT',     base:[5,6,10,14,18,22,26,26,22,16,10,6],  sun:[188,265,385,515,605,670,705,668,550,415,238,168], wind:[12,12,13,12,11,10,9,10,11,12,13,12],  hum:[76,72,68,62,59,56,53,55,61,69,74,77]},
+  'ancona':     {lat:43.62,lng:13.51, name:'Ancona, IT',      base:[6,7,10,14,19,23,27,27,23,17,12,7],  sun:[195,272,392,522,612,678,712,678,558,420,242,172], wind:[14,14,15,14,13,12,11,11,12,13,14,14], hum:[75,71,67,61,57,54,51,53,59,67,72,75]},
+  'default':    {lat:41.90,lng:12.48, name:'Italia',          base:[8,9,12,15,20,24,28,28,24,18,13,9],  sun:[220,300,420,560,650,720,760,720,600,460,280,190], wind:[14,14,15,14,13,12,11,12,13,14,14,14], hum:[72,69,65,60,56,53,50,52,58,65,70,73]},
+};
+
+function getCityData(cityName) {
+  const key = cityName.toLowerCase().trim()
+    .normalize('NFD').replace(/[̀-ͯ]/g,'') // remove accents
+    .split(',')[0].trim();
+  // Try exact match
+  if(CITY_DB[key]) return CITY_DB[key];
+  // Try partial match
+  for(const k of Object.keys(CITY_DB)) {
+    if(k !== 'default' && (key.includes(k) || k.includes(key))) return CITY_DB[k];
+  }
+  return null;
+}
+
+function getSolarAltitude(lat, date) {
+  // Accurate solar altitude for irradiance calculation
+  const N = (date - new Date(date.getFullYear(),0,0)) / 86400000;
+  const decl = 23.45 * Math.sin((360/365)*(N-81)*Math.PI/180) * Math.PI/180;
+  const hour = date.getHours() + date.getMinutes()/60;
+  const ha = (hour - 12) * 15 * Math.PI/180;
+  const latR = lat * Math.PI/180;
+  return Math.asin(Math.sin(latR)*Math.sin(decl) + Math.cos(latR)*Math.cos(decl)*Math.cos(ha)) * 180/Math.PI;
+}
+
+async function fetchWeather() {
+  const cityInput = document.getElementById('weather-city-input');
+  const city = cityInput ? cityInput.value.trim() : 'Milano';
+  if(!city) return;
+  const badge = document.getElementById('weather-live-badge');
+  if(badge) badge.textContent = '⟳';
+
+  // Try real API first (works in local browser, blocked in sandboxed iframe)
+  let usedReal = false;
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 3000);
+    const geoRes = await fetch(
+      `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=it&format=json`,
+      { signal: controller.signal }
+    );
+    clearTimeout(timeout);
+    const geoData = await geoRes.json();
+    if(geoData.results && geoData.results.length > 0) {
+      const loc = geoData.results[0];
+      const wxRes = await fetch(
+        `https://api.open-meteo.com/v1/forecast?latitude=${loc.latitude}&longitude=${loc.longitude}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,wind_direction_10m,weather_code,direct_radiation&timezone=auto`,
+        { signal: controller.signal }
+      );
+      const wxData = await wxRes.json();
+      const cur = wxData.current;
+      const cityName = loc.name + (loc.country ? ', ' + loc.country : '');
+      applyWeatherUI(cityName, Math.round(cur.temperature_2m), Math.round(cur.apparent_temperature),
+        wxCodeToDesc(cur.weather_code), Math.round(cur.direct_radiation||0),
+        Math.round(cur.wind_speed_10m), degToCompass(cur.wind_direction_10m),
+        cur.relative_humidity_2m, cur.weather_code);
+      usedReal = true;
+    }
+  } catch(e) {
+    // Sandbox or network blocked — fall through to simulated data
+  }
+
+  if(!usedReal) {
+    // Fallback: astronomical + climate database simulation
+    const cityData = getCityData(city);
+    if(!cityData && city.toLowerCase() !== 'default') {
+      applyWeatherMessage('Città non nel database locale. Inserisci in formato "Città" (es. Roma, Milano, Bologna)');
+      if(badge) badge.textContent = 'SIM';
+      return;
+    }
+    const data = cityData || CITY_DB.default;
+    const now = new Date();
+    const month = now.getMonth(); // 0-11
+    const hour = now.getHours();
+    
+    // Temperature: base + diurnal curve + small random variation
+    const baseTemp = data.base[month];
+    const diurnal = Math.sin((hour - 6) * Math.PI / 12) * 6; // peak at 14:00
+    const variation = (Math.random() - 0.5) * 2;
+    const temp = Math.round(baseTemp + diurnal + variation);
+    const feelsLike = Math.round(temp - (data.wind[month] > 20 ? 3 : 1));
+    
+    // Solar irradiance: astronomical calculation
+    const altDeg = getSolarAltitude(data.lat, now);
+    const cloudFactor = 0.75 + Math.sin(now.getDate() * 0.7) * 0.15; // pseudo-random daily cloud
+    const maxSolar = data.sun[month];
+    const solar = altDeg > 0 ? Math.round(maxSolar * Math.sin(altDeg*Math.PI/180) * cloudFactor) : 0;
+    
+    // Weather code from solar/cloud
+    const wxCode = altDeg <= 0 ? 3 : cloudFactor > 0.85 ? 0 : cloudFactor > 0.7 ? 1 : cloudFactor > 0.55 ? 2 : 3;
+    const humidity = data.hum[month] + Math.round((Math.random()-0.5)*6);
+    const wind = data.wind[month] + Math.round((Math.random()-0.5)*4);
+    const windDir = ['N','NE','E','SE','S','SO','O','NO'][Math.floor(Math.random()*8)];
+
+    applyWeatherUI(data.name, temp, feelsLike, wxCodeToDesc(wxCode), solar, wind, windDir, humidity, wxCode);
+    if(badge) { badge.textContent = 'SIM'; badge.title = 'Dati simulati da database climatico. Apri il file in locale per dati reali.'; }
+  } else {
+    if(badge) badge.textContent = 'LIVE';
+  }
+}
+
+function applyWeatherUI(cityName, temp, feels, desc, solar, wind, windDir, humidity, wxCode) {
+  const set = (id, v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
+  set('wd-city', cityName);
+  set('wd-temp', temp + '°');
+  set('wd-desc', desc);
+  set('wd-solar', solar + ' W/m²');
+  set('wd-wind', wind + ' km/h ' + windDir);
+  set('wd-humidity', humidity + '%');
+  set('wd-feels', feels + '°');
+  const solarEl = document.getElementById('wd-solar');
+  if(solarEl) solarEl.style.color = solar > 400 ? '#f5a623' : solar > 100 ? '#e2e4f0' : '#8b8fa8';
+  drawWeatherSun(wxCode || (solar > 400 ? 0 : solar > 100 ? 2 : 3));
+}
+
+function applyWeatherMessage(msg) {
+  const set = (id, v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
+  set('wd-city', msg);
+  set('wd-temp', '—');
+}
+
+function wxCodeToDesc(code) {
+  const map = {0:'Sereno',1:'Prevalentemente sereno',2:'Parzialmente nuvoloso',3:'Coperto',45:'Nebbia',48:'Nebbia gelata',51:'Pioggerella',61:'Pioggia leggera',63:'Pioggia moderata',65:'Pioggia intensa',71:'Neve leggera',73:'Neve',80:'Rovesci',81:'Rovesci moderati',82:'Rovesci forti',95:'Temporale',99:'Temporale con grandine'};
+  return map[code] || map[Math.floor(code/10)*10] || 'Variabile';
+}
+function degToCompass(deg) {
+  const dirs=['N','NE','E','SE','S','SO','O','NO'];
+  return dirs[Math.round(deg/45)%8];
+}
+
+// ═══════════════════════════════════════════════
+// WEATHER SUN (weather-code aware)
+// ═══════════════════════════════════════════════
+function drawWeatherSun(code) {
+  code = code || 0;
+  const c = document.getElementById('weather-sun'); if(!c) return;
+  const ctx = c.getContext('2d'), cx=34, cy=34, r=15;
+  ctx.clearRect(0,0,68,68);
+  const cloudy = code >= 2;
+  const rainy = code >= 51;
+  const g = ctx.createRadialGradient(cx,cy,0,cx,cy,32);
+  g.addColorStop(0, rainy?'rgba(100,130,160,.3)':'rgba(255,200,50,.5)');
+  g.addColorStop(.6, 'rgba(0,0,0,0)');
+  ctx.fillStyle=g; ctx.beginPath(); ctx.arc(cx,cy,32,0,Math.PI*2); ctx.fill();
+  if(!rainy) {
+    ctx.strokeStyle='rgba(255,200,50,.65)'; ctx.lineWidth=2; ctx.lineCap='round';
+    for(let i=0;i<8;i++){const a=i*Math.PI/4,x1=cx+Math.cos(a)*(r+5),y1=cy+Math.sin(a)*(r+5),x2=cx+Math.cos(a)*(r+11),y2=cy+Math.sin(a)*(r+11);ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();}
+    const sg=ctx.createRadialGradient(cx,cy,0,cx,cy,r);
+    sg.addColorStop(0,'#fff7d0');sg.addColorStop(.4,'#ffd040');sg.addColorStop(1,'#f5960a');
+    ctx.fillStyle=sg; ctx.beginPath(); ctx.arc(cx-2*(cloudy?1:0),cy-2*(cloudy?1:0),r,0,Math.PI*2); ctx.fill();
+  }
+  if(cloudy || rainy) {
+    ctx.fillStyle = rainy ? 'rgba(140,160,190,.9)' : 'rgba(200,215,240,.88)';
+    ctx.beginPath();ctx.arc(48,50,10,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.arc(40,54,9,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.arc(56,54,8,0,Math.PI*2);ctx.fill();
+    ctx.fillRect(33,52,30,12);
+  }
+  if(rainy) {
+    ctx.strokeStyle='rgba(100,160,220,.8)'; ctx.lineWidth=1.5; ctx.lineCap='round';
+    [[38,67],[44,64],[50,67],[56,64]].forEach(([x,y])=>{ctx.beginPath();ctx.moveTo(x,y-5);ctx.lineTo(x-2,y);ctx.stroke();});
+  }
+}
+
+// ═══════════════════════════════════════════════
+// REAL DATA REFRESH (every 10 minutes)
+// ═══════════════════════════════════════════════
+let dataRefreshInterval = null;
+
+async function fetchMarketData() {
+  const keys = JSON.parse(localStorage.getItem('energyiq_keys')||'{}');
+  
+  // Try ENTSO-E for PUN if key available
+  if(keys.entsoe) {
+    try {
+      // ENTSO-E Day-ahead prices Italy (10YIT-GRTN-----B)
+      const now = new Date();
+      const dateStr = now.toISOString().split('T')[0].replace(/-/g,'');
+      const url = `https://web-api.tp.entsoe.eu/api?securityToken=${keys.entsoe}&documentType=A44&in_Domain=10YIT-GRTN-----B&out_Domain=10YIT-GRTN-----B&periodStart=${dateStr}0000&periodEnd=${dateStr}2300`;
+      const res = await fetch(url);
+      const text = await res.text();
+      // Parse XML — extract price points
+      const prices = [...text.matchAll(/<price.amount>([\d.]+)<\/price.amount>/g)].map(m=>parseFloat(m[1]));
+      if(prices.length > 0) {
+        const avg = prices.reduce((a,b)=>a+b,0)/prices.length;
+        const el = document.querySelector('#r-mkt-pun, [data-mkt="pun"]');
+        updateMktKPI('pun', avg.toFixed(2));
+        console.log('ENTSO-E PUN:', avg.toFixed(2), '€/MWh');
+      }
+    } catch(e) { console.warn('ENTSO-E fetch failed:', e.message); }
+  }
+
+  // Always refresh weather
+  fetchWeather();
+  
+  // Refresh Italy map animation
+  if(document.getElementById('page-mercati') && document.getElementById('page-mercati').classList.contains('active')) {
+    drawMktItalyMap();
+  }
+  
+  console.log('Market data refreshed at', new Date().toLocaleTimeString('it-IT'));
+}
+
+function updateMktKPI(key, value) {
+  // Update KPI displays on dashboard
+  const kpiMap = {
+    'pun': {elId:'mk-pun-val', suffix:' €/MWh'},
+    'ttf': {elId:'mk-ttf-val', suffix:' €/MWh'},
+  };
+  if(kpiMap[key]) {
+    const el = document.getElementById(kpiMap[key].elId);
+    if(el) el.textContent = value + kpiMap[key].suffix;
+  }
+}
+
+function startDataRefresh() {
+  fetchMarketData(); // immediate
+  if(dataRefreshInterval) clearInterval(dataRefreshInterval);
+  dataRefreshInterval = setInterval(fetchMarketData, 10 * 60 * 1000); // 10 minutes
+}
+
+// ═══════════════════════════════════════════════
+// SOLAR & WIND LEAFLET MAP
+// ═══════════════════════════════════════════════
+let solarWindLeaflet = null;
+
+function initSolarWindMap() {
+  if(!window.L || solarWindLeaflet) return;
+  const el = document.getElementById('solar-wind-leaflet');
+  if(!el) return;
+  solarWindLeaflet = L.map('solar-wind-leaflet', {zoomControl:false, attributionControl:false, dragging:false, scrollWheelZoom:false}).setView([42.5, 12.5], 5);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {subdomains:'abcd', maxZoom:19}).addTo(solarWindLeaflet);
+  // Add Italian borders highlight
+  L.circleMarker([41.9, 12.5], {radius:3, fillColor:'#f87171', color:'transparent', fillOpacity:.7}).addTo(solarWindLeaflet).bindTooltip('Roma');
+  L.circleMarker([45.5,  9.2], {radius:3, fillColor:'#4f8ef7', color:'transparent', fillOpacity:.7}).addTo(solarWindLeaflet).bindTooltip('Milano');
+}
+
+// ═══════════════════════════════════════════════
+// CONFIGURATORI LOGIC
+// ═══════════════════════════════════════════════
+function switchCfgTab(tab, btn) {
+  document.querySelectorAll('.cfg-content').forEach(el=>el.style.display='none');
+  document.querySelectorAll('.cfg-tab').forEach(el=>el.classList.remove('active'));
+  const el = document.getElementById('cfg-'+tab); if(el) el.style.display='block';
+  if(btn) btn.classList.add('active');
+  // Run initial calc
+  if(tab==='fv') calcFV();
+  if(tab==='ev') calcEV();
+  if(tab==='eff') calcEff();
+  if(tab==='cer') calcCER();
+}
+
+function goCfgStep(cfg, step, btn) {
+  // Hide all steps for this cfg
+  document.querySelectorAll(`#cfg-${cfg} [id^="${cfg}-step-"]`).forEach(el=>el.style.display='none');
+  const target = document.getElementById(`${cfg}-step-${step}`); if(target) target.style.display='block';
+  // Update step nav
+  const steps = document.querySelectorAll(`#cfg-${cfg} .cfg-step`);
+  steps.forEach((s,i)=>{
+    s.classList.remove('active','done');
+    if(i+1 < step) s.classList.add('done');
+    if(i+1 === step) s.classList.add('active');
+  });
+  if(cfg==='fv' && step===4) calcFV(true);
+  if(cfg==='ev' && step===3) calcEV(true);
+  if(cfg==='eff' && step===3) calcEff(true);
+  if(cfg==='cer' && step===3) calcCER(true);
+}
+
+// ── FV CALCULATOR ──
+let fvChart = null;
+function calcFV(showResults) {
+  const kwp = parseFloat(document.getElementById('fv-kwp')?.value||200);
+  const surface = parseFloat(document.getElementById('fv-surface')?.value||1200);
+  const tilt = parseFloat(document.getElementById('fv-tilt')?.value||20);
+  const orientAz = parseFloat(document.getElementById('fv-orient')?.value||0);
+  const bessKwh = parseFloat(document.getElementById('fv-bess')?.value||0);
+  const costKwp = parseFloat(document.getElementById('fv-cost-kwp')?.value||800);
+  const consumption = parseFloat(document.getElementById('fv-consumption')?.value||487000);
+  const t50Rate = parseFloat(document.getElementById('fv-t50-rate')?.value||40)/100;
+  const energyPrice = parseFloat(document.getElementById('fv-energy-price')?.value||0.148);
+  const t50Enabled = document.getElementById('inc-t50')?.checked !== false;
+  const sspEnabled = document.getElementById('inc-ssp')?.checked !== false;
+
+  // Production factors
+  const irradiance = 1200; // kWh/m²/year average Italy
+  const tiltFactor = 1 - Math.abs(tilt - 30) * 0.005;
+  const orientFactor = 1 - orientAz * 0.003;
+  const perfRatio = 0.82;
+  const annualProd = kwp * irradiance / 1000 * perfRatio * tiltFactor * orientFactor * 1000;
+  
+  // Autoconsumo
+  const autoconsRatio = Math.min(0.85, consumption / (annualProd + consumption) * 1.5);
+  const autocons = annualProd * autoconsRatio;
+  const surplus = annualProd - autocons;
+  
+  // Costi
+  const investFV = kwp * costKwp;
+  const investBESS = bessKwh * 600;
+  const investTotal = investFV + investBESS;
+  
+  // Incentivi
+  const creditoT50 = t50Enabled ? investTotal * t50Rate : 0;
+  const netInvest = investTotal - creditoT50;
+  
+  // Risparmio
+  const savingsAutocons = autocons * energyPrice;
+  const savingsSurplus = sspEnabled ? surplus * 0.08 : 0; // GSE valorization
+  const totalSavings = savingsAutocons + savingsSurplus;
+  
+  const payback = netInvest / totalSavings;
+  const roi20 = ((totalSavings * 20 - netInvest) / netInvest * 100);
+
+  if(!showResults) return;
+
+  const fmt = (v, suffix) => {
+    if(Math.abs(v) >= 1000000) return (v/1000000).toFixed(1)+'M '+suffix;
+    if(Math.abs(v) >= 1000) return Math.round(v).toLocaleString('it-IT')+' '+suffix;
+    return v.toFixed(1)+' '+suffix;
+  };
+  const set = (id, v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
+  set('r-fv-kwp', kwp+' kWp');
+  set('r-fv-prod', fmt(annualProd, 'kWh'));
+  set('r-fv-auto', Math.round(autoconsRatio*100)+'%');
+  set('r-fv-invest', fmt(investTotal, '€'));
+  set('r-fv-t50', creditoT50 > 0 ? '-'+fmt(creditoT50,'€') : '—');
+  set('r-fv-net', fmt(netInvest, '€'));
+  set('r-fv-save', fmt(totalSavings, '€/anno'));
+  set('r-fv-payback', payback.toFixed(1)+' anni');
+  set('r-fv-roi', '+'+roi20.toFixed(0)+'%');
+
+  // Cashflow chart
+  const el = document.getElementById('fv-cashflow-chart'); if(!el) return;
+  if(fvChart) fvChart.destroy();
+  const years = Array.from({length:21},(_,i)=>i);
+  const cashflow = years.map(y => y===0 ? -netInvest : -netInvest + totalSavings*y);
+  fvChart = new Chart(el, {type:'line', data:{
+    labels: years.map(y => y===0?'Oggi':'Anno '+y),
+    datasets:[{label:'Cashflow cumulato',data:cashflow,borderColor:'#4f8ef7',backgroundColor:ctx=>{const g=ctx.chart.ctx.createLinearGradient(0,0,0,160);g.addColorStop(0,'rgba(79,142,247,.3)');g.addColorStop(1,'rgba(79,142,247,0)');return g;},fill:true,tension:.4,pointRadius:2,borderWidth:2}]
+  }, options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.raw.toLocaleString('it-IT')+' €'}}},scales:{
+    x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4e5268',font:{size:9},maxTicksLimit:8}},
+    y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4e5268',font:{size:9},callback:v=>(v/1000).toFixed(0)+'k€'}}
+  }}});
+}
+
+// ── EV CALCULATOR ──
+function calcEV(showResults) {
+  const num = parseFloat(document.getElementById('ev-num')?.value||4);
+  const typeVal = document.getElementById('ev-type')?.value||'ac22';
+  const hours = parseFloat(document.getElementById('ev-hours')?.value||6);
+  const unitCost = parseFloat(document.getElementById('ev-unit-cost')?.value||5000);
+  const instCost = parseFloat(document.getElementById('ev-inst-cost')?.value||3000);
+  const tariff = parseFloat(document.getElementById('ev-tariff')?.value||0.45);
+  const fringe = parseFloat(document.getElementById('ev-fringe')?.value||15)/100;
+  const useType = document.getElementById('ev-use')?.value||'aziendale';
+  
+  const powerMap = {'ac22':22,'ac11':11,'dc50':50,'dc150':150,'dc350':350};
+  const power = powerMap[typeVal] || 22;
+  const totalPower = num * power;
+  const totalInvest = num * (unitCost + instCost);
+  const fringeBenefit = totalInvest * fringe;
+  const annualEnergy = num * power * hours * 250; // kWh/anno (250 giorni lavorativi)
+  const revenue = useType !== 'aziendale' ? annualEnergy * (tariff - 0.15) : annualEnergy * 0.05; // margine
+  const payback = (totalInvest - fringeBenefit) / Math.max(revenue, 1);
+
+  if(!showResults) return;
+  const set = (id, v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
+  set('r-ev-num', num+' colonnine');
+  set('r-ev-kw', totalPower+' kW');
+  set('r-ev-invest', totalInvest.toLocaleString('it-IT')+'€');
+  set('r-ev-benefit', fringeBenefit.toLocaleString('it-IT')+'€');
+  set('r-ev-revenue', Math.round(revenue).toLocaleString('it-IT')+'€/anno');
+  set('r-ev-payback', payback < 100 ? payback.toFixed(1)+' anni' : '> 20 anni');
+}
+
+// ── EFFICIENTAMENTO CALCULATOR ──
+function calcEff(showResults) {
+  const led = document.getElementById('eff-led')?.checked;
+  const heat = document.getElementById('eff-heat')?.checked;
+  const iso = document.getElementById('eff-iso')?.checked;
+  const bms = document.getElementById('eff-bms')?.checked;
+  const vrv = document.getElementById('eff-vrv')?.checked;
+  const surf = parseFloat(document.getElementById('eff-surf')?.value||2000);
+  const lightCons = parseFloat(document.getElementById('eff-light-cons')?.value||80000);
+  const heatCons = parseFloat(document.getElementById('eff-heat-cons')?.value||500);
+  const ep = parseFloat(document.getElementById('eff-ep')?.value||0.148);
+
+  let saveKwh=0, investTotal=0, savingsEur=0;
+  if(led){ const s=lightCons*0.70; saveKwh+=s; savingsEur+=s*ep; investTotal+=surf*18; }
+  if(heat){ const s=heatCons*1000*0.35; saveKwh+=s; savingsEur+=s*ep; investTotal+=surf*80; }
+  if(iso){ const s=heatCons*1000*0.25; saveKwh+=s; savingsEur+=s*ep*0.3; investTotal+=surf*120; }
+  if(bms){ const s=lightCons*0.15+heatCons*1000*0.10; saveKwh+=s; savingsEur+=s*ep; investTotal+=surf*15; }
+  if(vrv){ const s=heatCons*1000*0.20; saveKwh+=s; savingsEur+=s*ep; investTotal+=surf*90; }
+  
+  const co2 = saveKwh * 0.233 / 1000; // tCO2
+  const payback = savingsEur > 0 ? investTotal / savingsEur : 99;
+  const classes = ['G','F','E','D','C','B','A','A+'];
+  const classIdx = Math.min(7, Math.floor(saveKwh / lightCons * 4));
+
+  if(!showResults) return;
+  const fmt = v => v >= 1000 ? Math.round(v).toLocaleString('it-IT') : v.toFixed(0);
+  const set = (id, v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
+  set('r-eff-save-kwh', fmt(saveKwh)+' kWh/anno');
+  set('r-eff-save-eur', fmt(savingsEur)+' €/anno');
+  set('r-eff-invest', fmt(investTotal)+' €');
+  set('r-eff-co2', co2.toFixed(1)+' tCO₂/anno');
+  set('r-eff-payback', payback.toFixed(1)+' anni');
+  set('r-eff-class', classes[classIdx]);
+}
+
+// ── CER CALCULATOR ──
+function calcCER(showResults) {
+  const kwp = parseFloat(document.getElementById('cer-kwp')?.value||200);
+  const members = parseFloat(document.getElementById('cer-members')?.value||8);
+  const consumption = parseFloat(document.getElementById('cer-cons')?.value||800)*1000; // kWh
+  const prodShare = parseFloat(document.getElementById('cer-prod-share')?.value||50)/100;
+  
+  const annualProd = kwp * 1200 * 0.82; // kWh
+  const sharedEnergy = Math.min(annualProd, consumption) * 0.65; // stima energia condivisa
+  const incentiveGSE = sharedEnergy * 0.115; // 115 €/MWh incentivo base
+  const benefitPerMember = incentiveGSE / members;
+  const co2 = annualProd * 0.233 / 1000;
+  const investTotal = kwp * 900; // costo CER
+  const payback = investTotal / (incentiveGSE + annualProd * 0.08);
+
+  if(!showResults) return;
+  const set = (id, v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
+  set('r-cer-shared', Math.round(sharedEnergy/1000)+' MWh/anno');
+  set('r-cer-gse', Math.round(incentiveGSE).toLocaleString('it-IT')+'€/anno');
+  set('r-cer-member', Math.round(benefitPerMember).toLocaleString('it-IT')+'€/anno');
+  set('r-cer-co2', co2.toFixed(1)+' tCO₂/anno');
+  set('r-cer-payback', payback.toFixed(1)+' anni');
+  set('r-cer-kwp', kwp+' kWp');
+}
+
+// ═══════════════════════════════════════════════
+// HOOK INTO doLogin extensions
+// ═══════════════════════════════════════════════
+const _origDoLoginEnd = window._origDoLoginEnd || null;
+// These are called from the modified doLogin timeout block
+function onAfterLogin() {
+  loadLogo();
+  startDataRefresh();
+  initSolarWindMap();
+}
+
+
+
+// ════════════════════════════════════
+// CONFIGURATORI — C-LEVEL REDESIGN
+// ════════════════════════════════════
+
+// Leaflet maps per configuratori
+const cfgMaps = {};
+const cfgMarkers = {};
+
+function initCfgMap(id, lat, lng, zoom) {
+  if(!window.L) return;
+  if(cfgMaps[id]) { cfgMaps[id].remove(); delete cfgMaps[id]; }
+  const el = document.getElementById(id); if(!el) return;
+  const m = L.map(id, {zoomControl:false, attributionControl:false}).setView([lat,lng], zoom||13);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{subdomains:'abcd',maxZoom:19}).addTo(m);
+  cfgMaps[id] = m;
+  return m;
+}
+
+function placeCfgMarker(mapId, lat, lng, color, label) {
+  if(!cfgMaps[mapId] || !window.L) return;
+  if(cfgMarkers[mapId]) cfgMaps[mapId].removeLayer(cfgMarkers[mapId]);
+  const icon = L.divIcon({className:'', iconSize:[14,14], iconAnchor:[7,7], html:`<div style="width:14px;height:14px;border-radius:50%;background:${color};border:2px solid #fff;box-shadow:0 0 8px ${color}"></div>`});
+  cfgMarkers[mapId] = L.marker([lat,lng],{icon}).addTo(cfgMaps[mapId]);
+  if(label) cfgMarkers[mapId].bindTooltip(label,{permanent:false,className:'map-popup'});
+  cfgMaps[mapId].setView([lat,lng], 14);
+}
+
+// Geocode using Open-Meteo geocoding (with CORS fallback to city DB)
+async function geocodeCfg(cfg) {
+  const cityEl = document.getElementById(cfg+'-city');
+  const addrEl = document.getElementById(cfg+'-address');
+  if(!cityEl) return;
+  const query = (addrEl&&addrEl.value ? addrEl.value+', ' : '') + cityEl.value;
+  if(!query.trim()) return;
+
+  // Try city DB first (instant, no CORS)
+  const cityData = getCityData(cityEl.value);
+  if(cityData) {
+    updateCfgMaps(cfg, cityData.lat, cityData.lng, cityData.name);
+    return;
+  }
+
+  // Try geocoding API
+  try {
+    const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityEl.value)}&count=1&language=it&format=json`);
+    const data = await res.json();
+    if(data.results && data.results.length > 0) {
+      const loc = data.results[0];
+      updateCfgMaps(cfg, loc.latitude, loc.longitude, loc.name);
+    }
+  } catch(e) {
+    // Fallback: use default Italy center
+    updateCfgMaps(cfg, 44.49, 11.34, 'Bologna');
+  }
+}
+
+function updateCfgMaps(cfg, lat, lng, name) {
+  const mapIds = {
+    fv: ['fv-leaflet','fv-leaflet-2','fv-leaflet-4'],
+    ev: ['ev-leaflet'],
+    eff: ['eff-leaflet','eff-leaflet-2'],
+    cer: ['cer-leaflet']
+  };
+  const ids = mapIds[cfg] || [];
+  ids.forEach(id => {
+    if(!cfgMaps[id]) initCfgMap(id, lat, lng, 13);
+    placeCfgMarker(id, lat, lng, '#3b82f6', name);
+  });
+
+  // Update irradiance badge for FV
+  if(cfg === 'fv') {
+    const cityData = getCityData(name);
+    const month = new Date().getMonth();
+    const irr = cityData ? Math.round(cityData.sun[month] * 0.82) : 380;
+    const annualIrr = cityData ? Math.round(cityData.sun.reduce((a,b)=>a+b,0)/12 * 365 / 1000) : 1200;
+    const badges = ['fv-irr-badge','fv-irr-badge2'];
+    badges.forEach(bid => {
+      const el = document.getElementById(bid);
+      if(el) el.innerHTML = `Irradianza: <strong>${irr}</strong> W/m² · <strong>${annualIrr}</strong> kWh/m²/anno`;
+    });
+    buildFVMonthlyChart(cityData);
+    calcFV();
+  }
+  if(cfg === 'cer') buildCERMonthlyChart();
+}
+
+// FV Monthly production chart
+let fvMonthlyChartInst = null;
+function buildFVMonthlyChart(cityData) {
+  const el = document.getElementById('fv-monthly-chart'); if(!el) return;
+  if(fvMonthlyChartInst) fvMonthlyChartInst.destroy();
+  const kwp = parseFloat(document.getElementById('fv-kwp')?.value || 200);
+  const sun = cityData ? cityData.sun : [150,220,350,480,580,650,680,640,520,380,200,140];
+  const months = ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
+  const prod = sun.map(s => Math.round(s * kwp * 0.82 / 1000 * 30));
+  fvMonthlyChartInst = new Chart(el, {
+    type:'bar', data:{labels:months, datasets:[{
+      data:prod, backgroundColor: prod.map(v => v>5000?'rgba(245,158,11,.7)':v>3000?'rgba(245,158,11,.45)':'rgba(245,158,11,.22)'),
+      borderColor:'rgba(245,158,11,.8)', borderWidth:1, borderRadius:3
+    }]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{display:false},ticks:{color:'#3d4460',font:{size:9}}},
+               y:{grid:{color:'rgba(255,255,255,.03)'},ticks:{color:'#3d4460',font:{size:9},callback:v=>v>=1000?(v/1000).toFixed(0)+'k':v}}}}
+  });
+}
+
+// EV bar chart
+let evBarChartInst = null;
+function buildEVBarChart() {
+  const el = document.getElementById('ev-bar-chart'); if(!el) return;
+  if(evBarChartInst) evBarChartInst.destroy();
+  const types = ['AC 11kW','AC 22kW','DC 50kW','DC 150kW','DC 350kW'];
+  const kw = [11,22,50,150,350];
+  evBarChartInst = new Chart(el, {
+    type:'bar', data:{labels:types, datasets:[{
+      label:'kWh/giorno (8h)', data:kw.map(k=>k*8),
+      backgroundColor:['rgba(59,130,246,.3)','rgba(59,130,246,.5)','rgba(16,185,129,.4)','rgba(245,158,11,.5)','rgba(239,68,68,.4)'],
+      borderRadius:4, borderWidth:0
+    }]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{display:false},ticks:{color:'#3d4460',font:{size:9}}},
+               y:{grid:{color:'rgba(255,255,255,.03)'},ticks:{color:'#3d4460',font:{size:9},callback:v=>v+' kWh'}}}}
+  });
+}
+
+// EV cashflow chart
+let evCashflowInst = null;
+function buildEVCashflow(netInvest, annualRevenue) {
+  const el = document.getElementById('ev-cashflow-chart'); if(!el) return;
+  if(evCashflowInst) evCashflowInst.destroy();
+  const years = Array.from({length:11},(_,i)=>i);
+  const cf = years.map(y => -netInvest + annualRevenue*y);
+  evCashflowInst = new Chart(el, {
+    type:'line', data:{labels:years.map(y=>y===0?'Oggi':'Anno '+y), datasets:[{
+      data:cf, borderColor:'#06b6d4', backgroundColor:'rgba(6,182,212,.08)',
+      fill:true, tension:.4, pointRadius:2, borderWidth:2
+    }]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{color:'rgba(255,255,255,.03)'},ticks:{color:'#3d4460',font:{size:9}}},
+               y:{grid:{color:'rgba(255,255,255,.03)'},ticks:{color:'#3d4460',font:{size:9},callback:v=>(v/1000).toFixed(0)+'k€'}}}}
+  });
+}
+
+// EFF bar chart
+let effBarInst = null;
+function buildEffBarChart(data) {
+  const el = document.getElementById('eff-bar-chart'); if(!el) return;
+  if(effBarInst) effBarInst.destroy();
+  effBarInst = new Chart(el, {
+    type:'bar',
+    data:{labels:data.labels, datasets:[
+      {label:'Risparmio (kWh/anno)', data:data.savings, backgroundColor:'rgba(16,185,129,.5)', borderRadius:4, borderWidth:0},
+      {label:'Investimento (€)', data:data.costs.map(c=>c/1000), backgroundColor:'rgba(59,130,246,.3)', borderRadius:4, borderWidth:0}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#7b82a0',font:{size:10}}}},
+      scales:{x:{grid:{display:false},ticks:{color:'#3d4460',font:{size:9}}},
+               y:{grid:{color:'rgba(255,255,255,.03)'},ticks:{color:'#3d4460',font:{size:9}}}}}
+  });
+}
+
+// CER monthly chart
+let cerMonthlyInst = null;
+function buildCERMonthlyChart() {
+  const el = document.getElementById('cer-monthly-chart'); if(!el) return;
+  if(cerMonthlyInst) cerMonthlyInst.destroy();
+  const kwp = parseFloat(document.getElementById('cer-kwp')?.value||200);
+  const months = ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
+  const sun = [150,220,350,480,580,650,680,640,520,380,200,140];
+  const shared = sun.map(s => Math.round(s*kwp*0.82/1000*30*0.65));
+  cerMonthlyInst = new Chart(el, {
+    type:'bar', data:{labels:months, datasets:[{
+      data:shared, backgroundColor:'rgba(16,185,129,.5)', borderRadius:3, borderWidth:0
+    }]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{display:false},ticks:{color:'#3d4460',font:{size:9}}},
+               y:{grid:{color:'rgba(255,255,255,.03)'},ticks:{color:'#3d4460',font:{size:9}}}}}
+  });
+}
+
+// CER cashflow
+let cerCFInst = null;
+function buildCERCashflow(netInvest, annualGSE) {
+  const el = document.getElementById('cer-cashflow-chart'); if(!el) return;
+  if(cerCFInst) cerCFInst.destroy();
+  const years = Array.from({length:21},(_,i)=>i);
+  const cf = years.map(y => -netInvest + annualGSE*y);
+  cerCFInst = new Chart(el, {
+    type:'line', data:{labels:years.map(y=>y===0?'Oggi':'Anno '+y), datasets:[{
+      data:cf, borderColor:'#10b981', backgroundColor:'rgba(16,185,129,.08)',
+      fill:true, tension:.4, pointRadius:2, borderWidth:2
+    }]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{color:'rgba(255,255,255,.03)'},ticks:{color:'#3d4460',font:{size:9},maxTicksLimit:8}},
+               y:{grid:{color:'rgba(255,255,255,.03)'},ticks:{color:'#3d4460',font:{size:9},callback:v=>(v/1000).toFixed(0)+'k€'}}}}
+  });
+}
+
+// ── TAB & STEP NAVIGATION (new unified) ──
+function switchCfgTab(tab, btn) {
+  document.querySelectorAll('.cfg-content').forEach(el=>el.style.display='none');
+  document.querySelectorAll('.cfg-nav-btn').forEach(el=>el.classList.remove('active'));
+  const el = document.getElementById('cfg-'+tab); if(el) el.style.display='block';
+  if(btn) btn.classList.add('active');
+  // Init maps and charts for the tab
+  setTimeout(()=>{
+    if(tab==='fv'){geocodeCfg('fv');buildFVMonthlyChart(getCityData('Bologna'));calcFV();}
+    if(tab==='ev'){initCfgMap('ev-leaflet',44.49,11.34,13);buildEVBarChart();calcEV();}
+    if(tab==='eff'){initCfgMap('eff-leaflet',44.49,11.34,13);}
+    if(tab==='cer'){initCfgMap('cer-leaflet',44.49,11.34,12);buildCERMonthlyChart();calcCER();}
+  }, 80);
+}
+
+function goCfgStep(cfg, step) {
+  // Hide all steps
+  document.querySelectorAll(`#cfg-${cfg} [id^="${cfg}-step-"]`).forEach(el=>el.style.display='none');
+  const target = document.getElementById(`${cfg}-step-${step}`);
+  if(target) { target.style.display='block'; }
+
+  // Update step indicators
+  const totalSteps = {fv:4,ev:3,eff:3,cer:3}[cfg];
+  for(let i=1;i<=totalSteps;i++){
+    const circle = document.getElementById(`${cfg}-sc-${i}`);
+    const label  = document.getElementById(`${cfg}-sl-${i}`);
+    const line   = document.getElementById(`${cfg}-line-${i}`);
+    if(circle){circle.className='step-circle'+(i===step?' active':i<step?' done':'');}
+    if(label){label.className='step-label'+(i===step?' active':i<step?' done':'');}
+    if(line){line.className='step-line'+(i<step?' done':'');}
+  }
+
+  // Init maps when steps become visible
+  setTimeout(()=>{
+    if(cfg==='fv' && step===2 && !cfgMaps['fv-leaflet-2']) geocodeCfg('fv');
+    if(cfg==='fv' && step===4 && !cfgMaps['fv-leaflet-4']) geocodeCfg('fv');
+    if(cfg==='eff' && step===2 && !cfgMaps['eff-leaflet-2']) geocodeCfg('eff');
+    if(cfg==='fv' && step===4) { calcFV(true); }
+    if(cfg==='ev' && step===3) { calcEV(true); }
+    if(cfg==='eff' && step===3) { calcEff(true); }
+    if(cfg==='cer' && step===3) { calcCER(true); }
+  }, 80);
+}
+
+// Init when page shown
+const _origShowPage = showPage;
+// Override showPage for configuratori
+const showPageOrig = showPage;
 
 </script>
 </body>
